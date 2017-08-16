@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Common
+namespace toofz.NecroDancer.Leaderboards.Services
 {
     static class Constants
     {

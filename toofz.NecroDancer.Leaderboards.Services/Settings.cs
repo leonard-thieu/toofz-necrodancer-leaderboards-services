@@ -1,4 +1,4 @@
-﻿namespace toofz.NecroDancer.Leaderboards.Services.Common
+﻿namespace toofz.NecroDancer.Leaderboards.Services
 {
     public class Settings
     {
