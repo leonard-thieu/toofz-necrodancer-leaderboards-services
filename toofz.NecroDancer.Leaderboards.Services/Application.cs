@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using log4net;
 using Microsoft.ApplicationInsights;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Common
+namespace toofz.NecroDancer.Leaderboards.Services
 {
     public static class Application
     {

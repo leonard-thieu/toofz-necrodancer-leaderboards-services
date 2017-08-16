@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Common
+namespace toofz.NecroDancer.Leaderboards.Services
 {
     public abstract partial class WorkerRoleBase<TSettings> : ServiceBase
         where TSettings : Settings, new()

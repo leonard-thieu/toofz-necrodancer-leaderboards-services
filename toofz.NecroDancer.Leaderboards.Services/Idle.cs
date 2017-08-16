@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Common
+namespace toofz.NecroDancer.Leaderboards.Services
 {
     sealed class Idle
     {

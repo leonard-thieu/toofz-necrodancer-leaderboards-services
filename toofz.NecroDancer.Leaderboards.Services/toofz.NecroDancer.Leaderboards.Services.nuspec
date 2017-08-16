@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>toofz.NecroDancer.Leaderboards.Services</id>
+    <version>2.1.0</version>
+    <title>toofz.NecroDancer.Leaderboards.Services</title>
+    <authors>Leonard Thieu</authors>
+    <owners>Leonard Thieu</owners>
+    <licenseUrl>https://github.com/leonard-thieu/toofz-necrodancer-leaderboards-services-common/tree/9dc8b522eceff0cf62f98275ecd5c22e30951ee8</licenseUrl>
+    <projectUrl>https://github.com/leonard-thieu/toofz-necrodancer-leaderboards-services-common</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Common code for services.</description>
+    <copyright>Copyright 2017</copyright>
+    <tags>toofz necrodancer leaderboards services</tags>
+  </metadata>
+</package>
