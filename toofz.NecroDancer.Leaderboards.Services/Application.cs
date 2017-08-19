@@ -11,7 +11,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Application));
 
-        public static void Run<T, TSettings>()
+        public static void Run<T>()
             where T : WorkerRoleBase, new()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
