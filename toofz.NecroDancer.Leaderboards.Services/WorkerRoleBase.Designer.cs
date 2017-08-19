@@ -2,7 +2,7 @@
 
 namespace toofz.NecroDancer.Leaderboards.Services
 {
-    partial class WorkerRoleBase<TSettings>
+    partial class WorkerRoleBase
     {
         /// <summary> 
         /// Required designer variable.

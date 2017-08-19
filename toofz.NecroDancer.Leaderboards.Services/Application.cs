@@ -14,6 +14,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
 
         public static readonly TelemetryClient TelemetryClient = InitializeTelemetry();
 
+        // TODO: Make this a TelemetryInitializer
         static TelemetryClient InitializeTelemetry()
         {
             var telemetryClient = new TelemetryClient();
@@ -27,16 +28,15 @@ namespace toofz.NecroDancer.Leaderboards.Services
         }
 
         public static void Run<T, TSettings>()
-            where T : WorkerRoleBase<TSettings>, new()
-            where TSettings : Settings, new()
+            where T : WorkerRoleBase, new()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
-                Log.Error("Terminating application due to unhandled exception.", (Exception)e.ExceptionObject);
+                Log.Fatal("Terminating application due to unhandled exception.", (Exception)e.ExceptionObject);
             };
             TaskScheduler.UnobservedTaskException += (s, e) =>
             {
-                Log.Error("Terminating application due to unobserved task exception.", e.Exception);
+                Log.Fatal("Terminating application due to unobserved task exception.", e.Exception);
             };
 
             // Start as console application
