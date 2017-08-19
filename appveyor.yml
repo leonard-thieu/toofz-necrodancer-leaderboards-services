@@ -18,9 +18,9 @@ assembly_info:
 
 install:
   - git clone https://github.com/leonard-thieu/toofz-build.git Scripts
-
+  
 before_build:
-  - appveyor-retry nuget restore -DisableParallelProcessing
+  - appveyor-retry nuget restore -Verbosity quiet -NonInteractive
 build:
   project: $(PROJECT).sln
   verbosity: minimal
