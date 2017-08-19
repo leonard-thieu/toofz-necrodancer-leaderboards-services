@@ -9,29 +9,9 @@ namespace toofz.NecroDancer.Leaderboards.Services
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Idle));
 
-        readonly DateTime startTime = DateTime.UtcNow;
-
-        public void Delay(TimeSpan updateInterval, CancellationToken cancellationToken)
+        public static Idle StartNew(TimeSpan updateInterval)
         {
-            DelayAsync(updateInterval, cancellationToken).Wait();
-        }
-
-        async Task DelayAsync(TimeSpan updateInterval, CancellationToken cancellationToken)
-        {
-            var remaining = GetRemainingTime(updateInterval);
-            LogTimeRemaining(remaining);
-            if (remaining > Constants.MaxServicePointIdleTime)
-            {
-                await Task.Delay(Constants.MaxServicePointIdleTime, cancellationToken).ConfigureAwait(false);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            }
-
-            remaining = GetRemainingTime(updateInterval);
-            if (remaining > TimeSpan.Zero)
-            {
-                await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
-            }
+            return new Idle(updateInterval, DateTime.UtcNow);
         }
 
         static void LogTimeRemaining(TimeSpan remaining)
@@ -46,6 +26,28 @@ namespace toofz.NecroDancer.Leaderboards.Services
             }
         }
 
-        TimeSpan GetRemainingTime(TimeSpan updateInterval) => updateInterval - (DateTime.UtcNow - startTime);
+        Idle(TimeSpan updateInterval, DateTime startTime)
+        {
+            this.updateInterval = updateInterval;
+            this.startTime = startTime;
+        }
+
+        readonly TimeSpan updateInterval;
+        readonly DateTime startTime;
+
+        public TimeSpan GetTimeRemaining()
+        {
+            return updateInterval - (DateTime.UtcNow - startTime);
+        }
+
+        public async Task DelayAsync(CancellationToken cancellationToken)
+        {
+            var remaining = GetTimeRemaining();
+            LogTimeRemaining(remaining);
+            if (remaining > TimeSpan.Zero)
+            {
+                await Task.Delay(remaining, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 }

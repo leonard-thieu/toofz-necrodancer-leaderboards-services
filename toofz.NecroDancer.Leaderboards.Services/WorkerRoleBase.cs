@@ -1,20 +1,16 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Newtonsoft.Json;
 
 namespace toofz.NecroDancer.Leaderboards.Services
 {
-    public abstract partial class WorkerRoleBase<TSettings> : ServiceBase
-        where TSettings : Settings, new()
+    public abstract partial class WorkerRoleBase : ServiceBase
     {
         #region Static Members
 
-        static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
+        static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase));
 
         static void LogError(string message, Exception ex)
         {
@@ -30,7 +26,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerRoleBase{TSettings}"/> class.
+        /// Initializes a new instance of the <see cref="WorkerRoleBase"/> class.
         /// </summary>
         protected WorkerRoleBase(string serviceName)
         {
@@ -41,8 +37,6 @@ namespace toofz.NecroDancer.Leaderboards.Services
 
             InitializeComponent();
             ServiceName = serviceName;
-
-            ServicePointManager.MaxServicePointIdleTime = (int)Constants.MaxServicePointIdleTime.TotalSeconds;
         }
 
         #region Fields
@@ -52,7 +46,8 @@ namespace toofz.NecroDancer.Leaderboards.Services
         Thread thread;
         Idle idle;
 
-        protected TSettings Settings { get; set; } = new TSettings();
+        public abstract TimeSpan UpdateInterval { get; }
+        public TimeSpan DelayBeforeGC { get; set; } = TimeSpan.Zero;
 
         #endregion
 
@@ -106,12 +101,12 @@ namespace toofz.NecroDancer.Leaderboards.Services
 
                 try
                 {
-                    idle.Delay(TimeSpan.FromSeconds(Settings.UpdateInterval), cancellationToken);
+                    idle.DelayAsync(cancellationToken).Wait();
                 }
-                catch (Exception ex)
+                catch (TaskCanceledException)
                 {
-                    LogError("Failed to complete run due to a cancellation request.", ex);
-                    break;
+                    Log.Info("Received Stop command. Stopping service...");
+                    return;
                 }
             }
         }
@@ -120,17 +115,22 @@ namespace toofz.NecroDancer.Leaderboards.Services
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                idle = new Idle();
-
-                using (var sr = File.OpenText("settings.json"))
-                {
-                    var json = await sr.ReadToEndAsync().ConfigureAwait(false);
-                    Settings = JsonConvert.DeserializeObject<TSettings>(json);
-                }
+                idle = Idle.StartNew(UpdateInterval);
 
                 await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
 
-                idle.Delay(TimeSpan.FromSeconds(Settings.UpdateInterval), cancellationToken);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                var remaining = idle.GetTimeRemaining();
+                if (remaining > DelayBeforeGC)
+                {
+                    await Task.Delay(DelayBeforeGC, cancellationToken).ConfigureAwait(false);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+
+                await idle.DelayAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
