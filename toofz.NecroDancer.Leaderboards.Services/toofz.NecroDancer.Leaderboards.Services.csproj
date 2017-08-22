@@ -46,7 +46,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Idle.cs" />
-    <Compile Include="Secrets.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>
