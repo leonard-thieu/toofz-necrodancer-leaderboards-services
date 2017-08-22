@@ -59,7 +59,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EncryptedSecretConverterTests.cs" />
+    <Compile Include="EncryptedSecretTests.cs" />
     <Compile Include="SecretsTests.cs" />
+    <Compile Include="TestsSetup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

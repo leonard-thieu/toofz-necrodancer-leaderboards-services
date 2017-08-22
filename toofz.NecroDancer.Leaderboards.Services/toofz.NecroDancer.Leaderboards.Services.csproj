@@ -43,6 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EncryptedSecret.cs" />
+    <Compile Include="EncryptedSecretConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Idle.cs" />

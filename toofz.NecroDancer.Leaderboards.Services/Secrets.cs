@@ -7,13 +7,15 @@ using System.Text;
 
 namespace toofz.NecroDancer.Leaderboards.Services
 {
+    // TODO: Consider using SecureString instead of string.
     /// <summary>
     /// Provides methods for encrypting and decrypting secrets.
     /// </summary>
     public static class Secrets
     {
         const int SaltSize = 8;
-        const int Iterations = 200000;
+        // This is writable so tests can execute faster. It should otherwise not be modified during run-time.
+        internal static int Iterations = 200000;
 
         // Using the host's physical address is a compromise between security and ease of use.
         // One of the goals of the toofz projects is for the code to be easy to evaluate and understand.
