@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using log4net;
@@ -35,7 +34,8 @@ namespace toofz.NecroDancer.Leaderboards.Services
             // Start as Windows service
             else
             {
-                Environment.CurrentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
                 ServiceBase.Run(new T());
             }
         }
