@@ -23,8 +23,11 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <returns>
         /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// <paramref name="propName"/> is null.
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> cannot be null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propName"/> cannot be null.
         /// </exception>
         /// <exception cref="System.Reflection.AmbiguousMatchException">
         /// More than one of the requested attributes was found.
@@ -32,9 +35,12 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <exception cref="System.TypeLoadException">
         /// A custom attribute type cannot be loaded.
         /// </exception>
-        protected static string GetDescription(string propName)
+        protected static string GetDescription(Type type, string propName)
         {
-            var propertyInfo = typeof(TSettings).GetProperty(propName);
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            var propertyInfo = type.GetProperty(propName);
             var descAttr = propertyInfo.GetCustomAttribute<SettingsDescriptionAttribute>();
 
             return descAttr?.Description;
