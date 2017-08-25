@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Tests
+namespace toofz.Services.Tests
 {
     class ArgsParserTests
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace toofz.NecroDancer.Leaderboards.Services
+namespace toofz.Services
 {
     partial class WorkerRoleBase
     {

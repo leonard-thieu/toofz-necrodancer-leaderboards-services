@@ -7,8 +7,8 @@
     <ProjectGuid>{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>toofz.NecroDancer.Leaderboards.Services.Tests</RootNamespace>
-    <AssemblyName>toofz.NecroDancer.Leaderboards.Services.Tests</AssemblyName>
+    <RootNamespace>toofz.Services.Tests</RootNamespace>
+    <AssemblyName>toofz.Services.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -50,9 +50,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\toofz.NecroDancer.Leaderboards.Services\toofz.NecroDancer.Leaderboards.Services.csproj">
+    <ProjectReference Include="..\toofz.Services\toofz.Services.csproj">
       <Project>{a80ace15-8a80-4912-aed0-385cc94b3974}</Project>
-      <Name>toofz.NecroDancer.Leaderboards.Services</Name>
+      <Name>toofz.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

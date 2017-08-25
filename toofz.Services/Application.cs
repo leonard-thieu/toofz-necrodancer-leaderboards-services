@@ -4,7 +4,7 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using log4net;
 
-namespace toofz.NecroDancer.Leaderboards.Services
+namespace toofz.Services
 {
     public static class Application
     {

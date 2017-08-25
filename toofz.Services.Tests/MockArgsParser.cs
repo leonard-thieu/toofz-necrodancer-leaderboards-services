@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using toofz.NecroDancer.Leaderboards.Services.Tests.Properties;
+using toofz.Services.Tests.Properties;
 
-namespace toofz.NecroDancer.Leaderboards.Services.Tests
+namespace toofz.Services.Tests
 {
     sealed class MockArgsParser : ArgsParser<Settings>
     {

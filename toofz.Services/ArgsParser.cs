@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Mono.Options;
 
-namespace toofz.NecroDancer.Leaderboards.Services
+namespace toofz.Services
 {
     public abstract class ArgsParser<TSettings>
     {
