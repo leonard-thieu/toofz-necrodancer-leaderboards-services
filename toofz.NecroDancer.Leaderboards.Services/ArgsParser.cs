@@ -13,7 +13,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <summary>
         /// The file name of the executing assembly.
         /// </summary>
-        protected static readonly string ExecutingAssemblyFileName = Path.GetFileName(Assembly.GetExecutingAssembly().Location);
+        protected static readonly string ExecutingAssemblyFileName = Path.GetFileName(typeof(TSettings).Assembly.Location);
 
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
