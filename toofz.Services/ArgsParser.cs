@@ -8,42 +8,42 @@ using Mono.Options;
 
 namespace toofz.Services
 {
-    public abstract class ArgsParser<TSettings>
+    public abstract class ArgsParser<TOptions, TSettings>
+        where TOptions : Options, new()
         where TSettings : ISettings
     {
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
         /// <param name="type">The type to search for the property on.</param>
-        /// <param name="propName">The name of the property.</param>
+        /// <param name="name">The name of the property.</param>
         /// <returns>
-        /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/>.
+        /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/> or
+        /// if the property is decorated with <see cref="SettingsDescriptionAttribute"/> and <see cref="SettingsDescriptionAttribute.Description"/>
+        /// is null.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> cannot be null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="propName"/> cannot be null.
+        /// <paramref name="name"/> cannot be null.
         /// </exception>
-        /// <exception cref="AmbiguousMatchException">
-        /// More than one of the requested attributes was found.
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is not the name of a property on <paramref name="type"/>.
         /// </exception>
-        /// <exception cref="TypeLoadException">
-        /// A custom attribute type cannot be loaded.
-        /// </exception>
-        protected static string GetDescription(Type type, string propName)
+        protected static string GetDescription(Type type, string name)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            var propertyInfo = type.GetProperty(propName);
+            var propertyInfo = type.GetProperty(name);
             var descAttr = propertyInfo.GetCustomAttribute<SettingsDescriptionAttribute>();
 
             return descAttr?.Description;
         }
 
         /// <summary>
-        /// Initializes an instance of the <see cref="ArgsParser{TSettings}"/> class.
+        /// Initializes an instance of the <see cref="ArgsParser{TOptions, TSettings}"/> class.
         /// </summary>
         /// <param name="inReader">The <see cref="TextReader"/> to read input with.</param>
         /// <param name="outWriter">The <see cref="TextWriter"/> to write output to.</param>
@@ -106,62 +106,36 @@ namespace toofz.Services
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            var shouldShowHelp = false;
-            TimeSpan? updateInterval = null;
-            TimeSpan? delayBeforeGC = null;
+            var optionSet = new OptionSet();
+            var options = new TOptions();
 
-            var settingsType = settings.GetType();
-            var options = new OptionSet
-            {
-                { "help", "Shows usage information.", h => shouldShowHelp = h != null },
-                { "interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => updateInterval = interval },
-                { "delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => delayBeforeGC = delay },
-            };
-            OnParsing(options);
+            OnParsing(settings.GetType(), optionSet, options);
 
             try
             {
-                var extraArgs = options.Parse(args);
+                var extraArgs = optionSet.Parse(args);
                 if (extraArgs.Any())
                 {
                     var first = extraArgs.First();
                     throw new OptionException($"'{first}' is not a valid option.", first);
                 }
             }
-            catch (OptionException e)
+            catch (OptionException ex)
             {
-                ErrorWriter.WriteLine($"{EntryAssemblyFileName}: {e.Message}");
-                WriteUsage(options);
+                ErrorWriter.WriteLine($"{EntryAssemblyFileName}: {ex.Message}");
+                WriteUsage(optionSet);
 
                 return 1;
             }
 
-            if (shouldShowHelp)
+            if (options.ShowHelp)
             {
-                WriteUsage(options);
+                WriteUsage(optionSet);
 
                 return 0;
             }
 
-            #region UpdateInterval
-
-            if (updateInterval != null)
-            {
-                settings.UpdateInterval = updateInterval.Value;
-            }
-
-            #endregion
-
-            #region DelayBeforeGC
-
-            if (delayBeforeGC != null)
-            {
-                settings.DelayBeforeGC = delayBeforeGC.Value;
-            }
-
-            #endregion
-
-            OnParsed(settings);
+            OnParsed(options, settings);
 
             settings.Save();
 
@@ -171,14 +145,41 @@ namespace toofz.Services
         /// <summary>
         /// When overridden in a derived class, adds additional options to parse.
         /// </summary>
-        /// <param name="options">The <see cref="OptionSet"/> object.</param>
-        protected abstract void OnParsing(OptionSet options);
+        /// <param name="settingsType">The type of the settings object.</param>
+        /// <param name="optionSet">The <see cref="OptionSet"/> object.</param>
+        /// <param name="options">The object to stored parsed options into.</param>
+        protected virtual void OnParsing(Type settingsType, OptionSet optionSet, TOptions options)
+        {
+            optionSet.Add("help", "Shows usage information.", h => options.ShowHelp = h != null);
+            optionSet.Add("interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => options.UpdateInterval = interval);
+            optionSet.Add("delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => options.DelayBeforeGC = delay);
+        }
 
         /// <summary>
         /// When overridden in a derived class, applies settings.
         /// </summary>
+        /// <param name="options">The parsed options object.</param>
         /// <param name="settings">The settings object.</param>
-        protected abstract void OnParsed(TSettings settings);
+        protected virtual void OnParsed(TOptions options, TSettings settings)
+        {
+            #region UpdateInterval
+
+            if (options.UpdateInterval != null)
+            {
+                settings.UpdateInterval = options.UpdateInterval.Value;
+            }
+
+            #endregion
+
+            #region DelayBeforeGC
+
+            if (options.DelayBeforeGC != null)
+            {
+                settings.DelayBeforeGC = options.DelayBeforeGC.Value;
+            }
+
+            #endregion
+        }
 
         /// <summary>
         /// Writes formatted usage information.
@@ -186,17 +187,11 @@ namespace toofz.Services
         /// <param name="options">
         /// The <see cref="OptionSet"/> to write usage information for.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="options"/> cannot be null.
-        /// </exception>
         /// <exception cref="NotSupportedException">
         /// An option has an unsupported <see cref="OptionValueType"/>.
         /// </exception>
         void WriteUsage(OptionSet options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
-
             using (var indentedTextWriter = new IndentedTextWriter(OutWriter, "  "))
             {
                 indentedTextWriter.WriteLine();
