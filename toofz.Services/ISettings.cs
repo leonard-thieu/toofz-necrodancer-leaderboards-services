@@ -14,6 +14,10 @@ namespace toofz.Services
         TimeSpan DelayBeforeGC { get; set; }
 
         /// <summary>
+        /// Refreshes the application settings property values from persistent storage.
+        /// </summary>
+        void Reload();
+        /// <summary>
         /// Stores the current values of the application settings properties.
         /// </summary>
         void Save();
