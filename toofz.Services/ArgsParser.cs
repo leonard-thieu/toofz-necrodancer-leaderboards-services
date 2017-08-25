@@ -188,17 +188,11 @@ namespace toofz.Services
         /// <param name="options">
         /// The <see cref="OptionSet"/> to write usage information for.
         /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="options"/> cannot be null.
-        /// </exception>
         /// <exception cref="NotSupportedException">
         /// An option has an unsupported <see cref="OptionValueType"/>.
         /// </exception>
         void WriteUsage(OptionSet options)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
-
             using (var indentedTextWriter = new IndentedTextWriter(OutWriter, "  "))
             {
                 indentedTextWriter.WriteLine();
