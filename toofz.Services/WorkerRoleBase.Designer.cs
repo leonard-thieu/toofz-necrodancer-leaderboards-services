@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace toofz.Services
 {
@@ -19,6 +20,7 @@ namespace toofz.Services
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        [ExcludeFromCodeCoverage] // NOTE: Remove this if disposing non-designer objects.
         protected override void Dispose(bool disposing)
         {
             if (disposed)
@@ -41,6 +43,7 @@ namespace toofz.Services
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         void InitializeComponent()
         {
 
