@@ -18,7 +18,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
-        /// <typeparam name="T">The type to find the property on.</typeparam>
+        /// <param name="type">The type to search for the property on.</param>
         /// <param name="propName">The name of the property.</param>
         /// <returns>
         /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/>.
@@ -29,10 +29,10 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="propName"/> cannot be null.
         /// </exception>
-        /// <exception cref="System.Reflection.AmbiguousMatchException">
+        /// <exception cref="AmbiguousMatchException">
         /// More than one of the requested attributes was found.
         /// </exception>
-        /// <exception cref="System.TypeLoadException">
+        /// <exception cref="TypeLoadException">
         /// A custom attribute type cannot be loaded.
         /// </exception>
         protected static string GetDescription(Type type, string propName)
@@ -47,7 +47,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
         }
 
         /// <summary>
-        /// Initializes an instance of the <see cref="ArgsParser"/> class.
+        /// Initializes an instance of the <see cref="ArgsParser{TSettings}"/> class.
         /// </summary>
         /// <param name="inReader">The <see cref="TextReader"/> to read input with.</param>
         /// <param name="outWriter">The <see cref="TextWriter"/> to write output to.</param>
@@ -87,7 +87,6 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <summary>
         /// When overridden in a derived class, parses arguments into settings and saves them.
         /// </summary>
-        /// <typeparam name="TSettings">The type of the settings object.</typeparam>
         /// <param name="args">The arguments to parse.</param>
         /// <param name="settings">The settings object.</param>
         /// <returns>
