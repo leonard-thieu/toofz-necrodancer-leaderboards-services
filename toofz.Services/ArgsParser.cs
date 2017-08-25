@@ -9,12 +9,8 @@ using Mono.Options;
 namespace toofz.Services
 {
     public abstract class ArgsParser<TSettings>
+        where TSettings : ISettings
     {
-        /// <summary>
-        /// The file name of the executing assembly.
-        /// </summary>
-        protected static readonly string ExecutingAssemblyFileName = Path.GetFileName(typeof(TSettings).Assembly.Location);
-
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
@@ -85,7 +81,12 @@ namespace toofz.Services
         protected TextWriter ErrorWriter { get; }
 
         /// <summary>
-        /// When overridden in a derived class, parses arguments into settings and saves them.
+        /// The file name of the entry assembly.
+        /// </summary>
+        protected abstract string EntryAssemblyFileName { get; }
+
+        /// <summary>
+        /// Parses arguments into settings and saves them.
         /// </summary>
         /// <param name="args">The arguments to parse.</param>
         /// <param name="settings">The settings object.</param>
@@ -98,7 +99,86 @@ namespace toofz.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="settings"/> cannot be null.
         /// </exception>
-        public abstract int Parse(string[] args, TSettings settings);
+        public int Parse(string[] args, TSettings settings)
+        {
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+
+            var shouldShowHelp = false;
+            TimeSpan? updateInterval = null;
+            TimeSpan? delayBeforeGC = null;
+
+            var settingsType = settings.GetType();
+            var options = new OptionSet
+            {
+                { "help", "Shows usage information.", h => shouldShowHelp = h != null },
+                { "interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => updateInterval = interval },
+                { "delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => delayBeforeGC = delay },
+            };
+            OnParsing(options);
+
+            try
+            {
+                var extraArgs = options.Parse(args);
+                if (extraArgs.Any())
+                {
+                    var first = extraArgs.First();
+                    throw new OptionException($"'{first}' is not a valid option.", first);
+                }
+            }
+            catch (OptionException e)
+            {
+                ErrorWriter.WriteLine($"{EntryAssemblyFileName}: {e.Message}");
+                WriteUsage(options);
+
+                return 1;
+            }
+
+            if (shouldShowHelp)
+            {
+                WriteUsage(options);
+
+                return 0;
+            }
+
+            #region UpdateInterval
+
+            if (updateInterval != null)
+            {
+                settings.UpdateInterval = updateInterval.Value;
+            }
+
+            #endregion
+
+            #region DelayBeforeGC
+
+            if (delayBeforeGC != null)
+            {
+                settings.DelayBeforeGC = delayBeforeGC.Value;
+            }
+
+            #endregion
+
+            OnParsed(settings);
+
+            settings.Save();
+
+            return 0;
+        }
+
+        /// <summary>
+        /// When overridden in a derived class, adds additional options to parse.
+        /// </summary>
+        /// <param name="options">The <see cref="OptionSet"/> object.</param>
+        protected abstract void OnParsing(OptionSet options);
+
+        /// <summary>
+        /// When overridden in a derived class, applies settings.
+        /// </summary>
+        /// <param name="settings">The settings object.</param>
+        protected abstract void OnParsed(TSettings settings);
 
         /// <summary>
         /// Writes formatted usage information.
@@ -112,7 +192,7 @@ namespace toofz.Services
         /// <exception cref="NotSupportedException">
         /// An option has an unsupported <see cref="OptionValueType"/>.
         /// </exception>
-        protected void WriteUsage(OptionSet options)
+        void WriteUsage(OptionSet options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
@@ -120,7 +200,7 @@ namespace toofz.Services
             using (var indentedTextWriter = new IndentedTextWriter(OutWriter, "  "))
             {
                 indentedTextWriter.WriteLine();
-                indentedTextWriter.WriteLine($"Usage: {ExecutingAssemblyFileName} [options]");
+                indentedTextWriter.WriteLine($"Usage: {EntryAssemblyFileName} [options]");
                 indentedTextWriter.WriteLine();
 
                 indentedTextWriter.WriteLine("options:");
