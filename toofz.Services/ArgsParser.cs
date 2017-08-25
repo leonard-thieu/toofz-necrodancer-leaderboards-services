@@ -8,7 +8,8 @@ using Mono.Options;
 
 namespace toofz.Services
 {
-    public abstract class ArgsParser<TSettings>
+    public abstract class ArgsParser<TOptions, TSettings>
+        where TOptions : Options, new()
         where TSettings : ISettings
     {
         /// <summary>
@@ -43,7 +44,7 @@ namespace toofz.Services
         }
 
         /// <summary>
-        /// Initializes an instance of the <see cref="ArgsParser{TSettings}"/> class.
+        /// Initializes an instance of the <see cref="ArgsParser{TOptions, TSettings}"/> class.
         /// </summary>
         /// <param name="inReader">The <see cref="TextReader"/> to read input with.</param>
         /// <param name="outWriter">The <see cref="TextWriter"/> to write output to.</param>
@@ -106,62 +107,36 @@ namespace toofz.Services
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            var shouldShowHelp = false;
-            TimeSpan? updateInterval = null;
-            TimeSpan? delayBeforeGC = null;
+            var optionSet = new OptionSet();
+            var options = new TOptions();
 
-            var settingsType = settings.GetType();
-            var options = new OptionSet
-            {
-                { "help", "Shows usage information.", h => shouldShowHelp = h != null },
-                { "interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => updateInterval = interval },
-                { "delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => delayBeforeGC = delay },
-            };
-            OnParsing(options);
+            OnParsing(settings.GetType(), optionSet, options);
 
             try
             {
-                var extraArgs = options.Parse(args);
+                var extraArgs = optionSet.Parse(args);
                 if (extraArgs.Any())
                 {
                     var first = extraArgs.First();
                     throw new OptionException($"'{first}' is not a valid option.", first);
                 }
             }
-            catch (OptionException e)
+            catch (OptionException ex)
             {
-                ErrorWriter.WriteLine($"{EntryAssemblyFileName}: {e.Message}");
-                WriteUsage(options);
+                ErrorWriter.WriteLine($"{EntryAssemblyFileName}: {ex.Message}");
+                WriteUsage(optionSet);
 
                 return 1;
             }
 
-            if (shouldShowHelp)
+            if (options.ShowHelp)
             {
-                WriteUsage(options);
+                WriteUsage(optionSet);
 
                 return 0;
             }
 
-            #region UpdateInterval
-
-            if (updateInterval != null)
-            {
-                settings.UpdateInterval = updateInterval.Value;
-            }
-
-            #endregion
-
-            #region DelayBeforeGC
-
-            if (delayBeforeGC != null)
-            {
-                settings.DelayBeforeGC = delayBeforeGC.Value;
-            }
-
-            #endregion
-
-            OnParsed(settings);
+            OnParsed(options, settings);
 
             settings.Save();
 
@@ -171,14 +146,41 @@ namespace toofz.Services
         /// <summary>
         /// When overridden in a derived class, adds additional options to parse.
         /// </summary>
-        /// <param name="options">The <see cref="OptionSet"/> object.</param>
-        protected abstract void OnParsing(OptionSet options);
+        /// <param name="settingsType">The type of the settings object.</param>
+        /// <param name="optionSet">The <see cref="OptionSet"/> object.</param>
+        /// <param name="options">The object to stored parsed options into.</param>
+        protected virtual void OnParsing(Type settingsType, OptionSet optionSet, TOptions options)
+        {
+            optionSet.Add("help", "Shows usage information.", h => options.ShowHelp = h != null);
+            optionSet.Add("interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => options.UpdateInterval = interval);
+            optionSet.Add("delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => options.DelayBeforeGC = delay);
+        }
 
         /// <summary>
         /// When overridden in a derived class, applies settings.
         /// </summary>
+        /// <param name="options">The parsed options object.</param>
         /// <param name="settings">The settings object.</param>
-        protected abstract void OnParsed(TSettings settings);
+        protected virtual void OnParsed(TOptions options, TSettings settings)
+        {
+            #region UpdateInterval
+
+            if (options.UpdateInterval != null)
+            {
+                settings.UpdateInterval = options.UpdateInterval.Value;
+            }
+
+            #endregion
+
+            #region DelayBeforeGC
+
+            if (options.DelayBeforeGC != null)
+            {
+                settings.DelayBeforeGC = options.DelayBeforeGC.Value;
+            }
+
+            #endregion
+        }
 
         /// <summary>
         /// Writes formatted usage information.
