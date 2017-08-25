@@ -16,7 +16,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 Type type = null;
-                string name = nameof(StubSettings.UpdateInterval);
+                string name = nameof(SimpleSettings.UpdateInterval);
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -29,7 +29,7 @@ namespace toofz.Services.Tests
             public void NameIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                Type type = typeof(StubSettings);
+                Type type = typeof(SimpleSettings);
                 string name = null;
 
                 // Act -> Assert
@@ -43,7 +43,7 @@ namespace toofz.Services.Tests
             public void PropertyDoesNotExist_ThrowsArgumentNullException()
             {
                 // Arrange
-                Type type = typeof(StubSettings);
+                Type type = typeof(SimpleSettings);
                 string name = "!";
 
                 // Act
@@ -57,8 +57,8 @@ namespace toofz.Services.Tests
             public void NullDescription_ReturnsNull()
             {
                 // Arrange
-                Type type = typeof(StubSettings);
-                string name = nameof(StubSettings.NullDescription);
+                Type type = typeof(SimpleSettings);
+                string name = nameof(SimpleSettings.NullDescription);
 
                 // Act
                 var description = StubArgsParser.PublicGetDescription(type, name);
@@ -71,8 +71,8 @@ namespace toofz.Services.Tests
             public void MissingSettingsDescriptionAttribute_ReturnsNull()
             {
                 // Arrange
-                Type type = typeof(StubSettings);
-                string name = nameof(StubSettings.MissingSettingsDescriptionAttribute);
+                Type type = typeof(SimpleSettings);
+                string name = nameof(SimpleSettings.MissingSettingsDescriptionAttribute);
 
                 // Act
                 var description = StubArgsParser.PublicGetDescription(type, name);
@@ -277,7 +277,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "myExtraArg" };
-                settings = new StubSettings();
+                settings = new SimpleSettings();
 
                 // Act
                 parser.Parse(args, settings);

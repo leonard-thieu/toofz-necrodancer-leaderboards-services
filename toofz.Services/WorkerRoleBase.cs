@@ -29,13 +29,12 @@ namespace toofz.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkerRoleBase{TSettings}"/> class.
         /// </summary>
+        /// <exception cref="ArgumentException">
+        /// The specified name is null or is longer than <see cref="ServiceBase.MaxNameLength"/>, 
+        /// or the specified name contains forward slash or backslash characters.
+        /// </exception>
         protected WorkerRoleBase(string serviceName)
         {
-            if (string.IsNullOrEmpty(serviceName))
-                throw new ArgumentException();
-            if (serviceName.Length > MaxNameLength)
-                throw new ArgumentException();
-
             InitializeComponent();
             ServiceName = serviceName;
         }
@@ -68,17 +67,11 @@ namespace toofz.Services
         /// or when the operating system starts (for a service that starts automatically).
         /// </summary>
         /// <param name="args">Data passed by the start command.</param>
-        protected sealed override void OnStart(string[] args)
+        protected override void OnStart(string[] args)
         {
-            OnStartOverride();
             thread = new Thread(Run);
             thread.Start();
         }
-
-        /// <summary>
-        /// When overridden in a derived class, performs initialization for the service.
-        /// </summary>
-        protected abstract void OnStartOverride();
 
         #endregion
 
