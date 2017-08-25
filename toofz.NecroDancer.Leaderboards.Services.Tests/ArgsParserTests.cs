@@ -66,7 +66,7 @@ namespace toofz.NecroDancer.Leaderboards.Services.Tests
                 var parser = new MockArgsParser(inReader, outWriter, errorWriter);
 
                 // Assert
-                Assert.IsInstanceOfType(parser, typeof(ArgsParser));
+                Assert.IsInstanceOfType(parser, typeof(MockArgsParser));
             }
         }
     }

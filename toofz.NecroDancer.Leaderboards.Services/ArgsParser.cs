@@ -8,7 +8,8 @@ using Mono.Options;
 
 namespace toofz.NecroDancer.Leaderboards.Services
 {
-    public abstract class ArgsParser
+    public abstract class ArgsParser<TSettings>
+        where TSettings : ApplicationSettingsBase
     {
         /// <summary>
         /// The file name of the executing assembly.
@@ -32,9 +33,9 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <exception cref="System.TypeLoadException">
         /// A custom attribute type cannot be loaded.
         /// </exception>
-        protected static string GetDescription<T>(string propName)
+        protected static string GetDescription(string propName)
         {
-            var propertyInfo = typeof(T).GetProperty(propName);
+            var propertyInfo = typeof(TSettings).GetProperty(propName);
             var descAttr = propertyInfo.GetCustomAttribute<SettingsDescriptionAttribute>();
 
             return descAttr?.Description;
@@ -93,7 +94,7 @@ namespace toofz.NecroDancer.Leaderboards.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="settings"/> cannot be null.
         /// </exception>
-        public abstract int Parse<TSettings>(string[] args, TSettings settings);
+        public abstract int Parse(string[] args, TSettings settings);
 
         /// <summary>
         /// Writes formatted usage information.
