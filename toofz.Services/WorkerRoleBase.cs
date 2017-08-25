@@ -27,7 +27,7 @@ namespace toofz.Services
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerRoleBase"/> class.
+        /// Initializes a new instance of the <see cref="WorkerRoleBase{TSettings}"/> class.
         /// </summary>
         protected WorkerRoleBase(string serviceName)
         {
