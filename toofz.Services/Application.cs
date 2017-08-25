@@ -10,8 +10,9 @@ namespace toofz.Services
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Application));
 
-        public static void Run<T>()
-            where T : WorkerRoleBase, new()
+        public static void Run<T, TSettings>()
+            where T : WorkerRoleBase<TSettings>, new()
+            where TSettings : ISettings
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {

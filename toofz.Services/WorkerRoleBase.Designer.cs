@@ -2,7 +2,7 @@
 
 namespace toofz.Services
 {
-    partial class WorkerRoleBase
+    partial class WorkerRoleBase<TSettings>
     {
         /// <summary> 
         /// Required designer variable.

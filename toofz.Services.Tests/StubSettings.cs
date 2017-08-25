@@ -10,6 +10,12 @@ namespace toofz.Services.Tests
         [SettingsDescription("The amount of time to wait after a cycle to perform garbage collection.")]
         public TimeSpan DelayBeforeGC { get; set; }
 
+        public void Reload()
+        {
+            UpdateInterval = default(TimeSpan);
+            DelayBeforeGC = default(TimeSpan);
+        }
+
         public void Save() { }
     }
 }

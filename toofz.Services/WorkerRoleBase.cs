@@ -6,11 +6,12 @@ using log4net;
 
 namespace toofz.Services
 {
-    public abstract partial class WorkerRoleBase : ServiceBase
+    public abstract partial class WorkerRoleBase<TSettings> : ServiceBase
+        where TSettings : ISettings
     {
         #region Static Members
 
-        static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase));
+        static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
         static void LogError(string message, Exception ex)
         {
@@ -46,8 +47,7 @@ namespace toofz.Services
         Thread thread;
         Idle idle;
 
-        public abstract TimeSpan UpdateInterval { get; }
-        public TimeSpan DelayBeforeGC { get; set; } = TimeSpan.Zero;
+        public abstract TSettings Settings { get; }
 
         #endregion
 
@@ -115,7 +115,9 @@ namespace toofz.Services
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                idle = Idle.StartNew(UpdateInterval);
+                Settings.Reload();
+
+                idle = Idle.StartNew(Settings.UpdateInterval);
 
                 await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
 
@@ -123,9 +125,9 @@ namespace toofz.Services
                 GC.WaitForPendingFinalizers();
 
                 var remaining = idle.GetTimeRemaining();
-                if (remaining > DelayBeforeGC)
+                if (remaining > Settings.DelayBeforeGC)
                 {
-                    await Task.Delay(DelayBeforeGC, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(Settings.DelayBeforeGC, cancellationToken).ConfigureAwait(false);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                 }
