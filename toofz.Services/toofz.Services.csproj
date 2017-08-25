@@ -62,7 +62,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="toofz.NecroDancer.Leaderboards.Services.nuspec" />
+    <None Include="toofz.Services.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
