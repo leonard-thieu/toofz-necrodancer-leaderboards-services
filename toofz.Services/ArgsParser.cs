@@ -153,6 +153,7 @@ namespace toofz.Services
             optionSet.Add("help", "Shows usage information.", h => options.ShowHelp = h != null);
             optionSet.Add("interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => options.UpdateInterval = interval);
             optionSet.Add("delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => options.DelayBeforeGC = delay);
+            optionSet.Add("ikey=", GetDescription(settingsType, nameof(ISettings.InstrumentationKey)), ikey => options.InstrumentationKey = ikey);
         }
 
         /// <summary>
@@ -176,6 +177,15 @@ namespace toofz.Services
             if (options.DelayBeforeGC != null)
             {
                 settings.DelayBeforeGC = options.DelayBeforeGC.Value;
+            }
+
+            #endregion
+
+            #region InstrumentationKey
+
+            if (!string.IsNullOrEmpty(options.InstrumentationKey))
+            {
+                settings.InstrumentationKey = options.InstrumentationKey;
             }
 
             #endregion

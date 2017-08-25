@@ -9,6 +9,8 @@ namespace toofz.Services.Tests
         public TimeSpan UpdateInterval { get; set; }
         [SettingsDescription("The amount of time to wait after a cycle to perform garbage collection.")]
         public TimeSpan DelayBeforeGC { get; set; }
+        [SettingsDescription("An Application Insights instrumentation key.")]
+        public string InstrumentationKey { get; set; }
         [SettingsDescription(null)]
         public int NullDescription { get; set; }
         public int MissingSettingsDescriptionAttribute { get; set; }
@@ -17,6 +19,9 @@ namespace toofz.Services.Tests
         {
             UpdateInterval = default(TimeSpan);
             DelayBeforeGC = default(TimeSpan);
+            InstrumentationKey = default(string);
+            NullDescription = default(int);
+            MissingSettingsDescriptionAttribute = default(int);
         }
 
         public void Save() { }

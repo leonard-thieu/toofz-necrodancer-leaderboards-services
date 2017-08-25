@@ -231,10 +231,6 @@ namespace toofz.Services.Tests
             {
                 inReader = mockInReader.Object;
                 parser = new StubArgsParser(inReader, outWriter, errorWriter);
-
-                mockSettings
-                    .SetupAllProperties();
-                settings = mockSettings.Object;
             }
 
             Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
@@ -242,14 +238,13 @@ namespace toofz.Services.Tests
             TextWriter outWriter = new StringWriter();
             TextWriter errorWriter = new StringWriter();
             StubArgsParser parser;
-            Mock<ISettings> mockSettings = new Mock<ISettings>();
-            ISettings settings;
 
             [TestMethod]
             public void ArgsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 string[] args = null;
+                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -277,7 +272,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "myExtraArg" };
-                settings = new SimpleSettings();
+                ISettings settings = new SimpleSettings();
 
                 // Act
                 parser.Parse(args, settings);
@@ -293,6 +288,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "myExtraArg" };
+                ISettings settings = new SimpleSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -306,6 +302,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "--help" };
+                ISettings settings = new SimpleSettings();
 
                 // Act
                 parser.Parse(args, settings);
@@ -317,8 +314,9 @@ Usage: toofz.Services.Tests.dll [options]
 
 options:
   --help            Shows usage information.
-  --interval=VALUE  
-  --delay=VALUE     
+  --interval=VALUE  The minimum amount of time that should pass between each cycle.
+  --delay=VALUE     The amount of time to wait after a cycle to perform garbage collection.
+  --ikey=VALUE      An Application Insights instrumentation key.
 ", output);
             }
 
@@ -327,6 +325,7 @@ options:
             {
                 // Arrange
                 string[] args = new[] { "--help" };
+                ISettings settings = new SimpleSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -340,13 +339,14 @@ options:
             {
                 // Arrange
                 string[] args = new string[0];
-                mockSettings.SetupProperty(settings => settings.UpdateInterval);
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.UpdateInterval);
 
                 // Act
-                parser.Parse(args, settings);
+                parser.Parse(args, mockSettings.Object);
 
                 // Assert
-                mockSettings.VerifySet(settings => settings.UpdateInterval = It.IsAny<TimeSpan>(), Times.Never);
+                mockSettings.VerifySet(s => s.UpdateInterval = It.IsAny<TimeSpan>(), Times.Never);
             }
 
             [TestMethod]
@@ -354,14 +354,14 @@ options:
             {
                 // Arrange
                 string[] args = new[] { "--interval=00:10:00" };
-                var interval = TimeSpan.FromSeconds(20);
-                mockSettings.SetupProperty(settings => settings.UpdateInterval, interval);
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.UpdateInterval);
 
                 // Act
-                parser.Parse(args, settings);
+                parser.Parse(args, mockSettings.Object);
 
                 // Assert
-                Assert.AreEqual(TimeSpan.FromMinutes(10), settings.UpdateInterval);
+                mockSettings.VerifySet(s => s.UpdateInterval = TimeSpan.FromMinutes(10));
             }
 
             [TestMethod]
@@ -369,10 +369,11 @@ options:
             {
                 // Arrange
                 string[] args = new string[0];
-                mockSettings.SetupProperty(settings => settings.DelayBeforeGC);
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.DelayBeforeGC);
 
                 // Act
-                parser.Parse(args, settings);
+                parser.Parse(args, mockSettings.Object);
 
                 // Assert
                 mockSettings.VerifySet(settings => settings.DelayBeforeGC = It.IsAny<TimeSpan>(), Times.Never);
@@ -383,14 +384,44 @@ options:
             {
                 // Arrange
                 string[] args = new[] { "--delay=00:10:00" };
-                var delay = TimeSpan.FromSeconds(20);
-                mockSettings.SetupProperty(settings => settings.DelayBeforeGC, delay);
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.DelayBeforeGC);
 
                 // Act
-                parser.Parse(args, settings);
+                parser.Parse(args, mockSettings.Object);
 
                 // Assert
-                Assert.AreEqual(TimeSpan.FromMinutes(10), settings.DelayBeforeGC);
+                mockSettings.VerifySet(s => s.DelayBeforeGC = TimeSpan.FromMinutes(10));
+            }
+
+            [TestMethod]
+            public void IkeyIsNotSpecified_DoesNotSetInstrumentationKey()
+            {
+                // Arrange
+                string[] args = new string[0];
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.InstrumentationKey);
+
+                // Act
+                parser.Parse(args, mockSettings.Object);
+
+                // Assert
+                mockSettings.VerifySet(s => s.InstrumentationKey = It.IsAny<string>(), Times.Never);
+            }
+
+            [TestMethod]
+            public void IkeyIsSpecified_SetsInstrumentationKeyToIkey()
+            {
+                // Arrange
+                string[] args = new[] { "--ikey=myInstrumentationKey" };
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.InstrumentationKey);
+
+                // Act
+                parser.Parse(args, mockSettings.Object);
+
+                // Assert
+                mockSettings.VerifySet(s => s.InstrumentationKey = "myInstrumentationKey");
             }
 
             [TestMethod]
@@ -398,9 +429,10 @@ options:
             {
                 // Arrange
                 string[] args = new string[0];
+                var mockSettings = new Mock<ISettings>();
 
                 // Act
-                parser.Parse(args, settings);
+                parser.Parse(args, mockSettings.Object);
 
                 // Assert
                 mockSettings.Verify(s => s.Save());
@@ -411,6 +443,7 @@ options:
             {
                 // Arrange
                 string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);

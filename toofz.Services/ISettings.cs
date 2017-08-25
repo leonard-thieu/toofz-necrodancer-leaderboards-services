@@ -12,6 +12,10 @@ namespace toofz.Services
         /// The amount of time to wait after a cycle to perform garbage collection.
         /// </summary>
         TimeSpan DelayBeforeGC { get; set; }
+        /// <summary>
+        /// An Application Insights instrumentation key.
+        /// </summary>
+        string InstrumentationKey { get; set; }
 
         /// <summary>
         /// Refreshes the application settings property values from persistent storage.
