@@ -9,7 +9,6 @@ using Mono.Options;
 namespace toofz.NecroDancer.Leaderboards.Services
 {
     public abstract class ArgsParser<TSettings>
-        where TSettings : ApplicationSettingsBase
     {
         /// <summary>
         /// The file name of the executing assembly.
