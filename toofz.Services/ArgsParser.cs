@@ -16,28 +16,27 @@ namespace toofz.Services
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
         /// <param name="type">The type to search for the property on.</param>
-        /// <param name="propName">The name of the property.</param>
+        /// <param name="name">The name of the property.</param>
         /// <returns>
-        /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/>.
+        /// The description of the property or null if the property is not decorated with <see cref="SettingsDescriptionAttribute"/> or
+        /// if the property is decorated with <see cref="SettingsDescriptionAttribute"/> and <see cref="SettingsDescriptionAttribute.Description"/>
+        /// is null.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> cannot be null.
         /// </exception>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="propName"/> cannot be null.
+        /// <paramref name="name"/> cannot be null.
         /// </exception>
-        /// <exception cref="AmbiguousMatchException">
-        /// More than one of the requested attributes was found.
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="name"/> is not the name of a property on <paramref name="type"/>.
         /// </exception>
-        /// <exception cref="TypeLoadException">
-        /// A custom attribute type cannot be loaded.
-        /// </exception>
-        protected static string GetDescription(Type type, string propName)
+        protected static string GetDescription(Type type, string name)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            var propertyInfo = type.GetProperty(propName);
+            var propertyInfo = type.GetProperty(name);
             var descAttr = propertyInfo.GetCustomAttribute<SettingsDescriptionAttribute>();
 
             return descAttr?.Description;

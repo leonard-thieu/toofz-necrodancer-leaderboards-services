@@ -9,6 +9,9 @@ namespace toofz.Services.Tests
         public TimeSpan UpdateInterval { get; set; }
         [SettingsDescription("The amount of time to wait after a cycle to perform garbage collection.")]
         public TimeSpan DelayBeforeGC { get; set; }
+        [SettingsDescription(null)]
+        public int NullDescription { get; set; }
+        public int MissingSettingsDescriptionAttribute { get; set; }
 
         public void Reload()
         {

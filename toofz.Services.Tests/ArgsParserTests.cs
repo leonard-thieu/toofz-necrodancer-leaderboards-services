@@ -9,6 +9,80 @@ namespace toofz.Services.Tests
     class ArgsParserTests
     {
         [TestClass]
+        public class GetDescription
+        {
+            [TestMethod]
+            public void TypeIsNull_ThrowsArgumentNullException()
+            {
+                // Arrange
+                Type type = null;
+                string name = nameof(StubSettings.UpdateInterval);
+
+                // Act -> Assert
+                Assert.ThrowsException<ArgumentNullException>(() =>
+                {
+                    StubArgsParser.PublicGetDescription(type, name);
+                });
+            }
+
+            [TestMethod]
+            public void NameIsNull_ThrowsArgumentNullException()
+            {
+                // Arrange
+                Type type = typeof(StubSettings);
+                string name = null;
+
+                // Act -> Assert
+                Assert.ThrowsException<ArgumentNullException>(() =>
+                {
+                    StubArgsParser.PublicGetDescription(type, name);
+                });
+            }
+
+            [TestMethod]
+            public void PropertyDoesNotExist_ThrowsArgumentNullException()
+            {
+                // Arrange
+                Type type = typeof(StubSettings);
+                string name = "!";
+
+                // Act
+                Assert.ThrowsException<ArgumentNullException>(() =>
+                {
+                    StubArgsParser.PublicGetDescription(type, name);
+                });
+            }
+
+            [TestMethod]
+            public void NullDescription_ReturnsNull()
+            {
+                // Arrange
+                Type type = typeof(StubSettings);
+                string name = nameof(StubSettings.NullDescription);
+
+                // Act
+                var description = StubArgsParser.PublicGetDescription(type, name);
+
+                // Assert
+                Assert.IsNull(description);
+            }
+
+            [TestMethod]
+            public void MissingSettingsDescriptionAttribute_ReturnsNull()
+            {
+                // Arrange
+                Type type = typeof(StubSettings);
+                string name = nameof(StubSettings.MissingSettingsDescriptionAttribute);
+
+                // Act
+                var description = StubArgsParser.PublicGetDescription(type, name);
+
+                // Assert
+                Assert.IsNull(description);
+            }
+        }
+
+        [TestClass]
         public class Constructor
         {
             [TestMethod]
@@ -69,6 +143,84 @@ namespace toofz.Services.Tests
 
                 // Assert
                 Assert.IsInstanceOfType(parser, typeof(StubArgsParser));
+            }
+        }
+
+        [TestClass]
+        public class InReader
+        {
+            public InReader()
+            {
+                inReader = mockInReader.Object;
+                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+            }
+
+            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
+            TextReader inReader;
+            TextWriter outWriter = new StringWriter();
+            TextWriter errorWriter = new StringWriter();
+            StubArgsParser parser;
+
+            [TestMethod]
+            public void ReturnsTextReader()
+            {
+                // Arrange -> Act
+                var reader = parser.PublicInReader;
+
+                // Assert
+                Assert.IsInstanceOfType(reader, typeof(TextReader));
+            }
+        }
+
+        [TestClass]
+        public class OutWriter
+        {
+            public OutWriter()
+            {
+                inReader = mockInReader.Object;
+                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+            }
+
+            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
+            TextReader inReader;
+            TextWriter outWriter = new StringWriter();
+            TextWriter errorWriter = new StringWriter();
+            StubArgsParser parser;
+
+            [TestMethod]
+            public void ReturnsTextWriter()
+            {
+                // Arrange -> Act
+                var writer = parser.PublicOutWriter;
+
+                // Assert
+                Assert.IsInstanceOfType(writer, typeof(TextWriter));
+            }
+        }
+
+        [TestClass]
+        public class ErrorWriter
+        {
+            public ErrorWriter()
+            {
+                inReader = mockInReader.Object;
+                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+            }
+
+            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
+            TextReader inReader;
+            TextWriter outWriter = new StringWriter();
+            TextWriter errorWriter = new StringWriter();
+            StubArgsParser parser;
+
+            [TestMethod]
+            public void ReturnsTextWriter()
+            {
+                // Arrange -> Act
+                var writer = parser.PublicErrorWriter;
+
+                // Assert
+                Assert.IsInstanceOfType(writer, typeof(TextWriter));
             }
         }
 
