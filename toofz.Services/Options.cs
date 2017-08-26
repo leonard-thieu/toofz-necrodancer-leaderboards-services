@@ -23,6 +23,6 @@ namespace toofz.Services
         /// <summary>
         /// The number of rounds to execute a key derivation function.
         /// </summary>
-        public int? KeyDerivationIterations { get; set; }
+        public int? KeyDerivationIterations { get; internal set; }
     }
 }
