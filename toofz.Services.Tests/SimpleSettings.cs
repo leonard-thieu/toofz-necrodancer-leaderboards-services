@@ -11,6 +11,8 @@ namespace toofz.Services.Tests
         public TimeSpan DelayBeforeGC { get; set; }
         [SettingsDescription("An Application Insights instrumentation key.")]
         public string InstrumentationKey { get; set; }
+        [SettingsDescription("The number of rounds to execute a key derivation function.")]
+        public int KeyDerivationIterations { get; set; }
         [SettingsDescription(null)]
         public int NullDescription { get; set; }
         public int MissingSettingsDescriptionAttribute { get; set; }
@@ -20,6 +22,7 @@ namespace toofz.Services.Tests
             UpdateInterval = default(TimeSpan);
             DelayBeforeGC = default(TimeSpan);
             InstrumentationKey = default(string);
+            KeyDerivationIterations = default(int);
             NullDescription = default(int);
             MissingSettingsDescriptionAttribute = default(int);
         }
