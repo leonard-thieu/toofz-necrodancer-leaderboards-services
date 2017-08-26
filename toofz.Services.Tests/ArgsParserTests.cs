@@ -21,7 +21,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    StubArgsParser.PublicGetDescription(type, name);
+                    ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
@@ -35,7 +35,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    StubArgsParser.PublicGetDescription(type, name);
+                    ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
@@ -49,7 +49,7 @@ namespace toofz.Services.Tests
                 // Act
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    StubArgsParser.PublicGetDescription(type, name);
+                    ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
@@ -61,7 +61,7 @@ namespace toofz.Services.Tests
                 string name = nameof(SimpleSettings.NullDescription);
 
                 // Act
-                var description = StubArgsParser.PublicGetDescription(type, name);
+                var description = ArgsParserAdapter.PublicGetDescription(type, name);
 
                 // Assert
                 Assert.IsNull(description);
@@ -75,10 +75,70 @@ namespace toofz.Services.Tests
                 string name = nameof(SimpleSettings.MissingSettingsDescriptionAttribute);
 
                 // Act
-                var description = StubArgsParser.PublicGetDescription(type, name);
+                var description = ArgsParserAdapter.PublicGetDescription(type, name);
 
                 // Assert
                 Assert.IsNull(description);
+            }
+        }
+
+        [TestClass]
+        public class ShouldPromptForRequiredSetting
+        {
+            [TestMethod]
+            public void OptionIsNull_ReturnsTrue()
+            {
+                // Arrange
+                string option = null;
+                object setting = new object();
+
+                // Act
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+
+                // Assert
+                Assert.IsTrue(shouldPrompt);
+            }
+
+            [TestMethod]
+            public void OptionIsEmptyAndSettingIsNull_ReturnsTrue()
+            {
+                // Arrange
+                string option = "";
+                object setting = null;
+
+                // Act
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+
+                // Assert
+                Assert.IsTrue(shouldPrompt);
+            }
+
+            [TestMethod]
+            public void OptionIsEmptyAndSettingIsNotNull_ReturnsFalse()
+            {
+                // Arrange
+                string option = "";
+                object setting = new object();
+
+                // Act
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+
+                // Assert
+                Assert.IsFalse(shouldPrompt);
+            }
+
+            [TestMethod]
+            public void OptionIsNotNullOrEmpty_ReturnsFalse()
+            {
+                // Arrange
+                string option = "not empty";
+                object setting = new object();
+
+                // Act
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+
+                // Assert
+                Assert.IsFalse(shouldPrompt);
             }
         }
 
@@ -96,7 +156,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    new StubArgsParser(inReader, outWriter, errorWriter);
+                    new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
@@ -111,7 +171,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    new StubArgsParser(inReader, outWriter, errorWriter);
+                    new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
@@ -126,7 +186,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    new StubArgsParser(inReader, outWriter, errorWriter);
+                    new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
@@ -139,10 +199,10 @@ namespace toofz.Services.Tests
                 TextWriter errorWriter = TextWriter.Null;
 
                 // Act
-                var parser = new StubArgsParser(inReader, outWriter, errorWriter);
+                var parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
 
                 // Assert
-                Assert.IsInstanceOfType(parser, typeof(StubArgsParser));
+                Assert.IsInstanceOfType(parser, typeof(ArgsParserAdapter));
             }
         }
 
@@ -152,14 +212,14 @@ namespace toofz.Services.Tests
             public InReader()
             {
                 inReader = mockInReader.Object;
-                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
             }
 
             Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
             TextReader inReader;
             TextWriter outWriter = new StringWriter();
             TextWriter errorWriter = new StringWriter();
-            StubArgsParser parser;
+            ArgsParserAdapter parser;
 
             [TestMethod]
             public void ReturnsTextReader()
@@ -178,14 +238,14 @@ namespace toofz.Services.Tests
             public OutWriter()
             {
                 inReader = mockInReader.Object;
-                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
             }
 
             Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
             TextReader inReader;
             TextWriter outWriter = new StringWriter();
             TextWriter errorWriter = new StringWriter();
-            StubArgsParser parser;
+            ArgsParserAdapter parser;
 
             [TestMethod]
             public void ReturnsTextWriter()
@@ -204,14 +264,14 @@ namespace toofz.Services.Tests
             public ErrorWriter()
             {
                 inReader = mockInReader.Object;
-                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
             }
 
             Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
             TextReader inReader;
             TextWriter outWriter = new StringWriter();
             TextWriter errorWriter = new StringWriter();
-            StubArgsParser parser;
+            ArgsParserAdapter parser;
 
             [TestMethod]
             public void ReturnsTextWriter()
@@ -230,14 +290,14 @@ namespace toofz.Services.Tests
             public Parse()
             {
                 inReader = mockInReader.Object;
-                parser = new StubArgsParser(inReader, outWriter, errorWriter);
+                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
             }
 
             Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
             TextReader inReader;
             TextWriter outWriter = new StringWriter();
             TextWriter errorWriter = new StringWriter();
-            StubArgsParser parser;
+            ArgsParserAdapter parser;
 
             [TestMethod]
             public void ArgsIsNull_ThrowsArgumentNullException()
@@ -481,6 +541,72 @@ options:
 
                 // Assert
                 Assert.AreEqual(0, exitCode);
+            }
+        }
+
+        [TestClass]
+        public class ReadOption
+        {
+            public ReadOption()
+            {
+                inReader = mockInReader.Object;
+                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
+            }
+
+            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
+            TextReader inReader;
+            TextWriter outWriter = new StringWriter();
+            TextWriter errorWriter = new StringWriter();
+            ArgsParserAdapter parser;
+
+            [TestMethod]
+            public void ReadsOptionAndOptionIsNotNullOrEmpty_ReturnsOption()
+            {
+                // Arrange
+                string prompt = "Value";
+                mockInReader
+                    .SetupSequence(r => r.ReadLine())
+                    .Returns("value");
+
+                // Act
+                var option = parser.PublicReadOption(prompt);
+
+                // Assert
+                Assert.AreEqual("value", option);
+            }
+
+            [TestMethod]
+            public void ReadsOptionAndOptionIsNull_PromptsAgain()
+            {
+                // Arrange
+                string prompt = "Value";
+                mockInReader
+                    .SetupSequence(r => r.ReadLine())
+                    .Returns(null)
+                    .Returns("value");
+
+                // Act
+                var option = parser.PublicReadOption(prompt);
+
+                // Assert
+                Assert.AreEqual("value", option);
+            }
+
+            [TestMethod]
+            public void ReadsOptionAndOptionIsEmpty_PromptsAgain()
+            {
+                // Arrange
+                string prompt = "Value";
+                mockInReader
+                    .SetupSequence(r => r.ReadLine())
+                    .Returns("")
+                    .Returns("value");
+
+                // Act
+                var option = parser.PublicReadOption(prompt);
+
+                // Assert
+                Assert.AreEqual("value", option);
             }
         }
     }

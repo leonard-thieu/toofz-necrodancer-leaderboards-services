@@ -43,6 +43,21 @@ namespace toofz.Services
         }
 
         /// <summary>
+        /// Gets a value that indicates if the user should be prompted for a required setting.
+        /// </summary>
+        /// <param name="option">The original option value passed in from the command line.</param>
+        /// <param name="setting">The current value of the setting.</param>
+        /// <returns>
+        /// True, if <paramref name="option"/> is null or <paramref name="option"/> is an empty string and
+        /// <paramref name="setting"/> is null; otherwise, false.
+        /// </returns>
+        protected static bool ShouldPromptForRequiredSetting(string option, object setting)
+        {
+            return ((option == null) ||
+                ((option == "") && (setting == null)));
+        }
+
+        /// <summary>
         /// Initializes an instance of the <see cref="ArgsParser{TOptions, TSettings}"/> class.
         /// </summary>
         /// <param name="inReader">The <see cref="TextReader"/> to read input with.</param>
@@ -199,6 +214,26 @@ namespace toofz.Services
             }
 
             #endregion
+        }
+
+        /// <summary>
+        /// Reads an option from <see cref="InReader"/>.
+        /// </summary>
+        /// <param name="prompt">A message to prompt the user with.</param>
+        /// <returns>
+        /// The option read from <see cref="InReader"/>.
+        /// </returns>
+        protected string ReadOption(string prompt)
+        {
+            string option;
+
+            do
+            {
+                OutWriter.Write($"{prompt}: ");
+                option = InReader.ReadLine();
+            } while (string.IsNullOrEmpty(option));
+
+            return option;
         }
 
         /// <summary>
