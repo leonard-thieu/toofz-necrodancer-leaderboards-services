@@ -64,12 +64,6 @@
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WorkerRoleBase.Designer.cs">
-      <DependentUpon>WorkerRoleBase.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="WorkerRoleBase.resx">
-      <DependentUpon>WorkerRoleBase.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -35,7 +35,6 @@ namespace toofz.Services
         /// </exception>
         protected WorkerRoleBase(string serviceName)
         {
-            InitializeComponent();
             ServiceName = serviceName;
         }
 
