@@ -313,10 +313,11 @@ namespace toofz.Services.Tests
 Usage: toofz.Services.Tests.dll [options]
 
 options:
-  --help            Shows usage information.
-  --interval=VALUE  The minimum amount of time that should pass between each cycle.
-  --delay=VALUE     The amount of time to wait after a cycle to perform garbage collection.
-  --ikey=VALUE      An Application Insights instrumentation key.
+  --help              Shows usage information.
+  --interval=VALUE    The minimum amount of time that should pass between each cycle.
+  --delay=VALUE       The amount of time to wait after a cycle to perform garbage collection.
+  --ikey=VALUE        An Application Insights instrumentation key.
+  --iterations=VALUE  The number of rounds to execute a key derivation function.
 ", output);
             }
 
@@ -422,6 +423,36 @@ options:
 
                 // Assert
                 mockSettings.VerifySet(s => s.InstrumentationKey = "myInstrumentationKey");
+            }
+
+            [TestMethod]
+            public void IterationsIsNotSpecified_DoesNotSetKeyDerivationIterations()
+            {
+                // Arrange
+                string[] args = new string[0];
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.KeyDerivationIterations);
+
+                // Act
+                parser.Parse(args, mockSettings.Object);
+
+                // Assert
+                mockSettings.VerifySet(s => s.KeyDerivationIterations = It.IsAny<int>(), Times.Never);
+            }
+
+            [TestMethod]
+            public void IterationsIsSpecified_SetsKeyDerivationIterationsToIterations()
+            {
+                // Arrange
+                string[] args = new[] { "--iterations=20000" };
+                var mockSettings = new Mock<ISettings>();
+                mockSettings.SetupProperty(s => s.KeyDerivationIterations);
+
+                // Act
+                parser.Parse(args, mockSettings.Object);
+
+                // Assert
+                mockSettings.VerifySet(s => s.KeyDerivationIterations = 20000);
             }
 
             [TestMethod]

@@ -154,6 +154,7 @@ namespace toofz.Services
             optionSet.Add("interval=", GetDescription(settingsType, nameof(ISettings.UpdateInterval)), (TimeSpan interval) => options.UpdateInterval = interval);
             optionSet.Add("delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => options.DelayBeforeGC = delay);
             optionSet.Add("ikey=", GetDescription(settingsType, nameof(ISettings.InstrumentationKey)), ikey => options.InstrumentationKey = ikey);
+            optionSet.Add("iterations=", GetDescription(settingsType, nameof(ISettings.KeyDerivationIterations)), (int iterations) => options.KeyDerivationIterations = iterations);
         }
 
         /// <summary>
@@ -186,6 +187,15 @@ namespace toofz.Services
             if (!string.IsNullOrEmpty(options.InstrumentationKey))
             {
                 settings.InstrumentationKey = options.InstrumentationKey;
+            }
+
+            #endregion
+
+            #region KeyDerivationIterations
+
+            if (options.KeyDerivationIterations != null)
+            {
+                settings.KeyDerivationIterations = options.KeyDerivationIterations.Value;
             }
 
             #endregion
