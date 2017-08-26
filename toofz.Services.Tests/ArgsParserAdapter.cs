@@ -24,14 +24,16 @@ namespace toofz.Services.Tests
 
         protected override string EntryAssemblyFileName { get; } = Path.GetFileName(typeof(ArgsParserAdapter).Assembly.Location);
 
-        protected override void OnParsed(Options options, ISettings settings)
-        {
-            base.OnParsed(options, settings);
-        }
-
         protected override void OnParsing(Type settingsType, OptionSet optionSet, Options options)
         {
             base.OnParsing(settingsType, optionSet, options);
+
+            optionSet.Add("optional:", "This option is optional.", optional => { });
+        }
+
+        protected override void OnParsed(Options options, ISettings settings)
+        {
+            base.OnParsed(options, settings);
         }
 
         public string PublicReadOption(string prompt)

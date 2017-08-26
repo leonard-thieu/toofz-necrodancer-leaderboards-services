@@ -378,6 +378,7 @@ options:
   --delay=VALUE       The amount of time to wait after a cycle to perform garbage collection.
   --ikey=VALUE        An Application Insights instrumentation key.
   --iterations=VALUE  The number of rounds to execute a key derivation function.
+  --optional[=VALUE]  This option is optional.
 ", output);
             }
 
