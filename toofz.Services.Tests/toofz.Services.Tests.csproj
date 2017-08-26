@@ -97,7 +97,7 @@
     <Compile Include="SimpleWorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StubArgsParser.cs" />
+    <Compile Include="ArgsParserAdapter.cs" />
     <Compile Include="WorkerRoleBaseTests.cs" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
