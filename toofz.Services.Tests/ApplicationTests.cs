@@ -36,6 +36,22 @@ namespace toofz.Services.Tests
             ILog log;
 
             [TestMethod]
+            public void LogIsNull_DoesNotThrow()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                log = null;
+
+                // Act
+                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+
+
+                // Assert
+                Assert.AreEqual(0, ret);
+            }
+
+            [TestMethod]
             public void InitializesLogging()
             {
                 // Arrange
@@ -306,6 +322,58 @@ namespace toofz.Services.Tests
 
                 // Assert
                 mockWorker.Verify(w => w.ConsoleStart(), Times.Once);
+            }
+
+            [TestMethod]
+            public void UserInteractiveIsFalseAndServiceBaseIsNull_ThrowsArgumentNullException()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(false);
+                serviceBase = null;
+
+                // Act -> Assert
+                Assert.ThrowsException<ArgumentNullException>(() =>
+                {
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                });
+            }
+
+            [TestMethod]
+            public void UserInteractiveIsFalse_SetsCurrentDirectory()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(false);
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+
+                // Assert
+                mockEnvironment.VerifySet(e => e.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory);
+            }
+
+            [TestMethod]
+            public void UserInteractiveIsFalse_CallsRun()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(false);
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+
+                // Assert
+                mockServiceBase.Verify(s => s.Run(worker));
             }
 
             [TestMethod]

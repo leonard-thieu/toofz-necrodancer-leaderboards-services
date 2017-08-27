@@ -1,7 +1,9 @@
-﻿using System.ServiceProcess;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.ServiceProcess;
 
 namespace toofz.Services
 {
+    [ExcludeFromCodeCoverage]
     public sealed class ServiceBaseAdapter : IServiceBase
     {
         /// <summary>
