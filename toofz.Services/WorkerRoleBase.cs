@@ -123,6 +123,8 @@ namespace toofz.Services
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
+                idle.WriteTimeRemaining();
+
                 var remaining = idle.GetTimeRemaining();
                 if (remaining > Settings.DelayBeforeGC)
                 {
