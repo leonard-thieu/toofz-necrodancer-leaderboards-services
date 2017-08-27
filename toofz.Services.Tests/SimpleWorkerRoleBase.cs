@@ -6,9 +6,7 @@ namespace toofz.Services.Tests
 {
     sealed class SimpleWorkerRoleBase : WorkerRoleBase<ISettings>
     {
-        public SimpleWorkerRoleBase(string serviceName) : base(serviceName) { }
-
-        public override ISettings Settings => throw new NotImplementedException();
+        public SimpleWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
 
         protected override Task RunAsyncOverride(CancellationToken cancellationToken)
         {

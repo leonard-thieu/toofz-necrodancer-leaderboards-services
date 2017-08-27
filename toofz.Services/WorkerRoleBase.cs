@@ -33,9 +33,16 @@ namespace toofz.Services
         /// The specified name is null or is longer than <see cref="ServiceBase.MaxNameLength"/>, 
         /// or the specified name contains forward slash or backslash characters.
         /// </exception>
-        protected WorkerRoleBase(string serviceName)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="settings"/> is null.
+        /// </exception>
+        protected WorkerRoleBase(string serviceName, TSettings settings)
         {
             ServiceName = serviceName;
+
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+            Settings = settings;
         }
 
         #region Fields
@@ -45,7 +52,7 @@ namespace toofz.Services
         Thread thread;
         Idle idle;
 
-        public abstract TSettings Settings { get; }
+        protected TSettings Settings { get; }
 
         #endregion
 

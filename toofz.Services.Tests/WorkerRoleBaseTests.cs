@@ -15,11 +15,12 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string serviceName = null;
+                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName);
+                    new SimpleWorkerRoleBase(serviceName, settings);
                 });
             }
 
@@ -28,11 +29,12 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string serviceName = "/";
+                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName);
+                    new SimpleWorkerRoleBase(serviceName, settings);
                 });
             }
 
@@ -41,11 +43,12 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string serviceName = @"\";
+                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName);
+                    new SimpleWorkerRoleBase(serviceName, settings);
                 });
             }
 
@@ -54,11 +57,12 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
+                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName);
+                    new SimpleWorkerRoleBase(serviceName, settings);
                 });
             }
         }
