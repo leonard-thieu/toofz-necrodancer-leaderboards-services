@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace toofz.Services
 {
+    [ExcludeFromCodeCoverage]
     sealed class TaskAdapter : ITask
     {
         /// <summary>
