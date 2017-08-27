@@ -58,8 +58,11 @@
     <Compile Include="Application.cs">
       <DependentUpon>IApplication.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArgsParser.cs" />
+    <Compile Include="ArgsParser.cs">
+      <DependentUpon>IArgsParser.cs</DependentUpon>
+    </Compile>
     <Compile Include="IApplication.cs" />
+    <Compile Include="IArgsParser.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

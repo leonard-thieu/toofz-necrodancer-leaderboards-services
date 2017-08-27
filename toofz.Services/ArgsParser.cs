@@ -8,7 +8,7 @@ using Mono.Options;
 
 namespace toofz.Services
 {
-    public abstract class ArgsParser<TOptions, TSettings>
+    public abstract class ArgsParser<TOptions, TSettings> : IArgsParser<TSettings>
         where TOptions : Options, new()
         where TSettings : ISettings
     {
