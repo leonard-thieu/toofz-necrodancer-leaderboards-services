@@ -6,11 +6,11 @@ using log4net;
 
 namespace toofz.Services
 {
-    public static class Application
+    public sealed class Application : IApplication
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Application));
 
-        public static void Run<T, TSettings>()
+        public void Run<T, TSettings>()
             where T : WorkerRoleBase<TSettings>, new()
             where TSettings : ISettings
         {
