@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("7.0.0.0")]
@@ -9,3 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("toofz Services Core")]
 
 [assembly: ComVisible(false)]
+
+[assembly: InternalsVisibleTo("toofz.Services.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
