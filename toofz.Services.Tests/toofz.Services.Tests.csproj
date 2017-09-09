@@ -98,20 +98,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ApplicationTests.cs" />
+    <Compile Include="ArgsParserAdapter.cs" />
     <Compile Include="ArgsParserTests.cs" />
     <Compile Include="IdleTests.cs" />
     <Compile Include="SimpleSettings.cs" />
-    <Compile Include="ArgsParserAdapter.cs" />
     <Compile Include="SimpleServiceWorkerRole.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -119,6 +110,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WorkerRoleBaseTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <None Include="App.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
