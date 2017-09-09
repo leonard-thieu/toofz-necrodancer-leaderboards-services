@@ -4,6 +4,7 @@ namespace toofz.Services
 {
     interface IConsole
     {
+        /// <summary>
         /// Obtains the next character or function key pressed by the user. The pressed key
         /// is optionally displayed in the console window.
         /// </summary>
