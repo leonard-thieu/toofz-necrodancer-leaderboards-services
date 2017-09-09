@@ -61,7 +61,7 @@ namespace toofz.Services
 
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 
-            // Args are only allowed while running as a console as they may require user input.
+            // Args are only allowed while running as a console application as they may require user input.
             if (args.Any() && environment.UserInteractive)
             {
                 if (parser == null)
@@ -94,7 +94,7 @@ namespace toofz.Services
 
                 worker.Stop();
             }
-            // Start as Windows service
+            // Start as service
             else
             {
                 if (serviceBase == null)
@@ -107,10 +107,11 @@ namespace toofz.Services
             return 0;
         }
 
-        static bool IsCancelKeyPress(ConsoleKeyInfo key)
+        static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
         {
-            return (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C) ||
-                (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.Pause);
+            return
+                (keyInfo.Modifiers == ConsoleModifiers.Control && keyInfo.Key == ConsoleKey.C) ||
+                (keyInfo.Modifiers == ConsoleModifiers.Control && keyInfo.Key == ConsoleKey.Pause);
         }
     }
 }
