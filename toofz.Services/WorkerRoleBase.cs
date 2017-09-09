@@ -30,8 +30,16 @@ namespace toofz.Services
         /// Initializes a new instance of the <see cref="WorkerRoleBase{TSettings}"/> class.
         /// </summary>
         /// <exception cref="ArgumentException">
-        /// The specified name is null or is longer than <see cref="ServiceBase.MaxNameLength"/>, 
-        /// or the specified name contains forward slash or backslash characters.
+        /// The specified name is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified name is longer than <see cref="ServiceBase.MaxNameLength"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified name contains forward slash characters.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The specified name contains backslash characters.
         /// </exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="settings"/> is null.
@@ -52,6 +60,9 @@ namespace toofz.Services
         Thread thread;
         Idle idle;
 
+        /// <summary>
+        /// Gets the settings object.
+        /// </summary>
         protected TSettings Settings { get; }
 
         #endregion
@@ -59,7 +70,7 @@ namespace toofz.Services
         /// <summary>
         /// Starts the update process. This method is intended to be called from console applications.
         /// </summary>
-        /// <param name="args">Data passed by the start command.</param>
+        /// <param name="args">Data passed by the command line.</param>
         public void ConsoleStart(params string[] args)
         {
             OnStart(args);

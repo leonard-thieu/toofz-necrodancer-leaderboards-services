@@ -25,6 +25,20 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
+            public void ServiceNameIsLongerThanMaxNameLength_ThrowsArgumentException()
+            {
+                // Arrange
+                string serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
+                ISettings settings = new SimpleSettings();
+
+                // Act -> Assert
+                Assert.ThrowsException<ArgumentException>(() =>
+                {
+                    new SimpleWorkerRoleBase(serviceName, settings);
+                });
+            }
+
+            [TestMethod]
             public void ServiceNameContainsForwardSlash_ThrowsArgumentException()
             {
                 // Arrange
@@ -53,17 +67,50 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
-            public void ServiceNameIsLongerThanMaxNameLength_ThrowsArgumentException()
+            public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
-                ISettings settings = new SimpleSettings();
+                string serviceName = "myServiceName";
+                ISettings settings = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.ThrowsException<ArgumentNullException>(() =>
                 {
                     new SimpleWorkerRoleBase(serviceName, settings);
                 });
+            }
+
+            [TestMethod]
+            public void ReturnsInstance()
+            {
+                // Arrange
+                string serviceName = "myServiceName";
+                ISettings settings = new SimpleSettings();
+
+                // Act
+                var worker = new SimpleWorkerRoleBase(serviceName, settings);
+
+                // Assert
+                Assert.IsInstanceOfType(worker, typeof(WorkerRoleBase<ISettings>));
+            }
+        }
+
+        [TestClass]
+        public class SettingsProperty
+        {
+            [TestMethod]
+            public void ReturnsInstance()
+            {
+                // Arrange
+                string serviceName = "myServiceName";
+                ISettings settings = new SimpleSettings();
+                var worker = new SimpleWorkerRoleBase(serviceName, settings);
+
+                // Act
+                var settings2 = worker.PublicSettings;
+
+                // Assert
+                Assert.IsInstanceOfType(settings2, typeof(ISettings));
             }
         }
     }
