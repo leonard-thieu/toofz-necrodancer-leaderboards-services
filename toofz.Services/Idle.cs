@@ -6,7 +6,7 @@ using log4net;
 
 namespace toofz.Services
 {
-    sealed class Idle
+    sealed class Idle : IIdle
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Idle));
 

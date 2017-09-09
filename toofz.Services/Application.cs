@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
@@ -12,18 +13,32 @@ namespace toofz.Services
     {
         static readonly ILog Log = LogManager.GetLogger(typeof(Application));
 
+        [ExcludeFromCodeCoverage]
         public static int Run<TWorkerRole, TSettings>(
             string[] args,
             IEnvironment environment,
             TSettings settings,
             TWorkerRole worker,
             IArgsParser<TSettings> parser,
-            IServiceBase serviceBase,
-            ILog log)
+            IServiceBase serviceBase)
             where TWorkerRole : ServiceBase, IWorkerRole
             where TSettings : ISettings
         {
-            log = log ?? Log;
+            return Run(args, environment, settings, worker, parser, serviceBase, Log, new ConsoleAdapter());
+        }
+
+        internal static int Run<TWorkerRole, TSettings>(
+            string[] args,
+            IEnvironment environment,
+            TSettings settings,
+            TWorkerRole worker,
+            IArgsParser<TSettings> parser,
+            IServiceBase serviceBase,
+            ILog log,
+            IConsole console)
+            where TWorkerRole : ServiceBase, IWorkerRole
+            where TSettings : ISettings
+        {
             log.Debug("Initialized logging.");
 
             if (args == null)
@@ -69,7 +84,15 @@ namespace toofz.Services
             // Start as console application
             if (environment.UserInteractive)
             {
-                worker.ConsoleStart();
+                worker.Start();
+
+                ConsoleKeyInfo keyInfo;
+                do
+                {
+                    keyInfo = console.ReadKey(intercept: true);
+                } while (!IsCancelKeyPress(keyInfo));
+
+                worker.Stop();
             }
             // Start as Windows service
             else
@@ -82,6 +105,12 @@ namespace toofz.Services
             }
 
             return 0;
+        }
+
+        static bool IsCancelKeyPress(ConsoleKeyInfo key)
+        {
+            return (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C) ||
+                (key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.Pause);
         }
     }
 }

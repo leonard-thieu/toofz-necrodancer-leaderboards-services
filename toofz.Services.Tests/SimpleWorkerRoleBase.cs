@@ -8,14 +8,12 @@ namespace toofz.Services.Tests
         public SimpleWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
 
         public ISettings PublicSettings => Settings;
-
-        public void PublicOnStart(string[] args)
-        {
-            OnStart(args);
-        }
+        public int RunAsyncOverrideCallCount { get; private set; }
 
         protected override Task RunAsyncOverride(CancellationToken cancellationToken)
         {
+            RunAsyncOverrideCallCount++;
+
             return Task.FromResult(0);
         }
     }

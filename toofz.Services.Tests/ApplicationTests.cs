@@ -19,6 +19,7 @@ namespace toofz.Services.Tests
                 parser = mockParser.Object;
                 serviceBase = mockServiceBase.Object;
                 log = mockLog.Object;
+                console = mockConsole.Object;
 
                 TelemetryConfiguration.Active.InstrumentationKey = "";
                 TelemetryConfiguration.Active.DisableTelemetry = true;
@@ -34,22 +35,8 @@ namespace toofz.Services.Tests
             IServiceBase serviceBase;
             Mock<ILog> mockLog = new Mock<ILog>();
             ILog log;
-
-            [TestMethod]
-            public void LogIsNull_DoesNotThrow()
-            {
-                // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
-                log = null;
-
-                // Act
-                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log);
-
-
-                // Assert
-                Assert.AreEqual(0, ret);
-            }
+            Mock<IConsole> mockConsole = new Mock<IConsole>();
+            IConsole console;
 
             [TestMethod]
             public void InitializesLogging()
@@ -59,7 +46,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings();
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockLog.Verify(l => l.Debug("Initialized logging."));
@@ -75,7 +62,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -90,7 +77,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -105,7 +92,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -119,7 +106,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -131,7 +118,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings();
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, Directory.GetCurrentDirectory());
@@ -145,7 +132,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings();
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockParser.Verify(p => p.Parse(It.IsAny<string[]>(), It.IsAny<ISettings>()), Times.Never);
@@ -162,7 +149,7 @@ namespace toofz.Services.Tests
                     .Returns(false);
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockParser.Verify(p => p.Parse(It.IsAny<string[]>(), It.IsAny<ISettings>()), Times.Never);
@@ -182,7 +169,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -197,7 +184,7 @@ namespace toofz.Services.Tests
                     .Returns(true);
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockParser.Verify(p => p.Parse(It.IsAny<string[]>(), It.IsAny<ISettings>()), Times.Once);
@@ -217,7 +204,7 @@ namespace toofz.Services.Tests
                     .Returns(20);
 
                 // Act
-                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.AreEqual(20, ret);
@@ -231,7 +218,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = null };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
@@ -245,7 +232,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = null };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.IsTrue(TelemetryConfiguration.Active.DisableTelemetry);
@@ -259,7 +246,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = "" };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
@@ -273,7 +260,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = "" };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.IsTrue(TelemetryConfiguration.Active.DisableTelemetry);
@@ -287,7 +274,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = "myInstrumentationKey" };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.AreEqual("myInstrumentationKey", TelemetryConfiguration.Active.InstrumentationKey);
@@ -301,7 +288,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings { InstrumentationKey = "myInstrumentationKey" };
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.IsFalse(TelemetryConfiguration.Active.DisableTelemetry);
@@ -316,12 +303,15 @@ namespace toofz.Services.Tests
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
+                mockConsole
+                    .Setup(c => c.ReadKey(true))
+                    .Returns(new ConsoleKeyInfo('c', ConsoleKey.C, shift: false, alt: false, control: true));
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
-                mockWorker.Verify(w => w.ConsoleStart(), Times.Once);
+                mockWorker.Verify(w => w.Start(), Times.Once);
             }
 
             [TestMethod]
@@ -338,7 +328,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
                 });
             }
 
@@ -353,7 +343,7 @@ namespace toofz.Services.Tests
                     .Returns(false);
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockEnvironment.VerifySet(e => e.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory);
@@ -370,7 +360,7 @@ namespace toofz.Services.Tests
                     .Returns(false);
 
                 // Act
-                Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 mockServiceBase.Verify(s => s.Run(worker));
@@ -384,7 +374,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new SimpleSettings();
 
                 // Act
-                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log);
+                var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.AreEqual(0, ret);
