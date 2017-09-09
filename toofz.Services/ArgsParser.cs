@@ -283,9 +283,6 @@ namespace toofz.Services
                         case OptionValueType.Required:
                             indentedTextWriter.WriteLine($"--{{0,-{maxPrototypeLength}}}  {option.Description}", option.Prototype + "VALUE");
                             break;
-                        default:
-                            // Unreachable. THe previous code block would have thrown already and OptionValueType should be treated as immutable.
-                            break;
                     }
                 }
 
