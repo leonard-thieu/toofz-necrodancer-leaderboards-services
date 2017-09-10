@@ -126,6 +126,21 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
+            public void ReloadsSettings()
+            {
+                // Arrange
+                var args = new string[0];
+                var mockSettings = new Mock<ISettings>();
+                var settings = mockSettings.Object;
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
+
+                // Assert
+                mockSettings.Verify(s => s.Reload(), Times.Once);
+            }
+
+            [TestMethod]
             public void ArgsIsEmpty_DoesNotCallParse()
             {
                 // Arrange
