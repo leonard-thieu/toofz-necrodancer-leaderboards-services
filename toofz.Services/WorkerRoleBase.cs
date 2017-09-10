@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,13 @@ namespace toofz.Services
             }
 
             log.Error(message, ex);
+        }
+
+        [ExcludeFromCodeCoverage]
+        static void GCCollect()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         #endregion
@@ -120,8 +128,7 @@ namespace toofz.Services
                 LogError(log, "Failed to complete run due to an error.", ex);
             }
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            GCCollect();
 
             idle.WriteTimeRemaining();
 
@@ -129,8 +136,7 @@ namespace toofz.Services
             if (remaining > Settings.DelayBeforeGC)
             {
                 await Task.Delay(Settings.DelayBeforeGC, cancellationToken).ConfigureAwait(false);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                GCCollect();
             }
 
             await idle.DelayAsync(cancellationToken).ConfigureAwait(false);

@@ -218,6 +218,37 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
+            public async Task RunAsyncOverrideThrowsTaskCanceledException_ThrowsTaskCanceledException()
+            {
+                // Arrange
+                var worker = new CanceledWorkerRoleBase();
+                var idle = Mock.Of<IIdle>();
+                var log = Mock.Of<ILog>();
+
+                // Act -> Assert
+                await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
+                {
+                    return worker.RunCoreAsync(idle, log, CancellationToken.None);
+                });
+            }
+
+            [TestMethod]
+            public async Task RunAsyncOverrideThrowsException_LogsError()
+            {
+                // Arrange
+                var worker = new BrokenWorkerRoleBase();
+                var idle = Mock.Of<IIdle>();
+                var mockLog = new Mock<ILog>();
+                var log = mockLog.Object;
+
+                // Act
+                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+
+                // Assert
+                mockLog.Verify(l => l.Error("Failed to complete run due to an error.", It.IsAny<Exception>()));
+            }
+
+            [TestMethod]
             public async Task WritesTimeRemaining()
             {
                 // Arrange
@@ -261,6 +292,35 @@ namespace toofz.Services.Tests
 
                     return Task.FromResult(0);
                 }
+            }
+
+            class CanceledWorkerRoleBase : WorkerRoleBase<ISettings>
+            {
+                public CanceledWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
+
+                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TaskCanceledException();
+            }
+
+            class BrokenWorkerRoleBase : WorkerRoleBase<ISettings>
+            {
+                public BrokenWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
+
+                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new Exception();
+            }
+        }
+
+        [TestClass]
+        public class OnStopMethod
+        {
+            [TestMethod]
+            public void StopsService()
+            {
+                // Arrange
+                var worker = new EmptyWorkerRoleBase();
+                worker.Start();
+
+                // Act -> Assert
+                worker.Stop();
             }
         }
 
