@@ -17,15 +17,7 @@ namespace toofz.Services.Tests
         public int NullDescription { get; set; }
         public int MissingSettingsDescriptionAttribute { get; set; }
 
-        public void Reload()
-        {
-            UpdateInterval = default(TimeSpan);
-            DelayBeforeGC = default(TimeSpan);
-            InstrumentationKey = default(string);
-            KeyDerivationIterations = default(int);
-            NullDescription = default(int);
-            MissingSettingsDescriptionAttribute = default(int);
-        }
+        public void Reload() { }
 
         public void Save() { }
     }

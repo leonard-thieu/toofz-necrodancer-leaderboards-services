@@ -60,6 +60,7 @@ namespace toofz.Services
             };
 
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            settings.Reload();
 
             // Args are only allowed while running as a console application as they may require user input.
             if (args.Any() && environment.UserInteractive)
