@@ -295,7 +295,7 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
-            public void UserInteractiveIsTrue_RunsConsoleStart()
+            public void UserInteractiveIsTrue_StartsAsConsoleApplication()
             {
                 // Arrange
                 string[] args = new string[0];
@@ -312,6 +312,67 @@ namespace toofz.Services.Tests
 
                 // Assert
                 mockWorker.Verify(w => w.Start(), Times.Once);
+            }
+
+            [TestMethod]
+            public void StartedAsConsoleApplicationAndCtrlCIsPressed_Stops()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(true);
+                mockConsole
+                    .Setup(c => c.ReadKey(true))
+                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.C, ConsoleKey.C, shift: false, alt: false, control: true));
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
+
+                // Assert
+                mockConsole.Verify(c => c.ReadKey(true), Times.Once);
+            }
+
+            [TestMethod]
+            public void StartedAsConsoleApplicationAndCtrlBreakIsPressed_Stops()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(true);
+                mockConsole
+                    .Setup(c => c.ReadKey(true))
+                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true));
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
+
+                // Assert
+                mockConsole.Verify(c => c.ReadKey(true), Times.Once);
+            }
+
+            [TestMethod]
+            public void StartedAsConsoleApplicationAndCancelKeyIsNotPressed_DoesNotStop()
+            {
+                // Arrange
+                string[] args = new string[0];
+                ISettings settings = new SimpleSettings();
+                mockEnvironment
+                    .SetupGet(e => e.UserInteractive)
+                    .Returns(true);
+                mockConsole
+                    .SetupSequence(c => c.ReadKey(true))
+                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.Enter, ConsoleKey.Enter, shift: false, alt: false, control: false))
+                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true));
+
+                // Act
+                Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
+
+                // Assert
+                mockConsole.Verify(c => c.ReadKey(true), Times.Exactly(2));
             }
 
             [TestMethod]
