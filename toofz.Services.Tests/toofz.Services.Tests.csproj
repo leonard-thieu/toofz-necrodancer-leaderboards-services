@@ -99,20 +99,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationTests.cs" />
-    <Compile Include="ArgsParserAdapter.cs" />
     <Compile Include="ArgsParserTests.cs" />
     <Compile Include="IdleTests.cs" />
-    <Compile Include="SimpleSettings.cs" />
-    <Compile Include="SimpleServiceWorkerRole.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SimpleWorkerRoleBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="StubSettings.cs" />
     <Compile Include="WorkerRoleBaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>

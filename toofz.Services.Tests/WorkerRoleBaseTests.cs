@@ -85,12 +85,11 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string serviceName = null;
-                ISettings settings = new SimpleSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName, settings);
+                    new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
@@ -98,13 +97,12 @@ namespace toofz.Services.Tests
             public void ServiceNameIsLongerThanMaxNameLength_ThrowsArgumentException()
             {
                 // Arrange
-                string serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
-                ISettings settings = new SimpleSettings();
+                var serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName, settings);
+                    new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
@@ -112,13 +110,12 @@ namespace toofz.Services.Tests
             public void ServiceNameContainsForwardSlash_ThrowsArgumentException()
             {
                 // Arrange
-                string serviceName = "/";
-                ISettings settings = new SimpleSettings();
+                var serviceName = "/";
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName, settings);
+                    new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
@@ -126,13 +123,12 @@ namespace toofz.Services.Tests
             public void ServiceNameContainsBackSlash_ThrowsArgumentException()
             {
                 // Arrange
-                string serviceName = @"\";
-                ISettings settings = new SimpleSettings();
+                var serviceName = @"\";
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName, settings);
+                    new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
@@ -140,25 +136,20 @@ namespace toofz.Services.Tests
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string serviceName = "myServiceName";
                 ISettings settings = null;
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
                 {
-                    new SimpleWorkerRoleBase(serviceName, settings);
+                    new EmptyWorkerRoleBase(settings);
                 });
             }
 
             [TestMethod]
             public void ReturnsInstance()
             {
-                // Arrange
-                string serviceName = "myServiceName";
-                ISettings settings = new SimpleSettings();
-
-                // Act
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
+                // Arrange -> Act
+                var worker = new EmptyWorkerRoleBase();
 
                 // Assert
                 Assert.IsInstanceOfType(worker, typeof(WorkerRoleBase<ISettings>));
@@ -172,15 +163,22 @@ namespace toofz.Services.Tests
             public void ReturnsInstance()
             {
                 // Arrange
-                string serviceName = "myServiceName";
-                ISettings settings = new SimpleSettings();
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
+                var worker = new WorkRoleBaseAdapter();
 
                 // Act
-                var settings2 = worker.PublicSettings;
+                var settings = worker.PublicSettings;
 
                 // Assert
-                Assert.IsInstanceOfType(settings2, typeof(ISettings));
+                Assert.IsInstanceOfType(settings, typeof(ISettings));
+            }
+
+            class WorkRoleBaseAdapter : WorkerRoleBase<ISettings>
+            {
+                public WorkRoleBaseAdapter() : base("myServiceName", Mock.Of<ISettings>()) { }
+
+                public ISettings PublicSettings => Settings;
+
+                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new NotImplementedException();
             }
         }
 
@@ -191,14 +189,11 @@ namespace toofz.Services.Tests
             public async Task ReloadsSettings()
             {
                 // Arrange
-                string serviceName = "myServiceName";
-                Mock<ISettings> mockSettings = new Mock<ISettings>();
-                ISettings settings = mockSettings.Object;
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
-                Mock<IIdle> mockIdle = new Mock<IIdle>();
-                IIdle idle = mockIdle.Object;
-                Mock<ILog> mockLog = new Mock<ILog>();
-                ILog log = mockLog.Object;
+                var mockSettings = new Mock<ISettings>();
+                var settings = mockSettings.Object;
+                var worker = new EmptyWorkerRoleBase(settings);
+                var idle = Mock.Of<IIdle>();
+                var log = Mock.Of<ILog>();
 
                 // Act
                 await worker.RunCoreAsync(idle, log, CancellationToken.None);
@@ -211,14 +206,9 @@ namespace toofz.Services.Tests
             public async Task CallsRunAsyncOverride()
             {
                 // Arrange
-                string serviceName = "myServiceName";
-                Mock<ISettings> mockSettings = new Mock<ISettings>();
-                ISettings settings = mockSettings.Object;
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
-                Mock<IIdle> mockIdle = new Mock<IIdle>();
-                IIdle idle = mockIdle.Object;
-                Mock<ILog> mockLog = new Mock<ILog>();
-                ILog log = mockLog.Object;
+                var worker = new MockWorkerRoleBase();
+                var idle = Mock.Of<IIdle>();
+                var log = Mock.Of<ILog>();
 
                 // Act
                 await worker.RunCoreAsync(idle, log, CancellationToken.None);
@@ -231,14 +221,10 @@ namespace toofz.Services.Tests
             public async Task WritesTimeRemaining()
             {
                 // Arrange
-                string serviceName = "myServiceName";
-                Mock<ISettings> mockSettings = new Mock<ISettings>();
-                ISettings settings = mockSettings.Object;
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
-                Mock<IIdle> mockIdle = new Mock<IIdle>();
-                IIdle idle = mockIdle.Object;
-                Mock<ILog> mockLog = new Mock<ILog>();
-                ILog log = mockLog.Object;
+                var worker = new EmptyWorkerRoleBase();
+                var mockIdle = new Mock<IIdle>();
+                var idle = mockIdle.Object;
+                var log = Mock.Of<ILog>();
 
                 // Act
                 await worker.RunCoreAsync(idle, log, CancellationToken.None);
@@ -251,14 +237,10 @@ namespace toofz.Services.Tests
             public async Task DelaysForTimeRemaining()
             {
                 // Arrange
-                string serviceName = "myServiceName";
-                Mock<ISettings> mockSettings = new Mock<ISettings>();
-                ISettings settings = mockSettings.Object;
-                var worker = new SimpleWorkerRoleBase(serviceName, settings);
-                Mock<IIdle> mockIdle = new Mock<IIdle>();
-                IIdle idle = mockIdle.Object;
-                Mock<ILog> mockLog = new Mock<ILog>();
-                ILog log = mockLog.Object;
+                var worker = new EmptyWorkerRoleBase();
+                var mockIdle = new Mock<IIdle>();
+                var idle = mockIdle.Object;
+                var log = Mock.Of<ILog>();
 
                 // Act
                 await worker.RunCoreAsync(idle, log, CancellationToken.None);
@@ -266,6 +248,30 @@ namespace toofz.Services.Tests
                 // Assert
                 mockIdle.Verify(i => i.DelayAsync(It.IsAny<CancellationToken>()), Times.Once);
             }
+
+            class MockWorkerRoleBase : WorkerRoleBase<ISettings>
+            {
+                public MockWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
+
+                public int RunAsyncOverrideCallCount { get; private set; }
+
+                protected override Task RunAsyncOverride(CancellationToken cancellationToken)
+                {
+                    RunAsyncOverrideCallCount++;
+
+                    return Task.FromResult(0);
+                }
+            }
+        }
+
+        class EmptyWorkerRoleBase : WorkerRoleBase<ISettings>
+        {
+            public EmptyWorkerRoleBase() : this("myServiceName", Mock.Of<ISettings>()) { }
+            public EmptyWorkerRoleBase(string serviceName) : this(serviceName, Mock.Of<ISettings>()) { }
+            public EmptyWorkerRoleBase(ISettings settings) : this("myServiceName", settings) { }
+            public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
+
+            protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromResult(0);
         }
     }
 }

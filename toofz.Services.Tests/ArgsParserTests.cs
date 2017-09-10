@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Mono.Options;
 using Moq;
 using toofz.TestsShared;
 
@@ -16,7 +17,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 Type type = null;
-                string name = nameof(SimpleSettings.UpdateInterval);
+                string name = nameof(StubSettings.UpdateInterval);
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -29,7 +30,7 @@ namespace toofz.Services.Tests
             public void NameIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                Type type = typeof(SimpleSettings);
+                Type type = typeof(StubSettings);
                 string name = null;
 
                 // Act -> Assert
@@ -43,7 +44,7 @@ namespace toofz.Services.Tests
             public void PropertyDoesNotExist_ThrowsArgumentNullException()
             {
                 // Arrange
-                Type type = typeof(SimpleSettings);
+                Type type = typeof(StubSettings);
                 string name = "!";
 
                 // Act
@@ -57,8 +58,8 @@ namespace toofz.Services.Tests
             public void NullDescription_ReturnsNull()
             {
                 // Arrange
-                Type type = typeof(SimpleSettings);
-                string name = nameof(SimpleSettings.NullDescription);
+                Type type = typeof(StubSettings);
+                string name = nameof(StubSettings.NullDescription);
 
                 // Act
                 var description = ArgsParserAdapter.PublicGetDescription(type, name);
@@ -71,8 +72,8 @@ namespace toofz.Services.Tests
             public void MissingSettingsDescriptionAttribute_ReturnsNull()
             {
                 // Arrange
-                Type type = typeof(SimpleSettings);
-                string name = nameof(SimpleSettings.MissingSettingsDescriptionAttribute);
+                Type type = typeof(StubSettings);
+                string name = nameof(StubSettings.MissingSettingsDescriptionAttribute);
 
                 // Act
                 var description = ArgsParserAdapter.PublicGetDescription(type, name);
@@ -304,7 +305,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = null;
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -332,7 +333,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "myExtraArg" };
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act
                 parser.Parse(args, settings);
@@ -348,7 +349,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "myExtraArg" };
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -362,7 +363,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = new[] { "--help" };
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act
                 parser.Parse(args, settings);
@@ -387,7 +388,7 @@ options:
             {
                 // Arrange
                 string[] args = new[] { "--help" };
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -535,7 +536,7 @@ options:
             {
                 // Arrange
                 string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -608,6 +609,44 @@ options:
 
                 // Assert
                 Assert.AreEqual("value", option);
+            }
+        }
+
+        class ArgsParserAdapter : ArgsParser<Options, ISettings>
+        {
+            public static string PublicGetDescription(Type type, string propName)
+            {
+                return GetDescription(type, propName);
+            }
+
+            public static bool PublicShouldPromptForRequiredSetting(string option, object setting)
+            {
+                return ShouldPromptForRequiredSetting(option, setting);
+            }
+
+            public ArgsParserAdapter(TextReader inReader, TextWriter outWriter, TextWriter errorWriter) : base(inReader, outWriter, errorWriter) { }
+
+            public TextReader PublicInReader { get => InReader; }
+            public TextWriter PublicOutWriter { get => OutWriter; }
+            public TextWriter PublicErrorWriter { get => ErrorWriter; }
+
+            protected override string EntryAssemblyFileName { get; } = Path.GetFileName(typeof(ArgsParserAdapter).Assembly.Location);
+
+            protected override void OnParsing(Type settingsType, OptionSet optionSet, Options options)
+            {
+                base.OnParsing(settingsType, optionSet, options);
+
+                optionSet.Add("optional:", "This option is optional.", optional => { });
+            }
+
+            protected override void OnParsed(Options options, ISettings settings)
+            {
+                base.OnParsed(options, settings);
+            }
+
+            public string PublicReadOption(string prompt)
+            {
+                return ReadOption(prompt);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.ServiceProcess;
 using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,8 +28,8 @@ namespace toofz.Services.Tests
 
             Mock<IEnvironment> mockEnvironment = new Mock<IEnvironment>();
             IEnvironment environment;
-            Mock<SimpleServiceWorkerRole> mockWorker = new Mock<SimpleServiceWorkerRole>();
-            SimpleServiceWorkerRole worker;
+            Mock<ServiceWorkerRoleBase> mockWorker = new Mock<ServiceWorkerRoleBase>();
+            ServiceWorkerRoleBase worker;
             Mock<IArgsParser<ISettings>> mockParser = new Mock<IArgsParser<ISettings>>();
             IArgsParser<ISettings> parser;
             Mock<IServiceBase> mockServiceBase = new Mock<IServiceBase>();
@@ -42,8 +43,8 @@ namespace toofz.Services.Tests
             public void InitializesLogging()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -57,7 +58,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = null;
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -70,9 +71,9 @@ namespace toofz.Services.Tests
             public void EnvironmentIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new string[0];
+                var args = new string[0];
                 environment = null;
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -85,9 +86,9 @@ namespace toofz.Services.Tests
             public void WorkerIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new string[0];
+                var args = new string[0];
                 worker = null;
-                ISettings settings = new SimpleSettings();
+                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.ThrowsException<ArgumentNullException>(() =>
@@ -100,7 +101,7 @@ namespace toofz.Services.Tests
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new string[0];
+                var args = new string[0];
                 ISettings settings = null;
 
                 // Act -> Assert
@@ -114,8 +115,8 @@ namespace toofz.Services.Tests
             public void SetsCurrentDirectoryToBaseDirectory()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -128,8 +129,8 @@ namespace toofz.Services.Tests
             public void ArgsIsEmpty_DoesNotCallParse()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -142,8 +143,8 @@ namespace toofz.Services.Tests
             public void ArgsIsNotEmptyAndUserInteractiveIsFalse_DoesNotCallParse()
             {
                 // Arrange
-                string[] args = new[] { "--myArg" };
-                ISettings settings = new SimpleSettings();
+                var args = new[] { "--myArg" };
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(false);
@@ -159,8 +160,8 @@ namespace toofz.Services.Tests
             public void ArgsIsNotEmptyAndUserInteractiveIsTrueAndParserIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new[] { "--myArg" };
-                ISettings settings = new SimpleSettings();
+                var args = new[] { "--myArg" };
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -177,8 +178,8 @@ namespace toofz.Services.Tests
             public void ArgsIsNotEmptyAndUserInteractiveIsTrue_CallsParse()
             {
                 // Arrange
-                string[] args = new[] { "--myArg" };
-                ISettings settings = new SimpleSettings();
+                var args = new[] { "--myArg" };
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -194,8 +195,8 @@ namespace toofz.Services.Tests
             public void ArgsIsNotEmptyAndUserInteractiveIsTrue_ReturnsExitCodeFromParse()
             {
                 // Arrange
-                string[] args = new[] { "--myArg" };
-                ISettings settings = new SimpleSettings();
+                var args = new[] { "--myArg" };
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -214,8 +215,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsNull_LogsWarning()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = null };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = null };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -228,8 +229,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsNull_DisablesTelemetry()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = null };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = null };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -242,8 +243,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsEmpty_LogsWarning()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = "" };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "" };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -256,8 +257,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsEmpty_DisablesTelemetry()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = "" };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "" };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -270,8 +271,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsSet_SetsInstrumentationKeyForTelemetry()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = "myInstrumentationKey" };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -284,8 +285,8 @@ namespace toofz.Services.Tests
             public void InstrumentationKeyIsSet_EnablesTelemetry()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings { InstrumentationKey = "myInstrumentationKey" };
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
 
                 // Act
                 Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
@@ -298,8 +299,8 @@ namespace toofz.Services.Tests
             public void UserInteractiveIsTrue_StartsAsConsoleApplication()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -318,8 +319,8 @@ namespace toofz.Services.Tests
             public void StartedAsConsoleApplicationAndCtrlCIsPressed_Stops()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -338,8 +339,8 @@ namespace toofz.Services.Tests
             public void StartedAsConsoleApplicationAndCtrlBreakIsPressed_Stops()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -358,8 +359,8 @@ namespace toofz.Services.Tests
             public void StartedAsConsoleApplicationAndCancelKeyIsNotPressed_DoesNotStop()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(true);
@@ -379,8 +380,8 @@ namespace toofz.Services.Tests
             public void UserInteractiveIsFalseAndServiceBaseIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(false);
@@ -397,8 +398,8 @@ namespace toofz.Services.Tests
             public void UserInteractiveIsFalse_SetsCurrentDirectory()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(false);
@@ -414,8 +415,8 @@ namespace toofz.Services.Tests
             public void UserInteractiveIsFalse_CallsRun()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
                 mockEnvironment
                     .SetupGet(e => e.UserInteractive)
                     .Returns(false);
@@ -431,14 +432,19 @@ namespace toofz.Services.Tests
             public void Returns0()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new SimpleSettings();
+                var args = new string[0];
+                ISettings settings = new StubSettings();
 
                 // Act
                 var ret = Application.Run(args, environment, settings, worker, parser, serviceBase, log, console);
 
                 // Assert
                 Assert.AreEqual(0, ret);
+            }
+
+            internal abstract class ServiceWorkerRoleBase : ServiceBase, IWorkerRole
+            {
+                public abstract void Start(params string[] args);
             }
         }
     }
