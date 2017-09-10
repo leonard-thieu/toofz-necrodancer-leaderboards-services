@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,15 +14,25 @@ namespace toofz.Services
 
         static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
-        static void LogError(string message, Exception ex)
+        internal static void LogError(ILog log, string message, Exception ex)
         {
-            var e = ex;
-            if (ex is AggregateException)
+            var aggr = ex as AggregateException;
+            if (aggr != null)
             {
-                var all = ((AggregateException)ex).Flatten();
-                e = all.InnerExceptions.Count == 1 ? all.InnerException : all;
+                var flattened = aggr.Flatten();
+                ex = flattened.InnerExceptions.Count == 1 ?
+                    flattened.InnerException :
+                    flattened;
             }
-            Log.Error(message, e);
+
+            log.Error(message, ex);
+        }
+
+        [ExcludeFromCodeCoverage]
+        static void GCCollect()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         #endregion
@@ -58,7 +69,6 @@ namespace toofz.Services
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         Thread thread;
-        Idle idle;
 
         /// <summary>
         /// Gets the settings object.
@@ -68,13 +78,12 @@ namespace toofz.Services
         #endregion
 
         /// <summary>
-        /// Starts the update process. This method is intended to be called from console applications.
+        /// Starts the service. This method is intended to be called from console applications.
         /// </summary>
         /// <param name="args">Data passed by the command line.</param>
-        public void ConsoleStart(params string[] args)
+        public void Start(params string[] args)
         {
             OnStart(args);
-            thread.Join(Timeout.InfiniteTimeSpan);
         }
 
         #region OnStart
@@ -94,58 +103,43 @@ namespace toofz.Services
 
         #region Run
 
-        void Run()
-        {
-            var cancellationToken = cancellationTokenSource.Token;
+        void Run() => RunAsync(cancellationTokenSource.Token).Wait();
 
-            while (true)
-            {
-                try
-                {
-                    RunAsync(cancellationToken).Wait();
-                }
-                catch (Exception ex) when (!(ex.InnerException is TaskCanceledException))
-                {
-                    LogError("Failed to complete run due to an error.", ex);
-                }
+        Task RunAsync(CancellationToken cancellationToken) => RunAsync(Log, cancellationToken);
 
-                try
-                {
-                    idle.DelayAsync(cancellationToken).Wait();
-                }
-                catch (TaskCanceledException)
-                {
-                    Log.Info("Received Stop command. Stopping service...");
-                    return;
-                }
-            }
-        }
-
-        async Task RunAsync(CancellationToken cancellationToken)
+        async Task RunAsync(ILog log, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Settings.Reload();
-
-                idle = Idle.StartNew(Settings.UpdateInterval);
-
-                await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
-
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
-                idle.WriteTimeRemaining();
-
-                var remaining = idle.GetTimeRemaining();
-                if (remaining > Settings.DelayBeforeGC)
-                {
-                    await Task.Delay(Settings.DelayBeforeGC, cancellationToken).ConfigureAwait(false);
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
-                }
-
-                await idle.DelayAsync(cancellationToken).ConfigureAwait(false);
+                await RunCoreAsync(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
             }
+        }
+
+        internal async Task RunCoreAsync(IIdle idle, ILog log, CancellationToken cancellationToken)
+        {
+            Settings.Reload();
+
+            try
+            {
+                await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (!(ex is TaskCanceledException))
+            {
+                LogError(log, "Failed to complete run due to an error.", ex);
+            }
+
+            GCCollect();
+
+            idle.WriteTimeRemaining();
+
+            var remaining = idle.GetTimeRemaining();
+            if (remaining > Settings.DelayBeforeGC)
+            {
+                await Task.Delay(Settings.DelayBeforeGC, cancellationToken).ConfigureAwait(false);
+                GCCollect();
+            }
+
+            await idle.DelayAsync(cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -166,6 +160,7 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
+            Log.Info("Received Stop command. Stopping service...");
             cancellationTokenSource.Cancel();
             thread.Join(TimeSpan.FromSeconds(10));
         }

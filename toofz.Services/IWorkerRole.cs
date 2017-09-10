@@ -2,6 +2,6 @@
 {
     public interface IWorkerRole
     {
-        void ConsoleStart(params string[] args);
+        void Start(params string[] args);
     }
 }

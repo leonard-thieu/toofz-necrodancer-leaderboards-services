@@ -62,24 +62,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="IArgsParser.cs" />
     <Compile Include="ArgsParser.cs">
       <DependentUpon>IArgsParser.cs</DependentUpon>
     </Compile>
-    <Compile Include="IArgsParser.cs" />
+    <Compile Include="IConsole.cs" />
+    <Compile Include="ConsoleAdapter.cs">
+      <DependentUpon>IConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IIdle.cs" />
+    <Compile Include="Idle.cs">
+      <DependentUpon>IIdle.cs</DependentUpon>
+    </Compile>
     <Compile Include="IServiceBase.cs" />
+    <Compile Include="ServiceBaseAdapter.cs">
+      <DependentUpon>IServiceBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="ISettings.cs" />
     <Compile Include="ITask.cs" />
     <Compile Include="IWorkerRole.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Idle.cs" />
-    <Compile Include="ServiceBaseAdapter.cs">
-      <DependentUpon>IServiceBase.cs</DependentUpon>
-    </Compile>
     <Compile Include="TaskAdapter.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
