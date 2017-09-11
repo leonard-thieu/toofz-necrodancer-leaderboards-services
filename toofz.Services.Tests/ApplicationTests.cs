@@ -498,7 +498,7 @@ namespace toofz.Services.Tests
                 public void LoadsSettingsBeforeAccessingThem()
                 {
                     // Arrange
-                    
+
                     // Create a settings file that has the instrumentation key set
                     SetCurrentDirectoryToBaseDirectory();
                     var settings = TestSettings.Default;
@@ -514,9 +514,10 @@ namespace toofz.Services.Tests
                     var worker = Mock.Of<ServiceWorkerRoleBase>();
                     var parser = Mock.Of<IArgsParser<ISettings>>();
                     var serviceBase = Mock.Of<IServiceBase>();
+                    var log = Mock.Of<ILog>();
 
                     // Act
-                    Application.Run(args, environment, settings, worker, parser, serviceBase);
+                    Application.Run(args, environment, settings, worker, parser, serviceBase, log);
 
                     // Assert
                     Assert.AreEqual("myInstrumentationKey", TelemetryConfiguration.Active.InstrumentationKey);

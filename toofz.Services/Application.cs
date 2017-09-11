@@ -11,8 +11,7 @@ namespace toofz.Services
 {
     public static class Application
     {
-        static readonly ILog Log = LogManager.GetLogger(typeof(Application));
-
+        // Must receive log object from entry point so that logging is initialized properly.
         [ExcludeFromCodeCoverage]
         public static int Run<TWorkerRole, TSettings>(
             string[] args,
@@ -20,11 +19,12 @@ namespace toofz.Services
             TSettings settings,
             TWorkerRole worker,
             IArgsParser<TSettings> parser,
-            IServiceBase serviceBase)
+            IServiceBase serviceBase,
+            ILog log)
             where TWorkerRole : ServiceBase, IWorkerRole
             where TSettings : ISettings
         {
-            return Run(args, environment, settings, worker, parser, serviceBase, Log, new ConsoleAdapter());
+            return Run(args, environment, settings, worker, parser, serviceBase, log, new ConsoleAdapter());
         }
 
         internal static int Run<TWorkerRole, TSettings>(
