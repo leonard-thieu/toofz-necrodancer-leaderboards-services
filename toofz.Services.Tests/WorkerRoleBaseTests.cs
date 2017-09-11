@@ -183,7 +183,7 @@ namespace toofz.Services.Tests
         }
 
         [TestClass]
-        public class RunCoreAsyncMethod
+        public class RunAsyncCoreMethod
         {
             [TestMethod]
             public async Task ReloadsSettings()
@@ -196,7 +196,7 @@ namespace toofz.Services.Tests
                 var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
                 mockSettings.Verify(s => s.Reload(), Times.Once);
@@ -211,7 +211,7 @@ namespace toofz.Services.Tests
                 var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
                 Assert.AreEqual(1, worker.RunAsyncOverrideCallCount);
@@ -228,7 +228,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
                 {
-                    return worker.RunCoreAsync(idle, log, CancellationToken.None);
+                    return worker.RunAsyncCore(idle, log, CancellationToken.None);
                 });
             }
 
@@ -242,7 +242,7 @@ namespace toofz.Services.Tests
                 var log = mockLog.Object;
 
                 // Act
-                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
                 mockLog.Verify(l => l.Error("Failed to complete run due to an error.", It.IsAny<Exception>()));
@@ -258,7 +258,7 @@ namespace toofz.Services.Tests
                 var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
                 mockIdle.Verify(i => i.WriteTimeRemaining(), Times.Once);
@@ -274,7 +274,7 @@ namespace toofz.Services.Tests
                 var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunCoreAsync(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
                 mockIdle.Verify(i => i.DelayAsync(It.IsAny<CancellationToken>()), Times.Once);

@@ -109,11 +109,11 @@ namespace toofz.Services
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await RunCoreAsync(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
+                await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        internal async Task RunCoreAsync(IIdle idle, ILog log, CancellationToken cancellationToken)
+        internal async Task RunAsyncCore(IIdle idle, ILog log, CancellationToken cancellationToken)
         {
             Settings.Reload();
 
