@@ -233,6 +233,21 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
+            public async Task RunAsyncOverrideThrowsTypeInitializationException_ThrowsTypeInitializationException()
+            {
+                // Arrange
+                var worker = new TypeInitializationExceptionWorkerRoleBase();
+                var idle = Mock.Of<IIdle>();
+                var log = Mock.Of<ILog>();
+
+                // Act -> Assert
+                await Assert.ThrowsExceptionAsync<TypeInitializationException>(() =>
+                {
+                    return worker.RunAsyncCore(idle, log, CancellationToken.None);
+                });
+            }
+
+            [TestMethod]
             public async Task RunAsyncOverrideThrowsException_LogsError()
             {
                 // Arrange
@@ -299,6 +314,13 @@ namespace toofz.Services.Tests
                 public CanceledWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
 
                 protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TaskCanceledException();
+            }
+
+            class TypeInitializationExceptionWorkerRoleBase : WorkerRoleBase<ISettings>
+            {
+                public TypeInitializationExceptionWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
+
+                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TypeInitializationException(nameof(TypeInitializationExceptionWorkerRoleBase), new Exception());
             }
 
             class BrokenWorkerRoleBase : WorkerRoleBase<ISettings>

@@ -121,7 +121,9 @@ namespace toofz.Services
             {
                 await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
             }
-            catch (Exception ex) when (!(ex is TaskCanceledException))
+            catch (Exception ex)
+                when (!((ex is TaskCanceledException) ||
+                        (ex is TypeInitializationException)))
             {
                 LogError(log, "Failed to complete run due to an error.", ex);
             }
