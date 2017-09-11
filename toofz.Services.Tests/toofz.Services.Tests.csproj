@@ -101,6 +101,15 @@
     <Compile Include="ApplicationTests.cs" />
     <Compile Include="ArgsParserTests.cs" />
     <Compile Include="IdleTests.cs" />
+    <Compile Include="StubSettings.cs" />
+    <Compile Include="WorkerRoleBaseTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\TestSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
+    </None>
     <Compile Include="Properties\TestSettings.cs">
       <DependentUpon>TestSettings.settings</DependentUpon>
     </Compile>
@@ -109,18 +118,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>TestSettings.settings</DependentUpon>
     </Compile>
-    <Compile Include="StubSettings.cs" />
-    <Compile Include="WorkerRoleBaseTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Properties\TestSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
