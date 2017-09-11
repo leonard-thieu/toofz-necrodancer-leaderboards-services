@@ -106,6 +106,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\TestSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\TestSettings.cs">
+      <DependentUpon>TestSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\TestSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>TestSettings.settings</DependentUpon>
+    </Compile>
     <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>

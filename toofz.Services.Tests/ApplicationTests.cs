@@ -5,6 +5,7 @@ using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using toofz.Services.Tests.Properties;
 
 namespace toofz.Services.Tests
 {
@@ -13,17 +14,35 @@ namespace toofz.Services.Tests
         [TestClass]
         public class Run
         {
+            static void ResetEnvironment()
+            {
+                TelemetryConfiguration.Active.InstrumentationKey = "";
+                TelemetryConfiguration.Active.DisableTelemetry = true;
+
+                // Services start with their currenct directory set to the system directory.
+                SetCurrentDirectoryToSystemDirectory();
+            }
+
+            static void SetCurrentDirectoryToSystemDirectory()
+            {
+                Directory.SetCurrentDirectory(Environment.SystemDirectory);
+            }
+
+            static void SetCurrentDirectoryToBaseDirectory()
+            {
+                Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            }
+
             public Run()
             {
+                ResetEnvironment();
+
                 environment = mockEnvironment.Object;
                 worker = mockWorker.Object;
                 parser = mockParser.Object;
                 serviceBase = mockServiceBase.Object;
                 log = mockLog.Object;
                 console = mockConsole.Object;
-
-                TelemetryConfiguration.Active.InstrumentationKey = "";
-                TelemetryConfiguration.Active.DisableTelemetry = true;
             }
 
             Mock<IEnvironment> mockEnvironment = new Mock<IEnvironment>();
@@ -455,6 +474,53 @@ namespace toofz.Services.Tests
 
                 // Assert
                 Assert.AreEqual(0, ret);
+            }
+
+            [TestClass]
+            [TestCategory("Uses Settings")]
+            public class IntegrationTests
+            {
+                public IntegrationTests()
+                {
+                    ResetEnvironment();
+
+                    File.Delete("user.config");
+                    TestSettings.Default.Reload();
+                }
+
+                [TestCleanup]
+                public void TestCleanup()
+                {
+                    File.Delete("user.config");
+                }
+
+                [TestMethod]
+                public void LoadsSettingsBeforeAccessingThem()
+                {
+                    // Arrange
+                    
+                    // Create a settings file that has the instrumentation key set
+                    SetCurrentDirectoryToBaseDirectory();
+                    var settings = TestSettings.Default;
+                    settings.InstrumentationKey = "myInstrumentationKey";
+                    settings.Save();
+
+                    // Reset environment
+                    settings.InstrumentationKey = null;
+                    SetCurrentDirectoryToSystemDirectory();
+
+                    var args = new string[0];
+                    var environment = Mock.Of<IEnvironment>();
+                    var worker = Mock.Of<ServiceWorkerRoleBase>();
+                    var parser = Mock.Of<IArgsParser<ISettings>>();
+                    var serviceBase = Mock.Of<IServiceBase>();
+
+                    // Act
+                    Application.Run(args, environment, settings, worker, parser, serviceBase);
+
+                    // Assert
+                    Assert.AreEqual("myInstrumentationKey", TelemetryConfiguration.Active.InstrumentationKey);
+                }
             }
 
             internal abstract class ServiceWorkerRoleBase : ServiceBase, IWorkerRole
