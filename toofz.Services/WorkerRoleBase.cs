@@ -103,9 +103,7 @@ namespace toofz.Services
 
         #region Run
 
-        void Run() => RunAsync(cancellationTokenSource.Token).Wait();
-
-        Task RunAsync(CancellationToken cancellationToken) => RunAsync(Log, cancellationToken);
+        void Run() => RunAsync(Log, cancellationTokenSource.Token).Wait();
 
         async Task RunAsync(ILog log, CancellationToken cancellationToken)
         {
