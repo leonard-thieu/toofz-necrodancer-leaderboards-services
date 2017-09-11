@@ -59,7 +59,10 @@ namespace toofz.Services
                 log.Fatal("Terminating application due to unobserved task exception.", e.Exception);
             };
 
+            // Services have their starting current directory set to the system directory. The current directory must 
+            // be set to the base directory so the settings file may be found.
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+            // Settings must be loaded before accessing them.
             settings.Reload();
 
             // Args are only allowed while running as a console application as they may require user input.
