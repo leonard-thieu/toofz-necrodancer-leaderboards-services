@@ -105,11 +105,15 @@ namespace toofz.Services
 
         void Run() => RunAsync(Log, cancellationTokenSource.Token).Wait();
 
-        async Task RunAsync(ILog log, CancellationToken cancellationToken)
+        internal async Task RunAsync(ILog log, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) { }
             }
         }
 
@@ -122,7 +126,7 @@ namespace toofz.Services
                 await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
-                when (!((ex is TaskCanceledException) ||
+                when (!((ex is OperationCanceledException) ||
                         (ex is TypeInitializationException)))
             {
                 LogError(log, "Failed to complete run due to an error.", ex);
