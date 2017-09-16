@@ -183,6 +183,23 @@ namespace toofz.Services.Tests
         }
 
         [TestClass]
+        public class RunAsyncMethod
+        {
+            [TestMethod]
+            public async Task TaskCanceledExceptionIsThrown_DoesNotThrow()
+            {
+                // Arrange
+                var cts = new CancellationTokenSource();
+                var worker = new CancellingWorkerRoleBase(cts);
+                var log = Mock.Of<ILog>();
+                var cancellationToken = cts.Token;
+
+                // Act -> Assert
+                await worker.RunAsync(log, cancellationToken);
+            }
+        }
+
+        [TestClass]
         public class RunAsyncCoreMethod
         {
             [TestMethod]
@@ -218,17 +235,19 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
-            public async Task RunAsyncOverrideThrowsTaskCanceledException_ThrowsTaskCanceledException()
+            public async Task RunAsyncOverrideThrowsOperationCanceledException_ThrowsOperationCanceledException()
             {
                 // Arrange
-                var worker = new CanceledWorkerRoleBase();
+                var cts = new CancellationTokenSource();
+                var worker = new CancellingWorkerRoleBase(cts);
                 var idle = Mock.Of<IIdle>();
                 var log = Mock.Of<ILog>();
+                var cancellationToken = cts.Token;
 
                 // Act -> Assert
-                await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
+                await Assert.ThrowsExceptionAsync<OperationCanceledException>(() =>
                 {
-                    return worker.RunAsyncCore(idle, log, CancellationToken.None);
+                    return worker.RunAsyncCore(idle, log, cancellationToken);
                 });
             }
 
@@ -309,13 +328,6 @@ namespace toofz.Services.Tests
                 }
             }
 
-            class CanceledWorkerRoleBase : WorkerRoleBase<ISettings>
-            {
-                public CanceledWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
-
-                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TaskCanceledException();
-            }
-
             class TypeInitializationExceptionWorkerRoleBase : WorkerRoleBase<ISettings>
             {
                 public TypeInitializationExceptionWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
@@ -354,6 +366,24 @@ namespace toofz.Services.Tests
             public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromResult(0);
+        }
+
+        class CancellingWorkerRoleBase : WorkerRoleBase<ISettings>
+        {
+            public CancellingWorkerRoleBase(CancellationTokenSource cts) : base("myServiceName", Mock.Of<ISettings>())
+            {
+                this.cts = cts;
+            }
+
+            readonly CancellationTokenSource cts;
+
+            protected override Task RunAsyncOverride(CancellationToken cancellationToken)
+            {
+                cts.Cancel();
+                cancellationToken.ThrowIfCancellationRequested();
+
+                return Task.FromResult(false);
+            }
         }
     }
 }
