@@ -340,7 +340,7 @@ namespace toofz.Services.Tests
                 var error = errorWriter.ToString();
 
                 // Assert
-                AssertHelper.NormalizedAreEqual(@"toofz.Services.Tests.dll: 'myExtraArg' is not a valid option.
+                Assert.That.NormalizedAreEqual(@"toofz.Services.Tests.dll: 'myExtraArg' is not a valid option.
 ", error);
             }
 
@@ -370,7 +370,7 @@ namespace toofz.Services.Tests
                 var output = outWriter.ToString();
 
                 // Assert
-                AssertHelper.NormalizedAreEqual(@"
+                Assert.That.NormalizedAreEqual(@"
 Usage: toofz.Services.Tests.dll [options]
 
 options:
