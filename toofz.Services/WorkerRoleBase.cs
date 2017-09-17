@@ -14,20 +14,6 @@ namespace toofz.Services
 
         static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
-        internal static void LogError(ILog log, string message, Exception ex)
-        {
-            var aggr = ex as AggregateException;
-            if (aggr != null)
-            {
-                var flattened = aggr.Flatten();
-                ex = flattened.InnerExceptions.Count == 1 ?
-                    flattened.InnerException :
-                    flattened;
-            }
-
-            log.Error(message, ex);
-        }
-
         [ExcludeFromCodeCoverage]
         static void GCCollect()
         {
@@ -133,7 +119,7 @@ namespace toofz.Services
                 when (!((ex is TaskCanceledException) ||
                         (ex is TypeInitializationException)))
             {
-                LogError(log, "Failed to complete run due to an error.", ex);
+                log.Error("Failed to complete run due to an error.", ex);
             }
 
             GCCollect();
