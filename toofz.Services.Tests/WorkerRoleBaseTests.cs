@@ -381,7 +381,7 @@ namespace toofz.Services.Tests
             {
                 cts.Cancel();
 
-                return Task.Run(() => { }, cancellationToken);
+                return Task.Factory.StartNew(() => { }, cancellationToken);
             }
         }
     }
