@@ -235,7 +235,7 @@ namespace toofz.Services.Tests
             }
 
             [TestMethod]
-            public async Task RunAsyncOverrideThrowsOperationCanceledException_ThrowsOperationCanceledException()
+            public async Task RunAsyncOverrideThrowsTaskCanceledException_ThrowsTaskCanceledException()
             {
                 // Arrange
                 var cts = new CancellationTokenSource();
@@ -365,7 +365,7 @@ namespace toofz.Services.Tests
             public EmptyWorkerRoleBase(ISettings settings) : this("myServiceName", settings) { }
             public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
 
-            protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromResult(0);
+            protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.Factory.StartNew(() => { }, cancellationToken);
         }
 
         class CancellingWorkerRoleBase : WorkerRoleBase<ISettings>

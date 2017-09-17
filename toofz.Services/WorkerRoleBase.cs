@@ -68,7 +68,7 @@ namespace toofz.Services
 
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        Thread thread;
+        Task run;
 
         /// <summary>
         /// Gets the settings object.
@@ -95,15 +95,16 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
-            thread = new Thread(Run);
-            thread.Start();
+            run = RunAsync(Log, cancellationTokenSource.Token);
+            run.ContinueWith(t =>
+            {
+                Stop();
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         #endregion
 
         #region Run
-
-        void Run() => RunAsync(Log, cancellationTokenSource.Token).Wait();
 
         internal async Task RunAsync(ILog log, CancellationToken cancellationToken)
         {
@@ -167,9 +168,9 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
-            Log.Info("Received Stop command. Stopping service...");
+            Log.Info("Stopping service...");
             cancellationTokenSource.Cancel();
-            thread.Join(TimeSpan.FromSeconds(10));
+            run.Wait();
         }
 
         #endregion
