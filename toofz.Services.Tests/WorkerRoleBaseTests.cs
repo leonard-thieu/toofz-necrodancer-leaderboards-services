@@ -245,7 +245,7 @@ namespace toofz.Services.Tests
                 var cancellationToken = cts.Token;
 
                 // Act -> Assert
-                await Assert.ThrowsExceptionAsync<OperationCanceledException>(() =>
+                await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
                 {
                     return worker.RunAsyncCore(idle, log, cancellationToken);
                 });
@@ -380,9 +380,8 @@ namespace toofz.Services.Tests
             protected override Task RunAsyncOverride(CancellationToken cancellationToken)
             {
                 cts.Cancel();
-                cancellationToken.ThrowIfCancellationRequested();
 
-                return Task.FromResult(false);
+                return Task.Run(() => { }, cancellationToken);
             }
         }
     }

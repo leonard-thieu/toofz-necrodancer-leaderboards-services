@@ -113,7 +113,10 @@ namespace toofz.Services
                 {
                     await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
                 }
-                catch (OperationCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                    // Swallow TaskCanceledException. TaskCanceledException signals to exit gracefully.
+                }
             }
         }
 
@@ -126,7 +129,7 @@ namespace toofz.Services
                 await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
-                when (!((ex is OperationCanceledException) ||
+                when (!((ex is TaskCanceledException) ||
                         (ex is TypeInitializationException)))
             {
                 LogError(log, "Failed to complete run due to an error.", ex);
