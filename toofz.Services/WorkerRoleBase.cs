@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,10 +11,9 @@ namespace toofz.Services
     {
         #region Static Members
 
-        static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
+        private static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
-        [ExcludeFromCodeCoverage]
-        static void GCCollect()
+        private static void GCCollect()
         {
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -52,9 +50,9 @@ namespace toofz.Services
 
         #region Fields
 
-        readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        Task run;
+        private Task run;
 
         /// <summary>
         /// Gets the settings object.

@@ -81,7 +81,9 @@
     <Compile Include="IWorkerRole.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="ServiceSettingsProvider.cs" />
-    <Compile Include="TaskAdapter.cs" />
+    <Compile Include="TaskAdapter.cs">
+      <DependentUpon>ITask.cs</DependentUpon>
+    </Compile>
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>

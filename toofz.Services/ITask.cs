@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace toofz.Services
 {
-    interface ITask
+    internal interface ITask
     {
         /// <summary>
         /// Creates a cancellable task that completes after a specified time interval.

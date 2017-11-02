@@ -245,7 +245,7 @@ namespace toofz.Services
         /// <exception cref="NotSupportedException">
         /// An option has an unsupported <see cref="OptionValueType"/>.
         /// </exception>
-        void WriteUsage(OptionSet options)
+        private void WriteUsage(OptionSet options)
         {
             using (var indentedTextWriter = new IndentedTextWriter(OutWriter, "  "))
             {

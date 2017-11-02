@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
@@ -12,7 +11,6 @@ namespace toofz.Services
     public static class Application
     {
         // Must receive log object from entry point so that logging is initialized properly.
-        [ExcludeFromCodeCoverage]
         public static int Run<TWorkerRole, TSettings>(
             string[] args,
             IEnvironment environment,
@@ -111,7 +109,7 @@ namespace toofz.Services
             return 0;
         }
 
-        static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
+        private static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
         {
             return
                 (keyInfo.Modifiers == ConsoleModifiers.Control && keyInfo.Key == ConsoleKey.C) ||

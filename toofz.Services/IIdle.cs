@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace toofz.Services
 {
-    interface IIdle
+    internal interface IIdle
     {
         /// <summary>
         /// Writes the time remaining until the start of the next cycle.
