@@ -2,17 +2,16 @@
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Xunit;
 
 namespace toofz.Services.Tests
 {
-    class IdleTests
+    public class IdleTests
     {
-        [TestClass]
         public class StartNew
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -22,14 +21,13 @@ namespace toofz.Services.Tests
                 var idle = Idle.StartNew(updateInterval);
 
                 // Assert
-                Assert.IsInstanceOfType(idle, typeof(Idle));
+                Assert.IsAssignableFrom<Idle>(idle);
             }
         }
 
-        [TestClass]
         public class WriteTimeRemaining
         {
-            [TestMethod]
+            [Fact]
             public void TimeRemaining_WritesTimeRemaining()
             {
                 // Arrange
@@ -47,7 +45,7 @@ namespace toofz.Services.Tests
                 mockLog.Verify(l => l.Info("Next run takes place in 15 seconds..."));
             }
 
-            [TestMethod]
+            [Fact]
             public void NoTimeRemaining_WritesStartingImmediately()
             {
                 // Arrange
@@ -66,10 +64,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        [TestClass]
         public class GetTimeRemaining
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsTimeRemaining()
             {
                 // Arrange
@@ -84,14 +81,13 @@ namespace toofz.Services.Tests
                 var remaining = idle.GetTimeRemaining(from);
 
                 // Assert
-                Assert.AreEqual(TimeSpan.FromSeconds(15), remaining);
+                Assert.Equal(TimeSpan.FromSeconds(15), remaining);
             }
         }
 
-        [TestClass]
         public class DelayAsync
         {
-            [TestMethod]
+            [Fact]
             public async Task TimeRemaining_DelaysForTimeRemaining()
             {
                 // Arrange
@@ -112,7 +108,7 @@ namespace toofz.Services.Tests
                 mockTask.Verify(t => t.Delay(It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()), Times.Once);
             }
 
-            [TestMethod]
+            [Fact]
             public async Task NoTimeRemaining_DoesNotDelay()
             {
                 // Arrange

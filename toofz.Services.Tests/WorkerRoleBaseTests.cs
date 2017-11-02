@@ -4,96 +4,94 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Xunit;
 
 namespace toofz.Services.Tests
 {
-    class WorkerRoleBaseTests
+    public class WorkerRoleBaseTests
     {
-        [TestClass]
         public class Constructor
         {
-            [TestMethod]
+            [Fact]
             public void ServiceNameIsNull_ThrowsArgumentException()
             {
                 // Arrange
                 string serviceName = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ServiceNameIsLongerThanMaxNameLength_ThrowsArgumentException()
             {
                 // Arrange
                 var serviceName = string.Join("", Enumerable.Repeat('a', ServiceBase.MaxNameLength + 1));
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ServiceNameContainsForwardSlash_ThrowsArgumentException()
             {
                 // Arrange
                 var serviceName = "/";
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ServiceNameContainsBackSlash_ThrowsArgumentException()
             {
                 // Arrange
                 var serviceName = @"\";
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EmptyWorkerRoleBase(serviceName);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 ISettings settings = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     new EmptyWorkerRoleBase(settings);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ReturnsInstance()
             {
                 // Arrange -> Act
                 var worker = new EmptyWorkerRoleBase();
 
                 // Assert
-                Assert.IsInstanceOfType(worker, typeof(WorkerRoleBase<ISettings>));
+                Assert.IsAssignableFrom<WorkerRoleBase<ISettings>>(worker);
             }
         }
 
-        [TestClass]
         public class SettingsProperty
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -103,7 +101,7 @@ namespace toofz.Services.Tests
                 var settings = worker.PublicSettings;
 
                 // Assert
-                Assert.IsInstanceOfType(settings, typeof(ISettings));
+                Assert.IsAssignableFrom<ISettings>(settings);
             }
 
             class WorkRoleBaseAdapter : WorkerRoleBase<ISettings>
@@ -116,10 +114,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        [TestClass]
         public class RunAsyncMethod
         {
-            [TestMethod]
+            [Fact]
             public async Task TaskCanceledExceptionIsThrown_DoesNotThrow()
             {
                 // Arrange
@@ -133,10 +130,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        [TestClass]
         public class RunAsyncCoreMethod
         {
-            [TestMethod]
+            [Fact]
             public async Task ReloadsSettings()
             {
                 // Arrange
@@ -153,7 +149,7 @@ namespace toofz.Services.Tests
                 mockSettings.Verify(s => s.Reload(), Times.Once);
             }
 
-            [TestMethod]
+            [Fact]
             public async Task CallsRunAsyncOverride()
             {
                 // Arrange
@@ -165,10 +161,10 @@ namespace toofz.Services.Tests
                 await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
-                Assert.AreEqual(1, worker.RunAsyncOverrideCallCount);
+                Assert.Equal(1, worker.RunAsyncOverrideCallCount);
             }
 
-            [TestMethod]
+            [Fact]
             public async Task RunAsyncOverrideThrowsTaskCanceledException_ThrowsTaskCanceledException()
             {
                 // Arrange
@@ -179,13 +175,13 @@ namespace toofz.Services.Tests
                 var cancellationToken = cts.Token;
 
                 // Act -> Assert
-                await Assert.ThrowsExceptionAsync<TaskCanceledException>(() =>
+                await Assert.ThrowsAsync<TaskCanceledException>(() =>
                 {
                     return worker.RunAsyncCore(idle, log, cancellationToken);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public async Task RunAsyncOverrideThrowsTypeInitializationException_ThrowsTypeInitializationException()
             {
                 // Arrange
@@ -194,14 +190,14 @@ namespace toofz.Services.Tests
                 var log = Mock.Of<ILog>();
 
                 // Act -> Assert
-                await Assert.ThrowsExceptionAsync<TypeInitializationException>(() =>
+                await Assert.ThrowsAsync<TypeInitializationException>(() =>
                 {
                     return worker.RunAsyncCore(idle, log, CancellationToken.None);
                 });
             }
 
-            [TestMethod]
-            public async Task RunAsyncOverrideThrowsException_LogsError()
+            [Fact]
+            public async Task RunAsyncOverrideThrows_LogsError()
             {
                 // Arrange
                 var worker = new BrokenWorkerRoleBase();
@@ -216,7 +212,7 @@ namespace toofz.Services.Tests
                 mockLog.Verify(l => l.Error("Failed to complete run due to an error.", It.IsAny<Exception>()));
             }
 
-            [TestMethod]
+            [Fact]
             public async Task WritesTimeRemaining()
             {
                 // Arrange
@@ -232,7 +228,7 @@ namespace toofz.Services.Tests
                 mockIdle.Verify(i => i.WriteTimeRemaining(), Times.Once);
             }
 
-            [TestMethod]
+            [Fact]
             public async Task DelaysForTimeRemaining()
             {
                 // Arrange
@@ -277,10 +273,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        [TestClass]
         public class OnStopMethod
         {
-            [TestMethod]
+            [Fact]
             public void StopsService()
             {
                 // Arrange

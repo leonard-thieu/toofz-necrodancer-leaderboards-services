@@ -2,16 +2,15 @@
 using System.Configuration;
 using System.IO;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace toofz.Services.Tests
 {
     public class EncryptedSecretTests
     {
-        [TestClass]
         public class Constructor
         {
-            [TestMethod]
+            [Fact]
             public void SecretIsNull_ThrowsArgumentException()
             {
                 // Arrange
@@ -19,13 +18,13 @@ namespace toofz.Services.Tests
                 int iterations = 1000;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EncryptedSecret(secret, iterations);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void SecretIsEmpty_ThrowsArgumentException()
             {
                 // Arrange
@@ -33,13 +32,13 @@ namespace toofz.Services.Tests
                 int iterations = 1000;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentException>(() =>
+                Assert.Throws<ArgumentException>(() =>
                 {
                     new EncryptedSecret(secret, iterations);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ReturnsEncryptedSecret()
             {
                 // Arrange
@@ -50,14 +49,13 @@ namespace toofz.Services.Tests
                 var encryptedSecret = new EncryptedSecret(secret, iterations);
 
                 // Assert
-                Assert.IsInstanceOfType(encryptedSecret, typeof(EncryptedSecret));
+                Assert.IsAssignableFrom<EncryptedSecret>(encryptedSecret);
             }
         }
 
-        [TestClass]
         public class Decrypt
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsDecryptedSecret()
             {
                 // Arrange
@@ -69,14 +67,13 @@ namespace toofz.Services.Tests
                 var decryptedSecret = encryptedSecret.Decrypt();
 
                 // Assert
-                Assert.AreEqual(secret, decryptedSecret);
+                Assert.Equal(secret, decryptedSecret);
             }
         }
 
-        [TestClass]
         public class GetSchema
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsNull()
             {
                 // Arrange
@@ -87,14 +84,13 @@ namespace toofz.Services.Tests
                 var schema = xml.GetSchema();
 
                 // Assert
-                Assert.IsNull(schema);
+                Assert.Null(schema);
             }
         }
 
-        [TestClass]
         public class Serialization
         {
-            [TestMethod]
+            [Fact]
             public void SerializesAndDeserializes()
             {
                 // Arrange
@@ -123,9 +119,9 @@ namespace toofz.Services.Tests
                 var myProp = values2["myProp"].PropertyValue;
 
                 // Assert
-                Assert.IsInstanceOfType(myProp, typeof(EncryptedSecret));
+                Assert.IsAssignableFrom<EncryptedSecret>(myProp);
                 var encryptedSecret2 = (EncryptedSecret)myProp;
-                Assert.AreEqual("mySecret", encryptedSecret2.Decrypt());
+                Assert.Equal("mySecret", encryptedSecret2.Decrypt());
             }
         }
     }

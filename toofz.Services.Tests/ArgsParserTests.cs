@@ -1,18 +1,16 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Options;
 using Moq;
-using toofz.TestsShared;
+using Xunit;
 
 namespace toofz.Services.Tests
 {
-    class ArgsParserTests
+    public class ArgsParserTests
     {
-        [TestClass]
         public class GetDescription
         {
-            [TestMethod]
+            [Fact]
             public void TypeIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -20,13 +18,13 @@ namespace toofz.Services.Tests
                 string name = nameof(StubSettings.UpdateInterval);
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void NameIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -34,13 +32,13 @@ namespace toofz.Services.Tests
                 string name = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void PropertyDoesNotExist_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -48,13 +46,13 @@ namespace toofz.Services.Tests
                 string name = "!";
 
                 // Act
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     ArgsParserAdapter.PublicGetDescription(type, name);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void NullDescription_ReturnsNull()
             {
                 // Arrange
@@ -65,10 +63,10 @@ namespace toofz.Services.Tests
                 var description = ArgsParserAdapter.PublicGetDescription(type, name);
 
                 // Assert
-                Assert.IsNull(description);
+                Assert.Null(description);
             }
 
-            [TestMethod]
+            [Fact]
             public void MissingSettingsDescriptionAttribute_ReturnsNull()
             {
                 // Arrange
@@ -79,14 +77,13 @@ namespace toofz.Services.Tests
                 var description = ArgsParserAdapter.PublicGetDescription(type, name);
 
                 // Assert
-                Assert.IsNull(description);
+                Assert.Null(description);
             }
         }
 
-        [TestClass]
         public class ShouldPromptForRequiredSetting
         {
-            [TestMethod]
+            [Fact]
             public void OptionIsNull_ReturnsTrue()
             {
                 // Arrange
@@ -97,10 +94,10 @@ namespace toofz.Services.Tests
                 var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
 
                 // Assert
-                Assert.IsTrue(shouldPrompt);
+                Assert.True(shouldPrompt);
             }
 
-            [TestMethod]
+            [Fact]
             public void OptionIsEmptyAndSettingIsNull_ReturnsTrue()
             {
                 // Arrange
@@ -111,10 +108,10 @@ namespace toofz.Services.Tests
                 var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
 
                 // Assert
-                Assert.IsTrue(shouldPrompt);
+                Assert.True(shouldPrompt);
             }
 
-            [TestMethod]
+            [Fact]
             public void OptionIsEmptyAndSettingIsNotNull_ReturnsFalse()
             {
                 // Arrange
@@ -125,10 +122,10 @@ namespace toofz.Services.Tests
                 var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
 
                 // Assert
-                Assert.IsFalse(shouldPrompt);
+                Assert.False(shouldPrompt);
             }
 
-            [TestMethod]
+            [Fact]
             public void OptionIsNotNullOrEmpty_ReturnsFalse()
             {
                 // Arrange
@@ -139,14 +136,13 @@ namespace toofz.Services.Tests
                 var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
 
                 // Assert
-                Assert.IsFalse(shouldPrompt);
+                Assert.False(shouldPrompt);
             }
         }
 
-        [TestClass]
         public class Constructor
         {
-            [TestMethod]
+            [Fact]
             public void InReaderIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -155,13 +151,13 @@ namespace toofz.Services.Tests
                 TextWriter errorWriter = TextWriter.Null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void OutWriterIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -170,13 +166,13 @@ namespace toofz.Services.Tests
                 TextWriter errorWriter = TextWriter.Null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ErrorWriterIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -185,13 +181,13 @@ namespace toofz.Services.Tests
                 TextWriter errorWriter = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     new ArgsParserAdapter(inReader, outWriter, errorWriter);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -203,11 +199,10 @@ namespace toofz.Services.Tests
                 var parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
 
                 // Assert
-                Assert.IsInstanceOfType(parser, typeof(ArgsParserAdapter));
+                Assert.IsAssignableFrom<ArgsParserAdapter>(parser);
             }
         }
 
-        [TestClass]
         public class InReader
         {
             public InReader()
@@ -222,18 +217,17 @@ namespace toofz.Services.Tests
             TextWriter errorWriter = new StringWriter();
             ArgsParserAdapter parser;
 
-            [TestMethod]
+            [Fact]
             public void ReturnsTextReader()
             {
                 // Arrange -> Act
                 var reader = parser.PublicInReader;
 
                 // Assert
-                Assert.IsInstanceOfType(reader, typeof(TextReader));
+                Assert.IsAssignableFrom<TextReader>(reader);
             }
         }
 
-        [TestClass]
         public class OutWriter
         {
             public OutWriter()
@@ -248,18 +242,17 @@ namespace toofz.Services.Tests
             TextWriter errorWriter = new StringWriter();
             ArgsParserAdapter parser;
 
-            [TestMethod]
+            [Fact]
             public void ReturnsTextWriter()
             {
                 // Arrange -> Act
                 var writer = parser.PublicOutWriter;
 
                 // Assert
-                Assert.IsInstanceOfType(writer, typeof(TextWriter));
+                Assert.IsAssignableFrom<TextWriter>(writer);
             }
         }
 
-        [TestClass]
         public class ErrorWriter
         {
             public ErrorWriter()
@@ -274,18 +267,17 @@ namespace toofz.Services.Tests
             TextWriter errorWriter = new StringWriter();
             ArgsParserAdapter parser;
 
-            [TestMethod]
+            [Fact]
             public void ReturnsTextWriter()
             {
                 // Arrange -> Act
                 var writer = parser.PublicErrorWriter;
 
                 // Assert
-                Assert.IsInstanceOfType(writer, typeof(TextWriter));
+                Assert.IsAssignableFrom<TextWriter>(writer);
             }
         }
 
-        [TestClass]
         public class Parse
         {
             public Parse()
@@ -300,7 +292,7 @@ namespace toofz.Services.Tests
             TextWriter errorWriter = new StringWriter();
             ArgsParserAdapter parser;
 
-            [TestMethod]
+            [Fact]
             public void ArgsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -308,13 +300,13 @@ namespace toofz.Services.Tests
                 ISettings settings = new StubSettings();
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     parser.Parse(args, settings);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -322,13 +314,13 @@ namespace toofz.Services.Tests
                 ISettings settings = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     parser.Parse(args, settings);
                 });
             }
 
-            [TestMethod]
+            [Fact]
             public void ExtraArg_ShowsError()
             {
                 // Arrange
@@ -340,11 +332,11 @@ namespace toofz.Services.Tests
                 var error = errorWriter.ToString();
 
                 // Assert
-                Assert.That.NormalizedAreEqual(@"toofz.Services.Tests.dll: 'myExtraArg' is not a valid option.
-", error);
+                Assert.Equal(@"toofz.Services.Tests.dll: 'myExtraArg' is not a valid option.
+", error, ignoreLineEndingDifferences: true);
             }
 
-            [TestMethod]
+            [Fact]
             public void ExtraArg_Returns1()
             {
                 // Arrange
@@ -355,10 +347,10 @@ namespace toofz.Services.Tests
                 var exitCode = parser.Parse(args, settings);
 
                 // Assert
-                Assert.AreEqual(1, exitCode);
+                Assert.Equal(1, exitCode);
             }
 
-            [TestMethod]
+            [Fact]
             public void Help_ShowsHelp()
             {
                 // Arrange
@@ -370,7 +362,7 @@ namespace toofz.Services.Tests
                 var output = outWriter.ToString();
 
                 // Assert
-                Assert.That.NormalizedAreEqual(@"
+                Assert.Equal(@"
 Usage: toofz.Services.Tests.dll [options]
 
 options:
@@ -380,10 +372,10 @@ options:
   --ikey=VALUE        An Application Insights instrumentation key.
   --iterations=VALUE  The number of rounds to execute a key derivation function.
   --optional[=VALUE]  This option is optional.
-", output);
+", output, ignoreLineEndingDifferences: true);
             }
 
-            [TestMethod]
+            [Fact]
             public void Help_Returns0()
             {
                 // Arrange
@@ -394,10 +386,10 @@ options:
                 var exitCode = parser.Parse(args, settings);
 
                 // Assert
-                Assert.AreEqual(0, exitCode);
+                Assert.Equal(0, exitCode);
             }
 
-            [TestMethod]
+            [Fact]
             public void IntervalIsNotSpecified_DoesNotSetUpdateInterval()
             {
                 // Arrange
@@ -412,7 +404,7 @@ options:
                 mockSettings.VerifySet(s => s.UpdateInterval = It.IsAny<TimeSpan>(), Times.Never);
             }
 
-            [TestMethod]
+            [Fact]
             public void IntervalIsSpecified_SetsUpdateIntervalToInterval()
             {
                 // Arrange
@@ -427,7 +419,7 @@ options:
                 mockSettings.VerifySet(s => s.UpdateInterval = TimeSpan.FromMinutes(10));
             }
 
-            [TestMethod]
+            [Fact]
             public void DelayIsNotSpecified_DoesNotSetDelayBeforeGC()
             {
                 // Arrange
@@ -442,7 +434,7 @@ options:
                 mockSettings.VerifySet(settings => settings.DelayBeforeGC = It.IsAny<TimeSpan>(), Times.Never);
             }
 
-            [TestMethod]
+            [Fact]
             public void DelayIsSpecified_SetsDelayBeforeGCToDelay()
             {
                 // Arrange
@@ -457,7 +449,7 @@ options:
                 mockSettings.VerifySet(s => s.DelayBeforeGC = TimeSpan.FromMinutes(10));
             }
 
-            [TestMethod]
+            [Fact]
             public void IkeyIsNotSpecified_DoesNotSetInstrumentationKey()
             {
                 // Arrange
@@ -472,7 +464,7 @@ options:
                 mockSettings.VerifySet(s => s.InstrumentationKey = It.IsAny<string>(), Times.Never);
             }
 
-            [TestMethod]
+            [Fact]
             public void IkeyIsSpecified_SetsInstrumentationKeyToIkey()
             {
                 // Arrange
@@ -487,7 +479,7 @@ options:
                 mockSettings.VerifySet(s => s.InstrumentationKey = "myInstrumentationKey");
             }
 
-            [TestMethod]
+            [Fact]
             public void IterationsIsNotSpecified_DoesNotSetKeyDerivationIterations()
             {
                 // Arrange
@@ -502,7 +494,7 @@ options:
                 mockSettings.VerifySet(s => s.KeyDerivationIterations = It.IsAny<int>(), Times.Never);
             }
 
-            [TestMethod]
+            [Fact]
             public void IterationsIsSpecified_SetsKeyDerivationIterationsToIterations()
             {
                 // Arrange
@@ -517,7 +509,7 @@ options:
                 mockSettings.VerifySet(s => s.KeyDerivationIterations = 20000);
             }
 
-            [TestMethod]
+            [Fact]
             public void SavesSettings()
             {
                 // Arrange
@@ -531,7 +523,7 @@ options:
                 mockSettings.Verify(s => s.Save());
             }
 
-            [TestMethod]
+            [Fact]
             public void Returns0()
             {
                 // Arrange
@@ -542,11 +534,10 @@ options:
                 var exitCode = parser.Parse(args, settings);
 
                 // Assert
-                Assert.AreEqual(0, exitCode);
+                Assert.Equal(0, exitCode);
             }
         }
 
-        [TestClass]
         public class ReadOption
         {
             public ReadOption()
@@ -561,7 +552,7 @@ options:
             TextWriter errorWriter = new StringWriter();
             ArgsParserAdapter parser;
 
-            [TestMethod]
+            [Fact]
             public void ReadsOptionAndOptionIsNotNullOrEmpty_ReturnsOption()
             {
                 // Arrange
@@ -574,10 +565,10 @@ options:
                 var option = parser.PublicReadOption(prompt);
 
                 // Assert
-                Assert.AreEqual("value", option);
+                Assert.Equal("value", option);
             }
 
-            [TestMethod]
+            [Fact]
             public void ReadsOptionAndOptionIsNull_PromptsAgain()
             {
                 // Arrange
@@ -591,10 +582,10 @@ options:
                 var option = parser.PublicReadOption(prompt);
 
                 // Assert
-                Assert.AreEqual("value", option);
+                Assert.Equal("value", option);
             }
 
-            [TestMethod]
+            [Fact]
             public void ReadsOptionAndOptionIsEmpty_PromptsAgain()
             {
                 // Arrange
@@ -608,11 +599,11 @@ options:
                 var option = parser.PublicReadOption(prompt);
 
                 // Assert
-                Assert.AreEqual("value", option);
+                Assert.Equal("value", option);
             }
         }
 
-        class ArgsParserAdapter : ArgsParser<Options, ISettings>
+        private class ArgsParserAdapter : ArgsParser<Options, ISettings>
         {
             public static string PublicGetDescription(Type type, string propName)
             {

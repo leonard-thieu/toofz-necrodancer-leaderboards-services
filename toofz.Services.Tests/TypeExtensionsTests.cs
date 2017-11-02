@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace toofz.Services.Tests
 {
     public class TypeExtensionsTests
     {
-        [TestClass]
         public class GetSimpleFullName
         {
-            [TestMethod]
+            [Fact]
             public void ReturnsSimpleFullName()
             {
                 // Arrange
@@ -19,17 +18,17 @@ namespace toofz.Services.Tests
                 var name = TypeExtensions.GetSimpleFullName(type);
 
                 // Assert
-                Assert.AreEqual("System.Collections.Generic.List`1", name);
+                Assert.Equal("System.Collections.Generic.List`1", name);
             }
 
-            [TestMethod]
+            [Fact]
             public void TypeIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 Type type = null;
 
                 // Act -> Assert
-                Assert.ThrowsException<ArgumentNullException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     TypeExtensions.GetSimpleFullName(type);
                 });

@@ -26,9 +26,9 @@ namespace toofz.Services.Tests.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("247080")]
-        public string AppId {
+        public uint AppId {
             get {
-                return ((string)(this["AppId"]));
+                return ((uint)(this["AppId"]));
             }
         }
         
