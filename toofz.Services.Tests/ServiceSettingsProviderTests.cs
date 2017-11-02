@@ -11,7 +11,6 @@ namespace toofz.Services.Tests
 {
     public class ServiceSettingsProviderTests
     {
-
         public class ApplicationName
         {
             [Fact]
@@ -38,7 +37,7 @@ namespace toofz.Services.Tests
                 var applicationName = provider.ApplicationName;
 
                 // Assert
-                Assert.Equal("toofz", applicationName);
+                Assert.Equal("toofz.Services", applicationName);
             }
 
             [Fact]
