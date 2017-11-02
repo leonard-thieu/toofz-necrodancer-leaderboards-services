@@ -33,29 +33,18 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.4.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Options, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="toofz, Version=7.1.0.180, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\toofz.7.1.0\lib\net45\toofz.dll</HintPath>
-    </Reference>
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="EncryptedSecret.cs" />
+    <Compile Include="EnvironmentAdapter.cs">
+      <DependentUpon>IEnvironment.cs</DependentUpon>
+    </Compile>
     <Compile Include="IArgsParser.cs" />
     <Compile Include="ArgsParser.cs">
       <DependentUpon>IArgsParser.cs</DependentUpon>
@@ -64,6 +53,7 @@
     <Compile Include="ConsoleAdapter.cs">
       <DependentUpon>IConsole.cs</DependentUpon>
     </Compile>
+    <Compile Include="IEnvironment.cs" />
     <Compile Include="IIdle.cs" />
     <Compile Include="Idle.cs">
       <DependentUpon>IIdle.cs</DependentUpon>
@@ -76,17 +66,26 @@
     <Compile Include="ITask.cs" />
     <Compile Include="IWorkerRole.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="ServiceSettingsProvider.cs" />
     <Compile Include="TaskAdapter.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="App.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="log4net">
+      <Version>2.0.8</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.ApplicationInsights">
+      <Version>2.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Mono.Options">
+      <Version>5.3.0.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

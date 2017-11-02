@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="toofz.Services.Tests.Properties" GeneratedClassName="ServiceSettingsProviderSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AppId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">247080</Value>
+    </Setting>
+    <Setting Name="ForceSave" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Duration" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:02:00</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
