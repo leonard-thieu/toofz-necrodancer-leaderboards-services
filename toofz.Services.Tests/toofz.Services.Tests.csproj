@@ -75,6 +75,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>ServiceSettingsProviderSettings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\ServiceSettingsProviderSettings.cs">
+      <DependentUpon>ServiceSettingsProviderSettings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Properties\ServiceSettingsProviderSettings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
