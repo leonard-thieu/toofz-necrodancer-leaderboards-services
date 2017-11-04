@@ -12,6 +12,16 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PackageVersion>10.0.0</PackageVersion>
+    <Authors>Leonard Thieu</Authors>
+    <Title>toofz Services Core</Title>
+    <Description>Common code for services.</Description>
+    <Copyright>Copyright © Leonard Thieu 2017</Copyright>
+    <PackageLicenseUrl>https://github.com/leonard-thieu/toofz-leaderboards-core/blob/643c694ba40a3ce88bd9e09d46224cac60fd9cb4/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/leonard-thieu/toofz-leaderboards-core</PackageProjectUrl>
+    <PackageIconUrl>https://user-images.githubusercontent.com/5265970/29717713-27e1a95c-897e-11e7-9d28-dae64be705b5.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/leonard-thieu/toofz-services-core.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +58,10 @@
     </PackageReference>
     <PackageReference Include="Mono.Options">
       <Version>5.3.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="NuGet.Build.Tasks.Pack">
+      <Version>4.4.0</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

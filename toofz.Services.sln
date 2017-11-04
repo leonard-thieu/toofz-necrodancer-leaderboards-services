@@ -8,7 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		NuGet.Config = NuGet.Config
 		README.md = README.md
-		toofz.Services\toofz.Services.nuspec = toofz.Services\toofz.Services.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "toofz.Services", "toofz.Services\toofz.Services.csproj", "{A80ACE15-8A80-4912-AED0-385CC94B3974}"
