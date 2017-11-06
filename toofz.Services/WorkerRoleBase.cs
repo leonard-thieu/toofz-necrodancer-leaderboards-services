@@ -154,7 +154,7 @@ namespace toofz.Services
         {
             Log.Info("Stopping service...");
             cancellationTokenSource.Cancel();
-            run.Wait();
+            run.Wait(TimeSpan.FromSeconds(5));
         }
 
         #endregion
