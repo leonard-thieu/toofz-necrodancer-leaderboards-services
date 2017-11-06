@@ -104,6 +104,7 @@ namespace toofz.Services
 
                 environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
                 serviceBase.Run(worker);
+                log.Info("Stopped service.");
             }
 
             return 0;
