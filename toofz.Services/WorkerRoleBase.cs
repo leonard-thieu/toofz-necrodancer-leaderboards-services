@@ -46,6 +46,8 @@ namespace toofz.Services
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
             Settings = settings;
+
+            CanShutdown = true;
         }
 
         #region Fields
@@ -158,5 +160,14 @@ namespace toofz.Services
         }
 
         #endregion
+
+        /// <summary>
+        /// When implemented in a derived class, executes when the system is shutting down. 
+        /// Specifies what should occur immediately prior to the system shutting down.
+        /// </summary>
+        protected override void OnShutdown()
+        {
+            Stop();
+        }
     }
 }
