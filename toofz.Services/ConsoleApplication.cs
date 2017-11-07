@@ -32,9 +32,6 @@ namespace toofz.Services
             // Args are only allowed while running as a console application as they may require user input.
             if (args.Any())
             {
-                if (parser == null)
-                    throw new ArgumentNullException(nameof(parser));
-
                 return parser.Parse(args, settings);
             }
 
