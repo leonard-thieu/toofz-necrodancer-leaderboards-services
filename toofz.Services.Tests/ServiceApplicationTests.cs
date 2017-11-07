@@ -14,10 +14,10 @@ namespace toofz.Services.Tests
             serviceBase = mockServiceBase.Object;
         }
 
-        protected Mock<ServiceBase> mockWorker = new Mock<ServiceBase>();
-        protected ServiceBase worker;
-        internal Mock<IServiceBaseStatic> mockServiceBase = new Mock<IServiceBaseStatic>();
-        internal IServiceBaseStatic serviceBase;
+        private Mock<ServiceBase> mockWorker = new Mock<ServiceBase>();
+        private ServiceBase worker;
+        private Mock<IServiceBaseStatic> mockServiceBase = new Mock<IServiceBaseStatic>();
+        private IServiceBaseStatic serviceBase;
 
         public class Constructor : ServiceApplicationTests
         {

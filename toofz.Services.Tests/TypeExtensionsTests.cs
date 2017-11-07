@@ -15,7 +15,7 @@ namespace toofz.Services.Tests
                 var type = typeof(List<object>);
 
                 // Act
-                var name = TypeExtensions.GetSimpleFullName(type);
+                var name = type.GetSimpleFullName();
 
                 // Assert
                 Assert.Equal("System.Collections.Generic.List`1", name);
@@ -30,7 +30,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
                 {
-                    TypeExtensions.GetSimpleFullName(type);
+                    type.GetSimpleFullName();
                 });
             }
         }

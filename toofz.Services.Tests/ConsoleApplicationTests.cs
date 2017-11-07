@@ -1,5 +1,4 @@
 ﻿using System;
-using log4net;
 using Moq;
 using Xunit;
 
@@ -15,13 +14,13 @@ namespace toofz.Services.Tests
             app = new ConsoleApplication<ISettings>(worker, parser, console);
         }
 
-        protected Mock<IConsoleWorkerRole> mockWorker = new Mock<IConsoleWorkerRole>();
-        protected IConsoleWorkerRole worker;
-        protected Mock<IArgsParser<ISettings>> mockParser = new Mock<IArgsParser<ISettings>>();
-        protected IArgsParser<ISettings> parser;
-        internal Mock<IConsole> mockConsole = new Mock<IConsole>();
-        internal IConsole console;
-        internal ConsoleApplication<ISettings> app;
+        private Mock<IConsoleWorkerRole> mockWorker = new Mock<IConsoleWorkerRole>();
+        private IConsoleWorkerRole worker;
+        private Mock<IArgsParser<ISettings>> mockParser = new Mock<IArgsParser<ISettings>>();
+        private IArgsParser<ISettings> parser;
+        private Mock<IConsole> mockConsole = new Mock<IConsole>();
+        private IConsole console;
+        private ConsoleApplication<ISettings> app;
 
         public class Constructor : ConsoleApplicationTests
         {
@@ -38,8 +37,6 @@ namespace toofz.Services.Tests
 
         public class RunOverrideMethod : ConsoleApplicationTests
         {
-            private Mock<ILog> mockLog = new Mock<ILog>();
-
             [Fact]
             public void ArgsIsNotEmpty_CallsParse()
             {
