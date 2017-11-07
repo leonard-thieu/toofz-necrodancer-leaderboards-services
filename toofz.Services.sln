@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "toofz.Services", "toofz.Services\toofz.Services.csproj", "{A80ACE15-8A80-4912-AED0-385CC94B3974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "toofz.Services.Tests", "toofz.Services.Tests\toofz.Services.Tests.csproj", "{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "toofz.Services.Tests", "toofz.Services.Tests\toofz.Services.Tests.csproj", "{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +24,10 @@ Global
 		{A80ACE15-8A80-4912-AED0-385CC94B3974}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A80ACE15-8A80-4912-AED0-385CC94B3974}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A80ACE15-8A80-4912-AED0-385CC94B3974}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDA22AE2-0BD6-49A9-B4AB-38518335EDFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

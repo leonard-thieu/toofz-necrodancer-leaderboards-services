@@ -47,7 +47,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="ConsoleApplication.cs" />
     <Compile Include="EncryptedSecret.cs" />
+    <Compile Include="HttpClientFactory.cs" />
     <Compile Include="IArgsParser.cs" />
     <Compile Include="ArgsParser.cs">
       <DependentUpon>IArgsParser.cs</DependentUpon>
@@ -79,27 +81,23 @@
     <Compile Include="ConsoleAdapter.cs">
       <DependentUpon>IConsole.cs</DependentUpon>
     </Compile>
-    <Compile Include="IEnvironment.cs" />
-    <Compile Include="EnvironmentAdapter.cs">
-      <DependentUpon>IEnvironment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HttpClientFactory.cs" />
+    <Compile Include="IConsoleWorkerRole.cs" />
     <Compile Include="IIdle.cs" />
     <Compile Include="Idle.cs">
       <DependentUpon>IIdle.cs</DependentUpon>
     </Compile>
-    <Compile Include="IServiceBase.cs" />
-    <Compile Include="ServiceBaseAdapter.cs">
-      <DependentUpon>IServiceBase.cs</DependentUpon>
+    <Compile Include="IServiceBaseStatic.cs" />
+    <Compile Include="ServiceBaseStaticAdapter.cs">
+      <DependentUpon>IServiceBaseStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="ISettings.cs" />
     <Compile Include="ITask.cs" />
-    <Compile Include="IWorkerRole.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="ServiceSettingsProvider.cs" />
     <Compile Include="TaskAdapter.cs">
       <DependentUpon>ITask.cs</DependentUpon>
     </Compile>
+    <Compile Include="Options.cs" />
+    <Compile Include="ServiceApplication.cs" />
+    <Compile Include="ServiceSettingsProvider.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
