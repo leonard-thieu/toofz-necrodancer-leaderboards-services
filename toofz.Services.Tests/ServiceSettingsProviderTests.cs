@@ -309,12 +309,12 @@ namespace toofz.Services.Tests
             }
         }
 
-        [Trait("Category", "Integration")]
+        [Trait("Category", "Uses Settings")]
+        [Collection(SettingsCollection.Name)]
         public class IntegrationTests
         {
-            public IntegrationTests()
+            public IntegrationTests(SettingsFixture settingsFixture)
             {
-                File.Delete(ServiceSettingsProvider.ConfigFileName);
                 settings = ServiceSettingsProviderSettings.Default;
                 settings.Reload();
             }

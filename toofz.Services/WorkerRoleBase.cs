@@ -6,7 +6,7 @@ using log4net;
 
 namespace toofz.Services
 {
-    public abstract class WorkerRoleBase<TSettings> : ServiceBase, IWorkerRole
+    public abstract class WorkerRoleBase<TSettings> : ServiceBase, IConsoleWorkerRole
         where TSettings : ISettings
     {
         #region Static Members

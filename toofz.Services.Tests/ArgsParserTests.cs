@@ -8,6 +8,18 @@ namespace toofz.Services.Tests
 {
     public class ArgsParserTests
     {
+        public ArgsParserTests()
+        {
+            inReader = mockInReader.Object;
+            parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
+        }
+
+        private Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
+        private TextReader inReader;
+        private TextWriter outWriter = new StringWriter();
+        private TextWriter errorWriter = new StringWriter();
+        private ArgsParserAdapter parser;
+
         public class GetDescription
         {
             [Fact]
@@ -203,20 +215,8 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class InReader
+        public class InReader : ArgsParserTests
         {
-            public InReader()
-            {
-                inReader = mockInReader.Object;
-                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
-            }
-
-            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
-            TextReader inReader;
-            TextWriter outWriter = new StringWriter();
-            TextWriter errorWriter = new StringWriter();
-            ArgsParserAdapter parser;
-
             [Fact]
             public void ReturnsTextReader()
             {
@@ -228,20 +228,8 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class OutWriter
+        public class OutWriter : ArgsParserTests
         {
-            public OutWriter()
-            {
-                inReader = mockInReader.Object;
-                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
-            }
-
-            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
-            TextReader inReader;
-            TextWriter outWriter = new StringWriter();
-            TextWriter errorWriter = new StringWriter();
-            ArgsParserAdapter parser;
-
             [Fact]
             public void ReturnsTextWriter()
             {
@@ -253,20 +241,8 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class ErrorWriter
+        public class ErrorWriter : ArgsParserTests
         {
-            public ErrorWriter()
-            {
-                inReader = mockInReader.Object;
-                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
-            }
-
-            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
-            TextReader inReader;
-            TextWriter outWriter = new StringWriter();
-            TextWriter errorWriter = new StringWriter();
-            ArgsParserAdapter parser;
-
             [Fact]
             public void ReturnsTextWriter()
             {
@@ -278,20 +254,8 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Parse
+        public class Parse : ArgsParserTests
         {
-            public Parse()
-            {
-                inReader = mockInReader.Object;
-                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
-            }
-
-            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
-            TextReader inReader;
-            TextWriter outWriter = new StringWriter();
-            TextWriter errorWriter = new StringWriter();
-            ArgsParserAdapter parser;
-
             [Fact]
             public void ArgsIsNull_ThrowsArgumentNullException()
             {
@@ -538,20 +502,8 @@ options:
             }
         }
 
-        public class ReadOption
+        public class ReadOption : ArgsParserTests
         {
-            public ReadOption()
-            {
-                inReader = mockInReader.Object;
-                parser = new ArgsParserAdapter(inReader, outWriter, errorWriter);
-            }
-
-            Mock<TextReader> mockInReader = new Mock<TextReader>(MockBehavior.Strict);
-            TextReader inReader;
-            TextWriter outWriter = new StringWriter();
-            TextWriter errorWriter = new StringWriter();
-            ArgsParserAdapter parser;
-
             [Fact]
             public void ReadsOptionAndOptionIsNotNullOrEmpty_ReturnsOption()
             {

@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace toofz.Services.Tests
 {
-    sealed class StubSettings : ISettings
+    internal sealed class StubSettings : ISettings
     {
         [SettingsDescription("The minimum amount of time that should pass between each cycle.")]
         public TimeSpan UpdateInterval { get; set; }

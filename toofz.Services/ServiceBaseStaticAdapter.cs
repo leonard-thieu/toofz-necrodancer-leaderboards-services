@@ -2,7 +2,7 @@
 
 namespace toofz.Services
 {
-    public interface IServiceBase
+    internal sealed class ServiceBaseStaticAdapter : IServiceBaseStatic
     {
         /// <summary>
         /// Registers the executable for a service with the Service Control Manager (SCM).
@@ -13,6 +13,6 @@ namespace toofz.Services
         /// <exception cref="System.ArgumentException">
         /// <paramref name="service"/> is null.
         /// </exception>
-        void Run(ServiceBase service);
+        public void Run(ServiceBase service) => ServiceBase.Run(service);
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace toofz.Services
 {
-    public interface IWorkerRole
+    public interface IConsoleWorkerRole
     {
         void Start(params string[] args);
+        void Stop();
     }
 }
