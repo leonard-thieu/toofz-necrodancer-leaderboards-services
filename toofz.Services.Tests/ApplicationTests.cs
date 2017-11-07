@@ -25,6 +25,21 @@ namespace toofz.Services.Tests
             private TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
 
             [Fact]
+            public void LogIsNull_ThrowsArgumentNullException()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings();
+                log = null;
+
+                // Act -> Assert
+                Assert.Throws<ArgumentNullException>(() =>
+                {
+                    app.Run(args, settings, log, telemetryConfiguration);
+                });
+            }
+
+            [Fact]
             public void InitializesLogging()
             {
                 // Arrange
