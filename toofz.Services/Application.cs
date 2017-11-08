@@ -74,11 +74,7 @@ namespace toofz.Services
                 telemetryConfiguration.DisableTelemetry = false;
             }
 
-            var exitCode = RunOverride(args, settings);
-
-            log.Info("Stopped service.");
-
-            return exitCode;
+            return RunOverride(args, settings);
         }
 
         internal abstract int RunOverride(string[] args, TSettings settings);
