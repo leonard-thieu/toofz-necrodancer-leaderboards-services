@@ -333,7 +333,6 @@ options:
   --help              Shows usage information.
   --interval=VALUE    The minimum amount of time that should pass between each cycle.
   --delay=VALUE       The amount of time to wait after a cycle to perform garbage collection.
-  --ikey=VALUE        An Application Insights instrumentation key.
   --iterations=VALUE  The number of rounds to execute a key derivation function.
   --optional[=VALUE]  This option is optional.
 ", output, ignoreLineEndingDifferences: true);
@@ -411,36 +410,6 @@ options:
 
                 // Assert
                 mockSettings.VerifySet(s => s.DelayBeforeGC = TimeSpan.FromMinutes(10));
-            }
-
-            [Fact]
-            public void IkeyIsNotSpecified_DoesNotSetInstrumentationKey()
-            {
-                // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.InstrumentationKey);
-
-                // Act
-                parser.Parse(args, mockSettings.Object);
-
-                // Assert
-                mockSettings.VerifySet(s => s.InstrumentationKey = It.IsAny<string>(), Times.Never);
-            }
-
-            [Fact]
-            public void IkeyIsSpecified_SetsInstrumentationKeyToIkey()
-            {
-                // Arrange
-                string[] args = new[] { "--ikey=myInstrumentationKey" };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.InstrumentationKey);
-
-                // Act
-                parser.Parse(args, mockSettings.Object);
-
-                // Assert
-                mockSettings.VerifySet(s => s.InstrumentationKey = "myInstrumentationKey");
             }
 
             [Fact]

@@ -3,7 +3,6 @@ using System.IO;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 using log4net;
-using Microsoft.ApplicationInsights.Extensibility;
 
 namespace toofz.Services
 {
@@ -30,14 +29,13 @@ namespace toofz.Services
                 app = new ServiceApplication<TSettings>(worker, new ServiceBaseStaticAdapter());
             }
 
-            return app.Run(args, settings, log, TelemetryConfiguration.Active);
+            return app.Run(args, settings, log);
         }
 
         internal int Run(
             string[] args,
             TSettings settings,
-            ILog log,
-            TelemetryConfiguration telemetryConfiguration)
+            ILog log)
         {
             if (log == null)
                 throw new ArgumentNullException(nameof(log));
@@ -61,18 +59,6 @@ namespace toofz.Services
             // Settings must be loaded before accessing them.
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             settings.Reload();
-
-            if (string.IsNullOrEmpty(settings.InstrumentationKey))
-            {
-                log.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled.");
-                telemetryConfiguration.InstrumentationKey = "";
-                telemetryConfiguration.DisableTelemetry = true;
-            }
-            else
-            {
-                telemetryConfiguration.InstrumentationKey = settings.InstrumentationKey;
-                telemetryConfiguration.DisableTelemetry = false;
-            }
 
             return RunOverride(args, settings);
         }
