@@ -8,6 +8,15 @@
 
 **toofz Services Core** contains common code used by toofz Services.
 
+### Features
+
+* Start as console application or service
+* Command-line argument parsing
+* Settings persistence
+* Secrets encryption
+* Execution cycle scheduling
+* Top-level error handling
+
 **toofz Services Core** is a component of [toofz](https://github.com/leonard-thieu/toofz-necrodancer).
 
 ### Dependents
