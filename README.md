@@ -6,7 +6,7 @@
 
 ## Overview
 
-**toofz Services Core** contains common code used by toofz Services.
+**toofz Services Core** contains common code used by **toofz Services**.
 
 ### Features
 
