@@ -13,6 +13,10 @@ namespace toofz.Services
         /// </summary>
         TimeSpan DelayBeforeGC { get; set; }
         /// <summary>
+        /// An Application Insights instrumentation key.
+        /// </summary>
+        string InstrumentationKey { get; set; }
+        /// <summary>
         /// The number of rounds to execute a key derivation function.
         /// </summary>
         int KeyDerivationIterations { get; set; }

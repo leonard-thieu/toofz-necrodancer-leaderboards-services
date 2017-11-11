@@ -49,6 +49,17 @@ namespace toofz.Services.Tests.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string InstrumentationKey {
+            get {
+                return ((string)(this["InstrumentationKey"]));
+            }
+            set {
+                this["InstrumentationKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int KeyDerivationIterations {
             get {

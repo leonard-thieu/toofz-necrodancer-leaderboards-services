@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using log4net;
+using Microsoft.ApplicationInsights.Extensibility;
 using Moq;
 using toofz.Services.Tests.Properties;
 using Xunit;
@@ -21,6 +22,7 @@ namespace toofz.Services.Tests
             private Application<ISettings> app;
             private readonly Mock<ILog> mockLog = new Mock<ILog>();
             private ILog log;
+            private TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
 
             [Fact]
             public void LogIsNull_ThrowsArgumentNullException()
@@ -33,7 +35,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
                 {
-                    app.Run(args, settings, log);
+                    app.Run(args, settings, log, telemetryConfiguration);
                 });
             }
 
@@ -45,7 +47,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new StubSettings();
 
                 // Act
-                app.Run(args, settings, log);
+                app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
                 mockLog.Verify(l => l.Debug("Initialized logging."));
@@ -61,7 +63,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
                 {
-                    app.Run(args, settings, log);
+                    app.Run(args, settings, log, telemetryConfiguration);
                 });
             }
 
@@ -75,7 +77,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
                 {
-                    app.Run(args, settings, log);
+                    app.Run(args, settings, log, telemetryConfiguration);
                 });
             }
 
@@ -88,10 +90,94 @@ namespace toofz.Services.Tests
                 var settings = mockSettings.Object;
 
                 // Act
-                app.Run(args, settings, log);
+                app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
                 mockSettings.Verify(s => s.Reload(), Times.Once);
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsNull_LogsWarning()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = null };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsNull_DisablesTelemetry()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = null };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                Assert.True(telemetryConfiguration.DisableTelemetry);
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsEmpty_LogsWarning()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "" };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsEmpty_DisablesTelemetry()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "" };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                Assert.True(telemetryConfiguration.DisableTelemetry);
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsSet_SetsInstrumentationKeyForTelemetry()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                Assert.Equal("myInstrumentationKey", telemetryConfiguration.InstrumentationKey);
+            }
+
+            [Fact]
+            public void InstrumentationKeyIsSet_EnablesTelemetry()
+            {
+                // Arrange
+                var args = new string[0];
+                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
+
+                // Act
+                app.Run(args, settings, log, telemetryConfiguration);
+
+                // Assert
+                Assert.False(telemetryConfiguration.DisableTelemetry);
             }
 
             [Fact]
@@ -102,7 +188,7 @@ namespace toofz.Services.Tests
                 ISettings settings = new StubSettings();
 
                 // Act
-                var ret = app.Run(args, settings, log);
+                var ret = app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
                 Assert.Equal(0, ret);
@@ -112,6 +198,12 @@ namespace toofz.Services.Tests
             [Collection(SettingsCollection.Name)]
             public class IntegrationTests
             {
+                private static void ResetEnvironment()
+                {
+                    // Services start with their currenct directory set to the system directory.
+                    SetCurrentDirectoryToSystemDirectory();
+                }
+
                 private static void SetCurrentDirectoryToSystemDirectory()
                 {
                     Directory.SetCurrentDirectory(Environment.SystemDirectory);
@@ -124,8 +216,7 @@ namespace toofz.Services.Tests
 
                 public IntegrationTests(SettingsFixture settingsFixture)
                 {
-                    // Services start with their currenct directory set to the system directory.
-                    SetCurrentDirectoryToSystemDirectory();
+                    ResetEnvironment();
 
                     settings = TestSettings.Default;
                     settings.Reload();
@@ -139,24 +230,23 @@ namespace toofz.Services.Tests
                     // Arrange
                     // Create a settings file that has the instrumentation key set
                     SetCurrentDirectoryToBaseDirectory();
-                    var oldDelayBeforeGC = settings.DelayBeforeGC;
-                    var newDelayBeforeGC = oldDelayBeforeGC.Add(TimeSpan.FromSeconds(5));
-                    settings.DelayBeforeGC = newDelayBeforeGC;
+                    settings.InstrumentationKey = "myInstrumentationKey";
                     settings.Save();
 
                     // Reset environment
-                    settings.DelayBeforeGC = oldDelayBeforeGC;
+                    settings.InstrumentationKey = null;
                     SetCurrentDirectoryToSystemDirectory();
 
                     var app = new FakeApplication();
                     var args = new string[0];
                     var log = Mock.Of<ILog>();
+                    var telemetryConfiguration = TelemetryConfiguration.Active;
 
                     // Act
-                    app.Run(args, settings, log);
+                    app.Run(args, settings, log, telemetryConfiguration);
 
                     // Assert
-                    Assert.Equal(newDelayBeforeGC, settings.DelayBeforeGC);
+                    Assert.Equal("myInstrumentationKey", telemetryConfiguration.InstrumentationKey);
                 }
 
                 private class FakeApplication : Application<ISettings>
