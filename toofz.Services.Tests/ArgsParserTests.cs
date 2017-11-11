@@ -538,9 +538,9 @@ options:
 
             public ArgsParserAdapter(TextReader inReader, TextWriter outWriter, TextWriter errorWriter) : base(inReader, outWriter, errorWriter) { }
 
-            public TextReader PublicInReader { get => InReader; }
-            public TextWriter PublicOutWriter { get => OutWriter; }
-            public TextWriter PublicErrorWriter { get => ErrorWriter; }
+            public TextReader PublicInReader => InReader;
+            public TextWriter PublicOutWriter => OutWriter;
+            public TextWriter PublicErrorWriter => ErrorWriter;
 
             protected override string EntryAssemblyFileName { get; } = Path.GetFileName(typeof(ArgsParserAdapter).Assembly.Location);
 
