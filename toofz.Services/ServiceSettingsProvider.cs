@@ -20,7 +20,6 @@ namespace toofz.Services
         private const string NameName = "name";
         private const string ValueName = "value";
 
-        private static XmlSerializerNamespaces emptyNamespaces;
         private static XmlSerializerNamespaces EmptyNamespaces
         {
             get
@@ -33,8 +32,8 @@ namespace toofz.Services
                 return emptyNamespaces;
             }
         }
+        private static XmlSerializerNamespaces emptyNamespaces;
 
-        private Func<TextReader> getSettingsReader = () => File.OpenText(ConfigFileName);
         /// <summary>
         /// Gets or sets a factory function that returns an instance of <see cref="TextReader"/> which is used to read settings.
         /// </summary>
@@ -46,8 +45,8 @@ namespace toofz.Services
             get => getSettingsReader;
             set => getSettingsReader = value ?? throw new ArgumentNullException(nameof(value));
         }
+        private Func<TextReader> getSettingsReader = () => File.OpenText(ConfigFileName);
 
-        private Func<TextWriter> getSettingsWriter = () => File.CreateText(ConfigFileName);
         /// <summary>
         /// Gets or sets a factory function that returns an instance of <see cref="TextWriter"/> which is used to write settings.
         /// </summary>
@@ -59,8 +58,8 @@ namespace toofz.Services
             get => getSettingsWriter;
             set => getSettingsWriter = value ?? throw new ArgumentNullException(nameof(value));
         }
+        private Func<TextWriter> getSettingsWriter = () => File.CreateText(ConfigFileName);
 
-        private string applicationName = Assembly.GetExecutingAssembly().GetName().Name;
         /// <summary>
         /// Gets or sets the name of the currently running application.
         /// </summary>
@@ -72,6 +71,7 @@ namespace toofz.Services
             get => applicationName;
             set => applicationName = value ?? throw new ArgumentNullException(nameof(value));
         }
+        private string applicationName = Assembly.GetExecutingAssembly().GetName().Name;
 
         /// <summary>
         /// Initializes the provider.
