@@ -20,19 +20,6 @@ namespace toofz.Services.Tests
                 // Assert
                 Assert.Equal("System.Collections.Generic.List`1", name);
             }
-
-            [Fact]
-            public void TypeIsNull_ThrowsArgumentNullException()
-            {
-                // Arrange
-                Type type = null;
-
-                // Act -> Assert
-                Assert.Throws<ArgumentNullException>(() =>
-                {
-                    type.GetSimpleFullName();
-                });
-            }
         }
     }
 }
