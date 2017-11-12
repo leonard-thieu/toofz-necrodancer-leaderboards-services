@@ -4,6 +4,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
+using Microsoft.ApplicationInsights;
 using Moq;
 using Xunit;
 
@@ -104,10 +105,8 @@ namespace toofz.Services.Tests
                 Assert.IsAssignableFrom<ISettings>(settings);
             }
 
-            private class WorkRoleBaseAdapter : WorkerRoleBase<ISettings>
+            private class WorkRoleBaseAdapter : TestWorkerRoleBase
             {
-                public WorkRoleBaseAdapter() : base("myServiceName", Mock.Of<ISettings>()) { }
-
                 public ISettings PublicSettings => Settings;
 
                 protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new NotImplementedException();
@@ -244,10 +243,8 @@ namespace toofz.Services.Tests
                 mockIdle.Verify(i => i.DelayAsync(It.IsAny<CancellationToken>()), Times.Once);
             }
 
-            private class MockWorkerRoleBase : WorkerRoleBase<ISettings>
+            private class MockWorkerRoleBase : TestWorkerRoleBase
             {
-                public MockWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
-
                 public int RunAsyncOverrideCallCount { get; private set; }
 
                 protected override Task RunAsyncOverride(CancellationToken cancellationToken)
@@ -258,17 +255,13 @@ namespace toofz.Services.Tests
                 }
             }
 
-            private class TypeInitializationExceptionWorkerRoleBase : WorkerRoleBase<ISettings>
+            private class TypeInitializationExceptionWorkerRoleBase : TestWorkerRoleBase
             {
-                public TypeInitializationExceptionWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
-
                 protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TypeInitializationException(nameof(TypeInitializationExceptionWorkerRoleBase), new Exception());
             }
 
-            private class BrokenWorkerRoleBase : WorkerRoleBase<ISettings>
+            private class BrokenWorkerRoleBase : TestWorkerRoleBase
             {
-                public BrokenWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>()) { }
-
                 protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new Exception();
             }
         }
@@ -292,14 +285,14 @@ namespace toofz.Services.Tests
             public EmptyWorkerRoleBase() : this("myServiceName", Mock.Of<ISettings>()) { }
             public EmptyWorkerRoleBase(string serviceName) : this(serviceName, Mock.Of<ISettings>()) { }
             public EmptyWorkerRoleBase(ISettings settings) : this("myServiceName", settings) { }
-            public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings) { }
+            public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings, new TelemetryClient()) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.Factory.StartNew(() => { }, cancellationToken);
         }
 
-        private class CancellingWorkerRoleBase : WorkerRoleBase<ISettings>
+        private class CancellingWorkerRoleBase : TestWorkerRoleBase
         {
-            public CancellingWorkerRoleBase(CancellationTokenSource cts) : base("myServiceName", Mock.Of<ISettings>())
+            public CancellingWorkerRoleBase(CancellationTokenSource cts)
             {
                 this.cts = cts;
             }
@@ -312,6 +305,11 @@ namespace toofz.Services.Tests
 
                 return Task.Factory.StartNew(() => { }, cancellationToken);
             }
+        }
+
+        private abstract class TestWorkerRoleBase : WorkerRoleBase<ISettings>
+        {
+            protected TestWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>(), new TelemetryClient()) { }
         }
     }
 }

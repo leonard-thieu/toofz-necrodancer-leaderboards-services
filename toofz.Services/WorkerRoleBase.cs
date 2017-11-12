@@ -3,6 +3,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
+using Microsoft.ApplicationInsights;
 
 namespace toofz.Services
 {
@@ -39,7 +40,10 @@ namespace toofz.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="settings"/> is null.
         /// </exception>
-        protected WorkerRoleBase(string serviceName, TSettings settings)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="telemetryClient"/> is null.
+        /// </exception>
+        protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient)
         {
             ServiceName = serviceName;
 
@@ -47,19 +51,24 @@ namespace toofz.Services
                 throw new ArgumentNullException(nameof(settings));
             Settings = settings;
 
+            TelemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
+
             CanShutdown = true;
         }
 
         #region Fields
 
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
         private Task run;
 
         /// <summary>
         /// Gets the settings object.
         /// </summary>
         protected TSettings Settings { get; }
+        /// <summary>
+        /// Get the <see cref="Microsoft.ApplicationInsights.TelemetryClient"/> to track telemetry.
+        /// </summary>
+        protected TelemetryClient TelemetryClient { get; }
 
         #endregion
 
