@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace toofz.Services
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
+        [Conditional("FEATURE_GC_ENDOFCYCLE")]
         private static void GCCollect()
         {
             GC.Collect();
