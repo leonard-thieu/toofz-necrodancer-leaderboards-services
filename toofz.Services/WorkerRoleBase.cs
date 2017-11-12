@@ -57,7 +57,7 @@ namespace toofz.Services
 
         #region Fields
 
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource cancellationTokenSource;
         private Task run;
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
+            cancellationTokenSource = new CancellationTokenSource();
             run = RunAsync(Log, cancellationTokenSource.Token);
             run.ContinueWith(t =>
             {
@@ -164,11 +165,13 @@ namespace toofz.Services
         {
             Log.Info("Stopping service...");
             cancellationTokenSource.Cancel();
+            // TODO: Consider making this configurable.
             if (!run.Wait(TimeSpan.FromSeconds(5)))
             {
                 Log.Warn("Forced service to stop.");
             }
             Log.Info("Stopped service.");
+            cancellationTokenSource.Dispose();
         }
 
         #endregion
