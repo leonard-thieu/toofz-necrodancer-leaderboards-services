@@ -130,6 +130,7 @@ namespace toofz.Services
                 when (!((ex is TaskCanceledException) ||
                         (ex is TypeInitializationException)))
             {
+                TelemetryClient.TrackException(ex);
                 log.Error("Failed to complete run due to an error.", ex);
             }
 
