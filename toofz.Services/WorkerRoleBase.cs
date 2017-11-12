@@ -175,6 +175,9 @@ namespace toofz.Services
             }
             Log.Info("Stopped service.");
             cancellationTokenSource.Dispose();
+
+            TelemetryClient.Flush();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
         }
 
         #endregion
