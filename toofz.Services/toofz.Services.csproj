@@ -17,8 +17,8 @@
     <Title>toofz Services Core</Title>
     <Description>Common code for services.</Description>
     <Copyright>Copyright © Leonard Thieu 2017</Copyright>
-    <PackageLicenseUrl>https://github.com/leonard-thieu/toofz-leaderboards-core/blob/643c694ba40a3ce88bd9e09d46224cac60fd9cb4/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/leonard-thieu/toofz-leaderboards-core</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/leonard-thieu/toofz-services-core/blob/9dc8b522eceff0cf62f98275ecd5c22e30951ee8/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/leonard-thieu/toofz-services-core</PackageProjectUrl>
     <PackageIconUrl>https://user-images.githubusercontent.com/5265970/29717713-27e1a95c-897e-11e7-9d28-dae64be705b5.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/leonard-thieu/toofz-services-core.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
