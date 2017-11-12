@@ -45,12 +45,11 @@ namespace toofz.Services
         /// </exception>
         protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient)
         {
-            ServiceName = serviceName;
-
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
-            Settings = settings;
 
+            ServiceName = serviceName;
+            Settings = settings;
             TelemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
 
             CanShutdown = true;
