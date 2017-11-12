@@ -2,6 +2,9 @@
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Represents the standard input, output, and error streams for console applications.
+    /// </summary>
     internal interface IConsole
     {
         /// <summary>
