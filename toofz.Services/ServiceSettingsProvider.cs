@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
@@ -13,6 +14,7 @@ namespace toofz.Services
     public sealed class ServiceSettingsProvider : SettingsProvider
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ServiceSettingsProvider));
+        private static readonly Dictionary<Type, XmlSerializer> XmlSerializers = new Dictionary<Type, XmlSerializer>();
 
         internal const string ConfigFileName = "user.config";
         private const string SettingsName = "settings";
@@ -33,6 +35,21 @@ namespace toofz.Services
             }
         }
         private static XmlSerializerNamespaces emptyNamespaces;
+
+        private static XmlSerializer GetXmlSerializer(Type type)
+        {
+            if (XmlSerializers.TryGetValue(type, out var serializer))
+            {
+                return serializer;
+            }
+            else
+            {
+                serializer = XmlSerializer.FromTypes(new[] { type })[0];
+                XmlSerializers.Add(type, serializer);
+
+                return serializer;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a factory function that returns an instance of <see cref="TextReader"/> which is used to read settings.
@@ -143,8 +160,7 @@ namespace toofz.Services
                             {
                                 valueEl.Save(ms);
                                 ms.Position = 0;
-                                var serializer = new XmlSerializer(property.PropertyType);
-                                value.PropertyValue = serializer.Deserialize(ms);
+                                value.PropertyValue = GetXmlSerializer(property.PropertyType).Deserialize(ms);
                             }
                         }
                     }
@@ -192,9 +208,8 @@ namespace toofz.Services
                 {
                     using (var sw = new StringWriter())
                     {
-                        var serializer = new XmlSerializer(property.PropertyType);
                         // Serialize without namespaces
-                        serializer.Serialize(sw, value.PropertyValue, EmptyNamespaces);
+                        GetXmlSerializer(property.PropertyType).Serialize(sw, value.PropertyValue, EmptyNamespaces);
                         // Inserting the serialized value would cause it to be escaped. To get around that, the value is deserialized
                         // via LINQ to XML and inserted into the document.
                         var valueDoc = XDocument.Parse(sw.ToString());
