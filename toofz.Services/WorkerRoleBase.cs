@@ -134,6 +134,8 @@ namespace toofz.Services
                 log.Error("Failed to complete run due to an error.", ex);
             }
 
+            TelemetryClient.Flush();
+
             GCCollect();
 
             idle.WriteTimeRemaining();
