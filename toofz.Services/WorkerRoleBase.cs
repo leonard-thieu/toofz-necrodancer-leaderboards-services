@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Microsoft.ApplicationInsights;
-using toofz.Services.Logging;
 
 namespace toofz.Services
 {
@@ -13,7 +13,7 @@ namespace toofz.Services
     {
         #region Static Members
 
-        private static readonly ILog Log = LogProvider.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
+        private static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
 
         [Conditional("FEATURE_GC_ENDOFCYCLE")]
         private static void GCCollect()
@@ -131,7 +131,7 @@ namespace toofz.Services
                         (ex is TypeInitializationException)))
             {
                 TelemetryClient.TrackException(ex);
-                log.Error(ex, "Failed to complete run due to an error.");
+                log.Error("Failed to complete run due to an error.", ex);
             }
 
             TelemetryClient.Flush();

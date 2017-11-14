@@ -7,13 +7,13 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using toofz.Services.Logging;
+using log4net;
 
 namespace toofz.Services
 {
     public sealed class ServiceSettingsProvider : SettingsProvider
     {
-        private static readonly ILog Log = LogProvider.GetLogger(typeof(ServiceSettingsProvider));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ServiceSettingsProvider));
         private static readonly Dictionary<Type, XmlSerializer> XmlSerializers = new Dictionary<Type, XmlSerializer>();
 
         internal const string ConfigFileName = "user.config";

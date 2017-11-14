@@ -2,8 +2,8 @@
 using System.IO;
 using System.ServiceProcess;
 using System.Threading.Tasks;
+using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
-using toofz.Services.Logging;
 
 namespace toofz.Services
 {
