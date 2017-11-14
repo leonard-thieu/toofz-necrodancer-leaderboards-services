@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
 using Moq;
+using toofz.Services.Logging;
 using toofz.Services.Tests.Properties;
 using Xunit;
 
@@ -16,6 +16,9 @@ namespace toofz.Services.Tests
             {
                 app = mockApp.Object;
                 log = mockLog.Object;
+
+                mockLog.Setup(l => l.Log(LogLevel.Debug, null, null)).Returns(true);
+                mockLog.Setup(l => l.Log(LogLevel.Warn, null, null)).Returns(true);
             }
 
             private readonly Mock<Application<ISettings>> mockApp = new Mock<Application<ISettings>>();
@@ -50,7 +53,12 @@ namespace toofz.Services.Tests
                 app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
-                mockLog.Verify(l => l.Debug("Initialized logging."));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Debug,
+                        LogUtil.IsMessage("Initialized logging."),
+                        null),
+                    Times.Once);
             }
 
             [Fact]
@@ -107,7 +115,12 @@ namespace toofz.Services.Tests
                 app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
-                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Warn,
+                        LogUtil.IsMessage("The setting 'InstrumentationKey' is not set. Telemetry is disabled."),
+                        null),
+                    Times.Once);
             }
 
             [Fact]
@@ -135,7 +148,12 @@ namespace toofz.Services.Tests
                 app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
-                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Warn,
+                        LogUtil.IsMessage("The setting 'InstrumentationKey' is not set. Telemetry is disabled."),
+                        null),
+                    Times.Once);
             }
 
             [Fact]

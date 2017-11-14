@@ -104,6 +104,7 @@
     <Compile Include="ConsoleApplicationTests.cs" />
     <Compile Include="EncryptedSecretTests.cs" />
     <Compile Include="IdleTests.cs" />
+    <Compile Include="LogUtil.cs" />
     <Compile Include="ServiceApplicationTests.cs" />
     <Compile Include="ServiceSettingsProviderTests.cs" />
     <Compile Include="SettingsFixture.cs" />

@@ -3,9 +3,9 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
 using Microsoft.ApplicationInsights;
 using Moq;
+using toofz.Services.Logging;
 using Xunit;
 
 namespace toofz.Services.Tests
@@ -202,13 +202,19 @@ namespace toofz.Services.Tests
                 var worker = new BrokenWorkerRoleBase();
                 var idle = Mock.Of<IIdle>();
                 var mockLog = new Mock<ILog>();
+                mockLog.Setup(l => l.Log(LogLevel.Error, null, null)).Returns(true);
                 var log = mockLog.Object;
 
                 // Act
                 await worker.RunAsyncCore(idle, log, CancellationToken.None);
 
                 // Assert
-                mockLog.Verify(l => l.Error("Failed to complete run due to an error.", It.IsAny<Exception>()));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Error,
+                        LogUtil.IsMessage("Failed to complete run due to an error."),
+                        It.IsAny<Exception>()),
+                    Times.Once);
             }
 
             [Fact]

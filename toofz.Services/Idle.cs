@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
+using toofz.Services.Logging;
 
 namespace toofz.Services
 {
     internal sealed class Idle : IIdle
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Idle));
+        private static readonly ILog Log = LogProvider.GetLogger(typeof(Idle));
 
         public static Idle StartNew(TimeSpan updateInterval) => new Idle(updateInterval, DateTime.UtcNow, Log);
 

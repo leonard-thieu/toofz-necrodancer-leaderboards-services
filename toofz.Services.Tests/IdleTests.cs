@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
 using Moq;
+using toofz.Services.Logging;
 using Xunit;
 
 namespace toofz.Services.Tests
@@ -34,6 +34,7 @@ namespace toofz.Services.Tests
                 TimeSpan updateInterval = TimeSpan.FromSeconds(75);
                 DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
                 var mockLog = new Mock<ILog>();
+                mockLog.Setup(l => l.Log(LogLevel.Info, null, null)).Returns(true);
                 var log = mockLog.Object;
                 var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(60);
@@ -42,7 +43,12 @@ namespace toofz.Services.Tests
                 idle.WriteTimeRemaining(from);
 
                 // Assert
-                mockLog.Verify(l => l.Info("Next run takes place in 15 seconds..."));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Info,
+                        LogUtil.IsMessage("Next run takes place in 15 seconds..."),
+                        It.IsAny<Exception>()),
+                    Times.Once);
             }
 
             [Fact]
@@ -52,6 +58,7 @@ namespace toofz.Services.Tests
                 TimeSpan updateInterval = TimeSpan.FromSeconds(75);
                 DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
                 var mockLog = new Mock<ILog>();
+                mockLog.Setup(l => l.Log(LogLevel.Info, null, null)).Returns(true);
                 var log = mockLog.Object;
                 var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(90);
@@ -60,7 +67,12 @@ namespace toofz.Services.Tests
                 idle.WriteTimeRemaining(from);
 
                 // Assert
-                mockLog.Verify(l => l.Info("Next run starting immediately..."));
+                mockLog.Verify(
+                    l => l.Log(
+                        LogLevel.Info,
+                        LogUtil.IsMessage("Next run starting immediately..."),
+                        It.IsAny<Exception>()),
+                    Times.Once);
             }
         }
 
