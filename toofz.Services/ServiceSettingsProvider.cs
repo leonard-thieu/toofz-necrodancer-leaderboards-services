@@ -160,8 +160,15 @@ namespace toofz.Services
                             {
                                 valueEl.Save(ms);
                                 ms.Position = 0;
-                                // TODO: InvalidOperationException is thrown on deserialization failure.
-                                value.PropertyValue = GetXmlSerializer(property.PropertyType).Deserialize(ms);
+                                var serializer = GetXmlSerializer(property.PropertyType);
+                                try
+                                {
+                                    value.PropertyValue = serializer.Deserialize(ms);
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    if (Log.IsWarnEnabled) { Log.Warn($"Failed to read setting '{property.Name}'.", ex); }
+                                }
                             }
                         }
                     }

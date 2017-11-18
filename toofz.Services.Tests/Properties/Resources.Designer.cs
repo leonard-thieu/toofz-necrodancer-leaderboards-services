@@ -104,9 +104,25 @@ namespace toofz.Services.Tests.Properties {
         ///    &lt;value&gt;
         ///      &lt;XmlSerializable&gt;
         ///        &lt;Name&gt;My Serializable Type&lt;/Name&gt;
-        ///        &lt;Number&gt;22&lt;/Number&gt;
-        ///        &lt;Data d1p1:nil=&quot;true&quot; xmlns:d1p1=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; /&gt;
+        ///        &lt;Number&gt;a&lt;/Number&gt;
+        ///        &lt;Data&gt;AQIDBA==&lt;/Data&gt;
         ///      &lt;/XmlSerializable&gt;
+        ///    &lt;/value&gt;
+        ///  &lt;/setting&gt;
+        ///&lt;/settings&gt;.
+        /// </summary>
+        internal static string SerializeAsXmlErrorConfig {
+            get {
+                return ResourceManager.GetString("SerializeAsXmlErrorConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;
+        ///&lt;settings&gt;
+        ///  &lt;setting name=&quot;myProp&quot;&gt;
+        ///    &lt;value&gt;
+        ///      &lt;XmlSerializable xmlns:d1p1=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; /&gt;
         ///    &lt;/value&gt;
         ///  &lt;/setting&gt;
         ///&lt;/settings&gt;.

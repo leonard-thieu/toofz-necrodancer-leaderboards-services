@@ -199,6 +199,23 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
+            public void SerializeAsXml_HasError_DoesNotSetValue()
+            {
+                // Arrange
+                provider.GetSettingsReader = () => new StringReader(Resources.SerializeAsXmlErrorConfig);
+                var property = SettingsUtil.CreateProperty<XmlSerializable>("myProp");
+                property.SerializeAs = SettingsSerializeAs.Xml;
+                properties.Add(property);
+
+                // Act
+                var values = provider.GetPropertyValues(context, properties);
+                var myProp = values["myProp"].PropertyValue;
+
+                // Assert
+                Assert.Null(myProp);
+            }
+
+            [Fact]
             public void HandlesSerializeAsXml()
             {
                 // Arrange

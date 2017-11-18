@@ -96,6 +96,7 @@
     </Compile>
     <None Include="Resources\BasicConfig.config" />
     <None Include="Resources\SerializeAsXmlConfig.config" />
+    <None Include="Resources\SerializeAsXmlErrorConfig.config" />
     <None Include="Resources\SerializeAsXmlIsNilConfig.config" />
     <None Include="Resources\TimeSpanConfig.config" />
   </ItemGroup>
