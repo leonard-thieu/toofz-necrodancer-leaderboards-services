@@ -41,10 +41,16 @@ namespace toofz.Services
         /// <exception cref="ArgumentException">
         /// <paramref name="secret"/> cannot be null or empty.
         /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="iterations"/> must be a positive number.
+        /// </exception>
         public EncryptedSecret(string secret, int iterations) : this()
         {
             if (string.IsNullOrEmpty(secret))
                 throw new ArgumentException($"{nameof(secret)} cannot be null or empty.", nameof(secret));
+            // The constructor for Rfc2898DeriveBytes performs the same validation but returns a generic, non-descriptive exception message.
+            if (iterations < 1)
+                throw new ArgumentOutOfRangeException(nameof(iterations), iterations, $"{nameof(iterations)} must be a positive number.");
 
             using (var pbkdf2 = new Rfc2898DeriveBytes(Password, SaltSize, iterations))
             using (var alg = Rijndael.Create())
