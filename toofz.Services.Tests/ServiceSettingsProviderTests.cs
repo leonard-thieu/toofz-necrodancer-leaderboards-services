@@ -182,7 +182,7 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
-            public void SerializeAsXmlIsNil_DoesNotSetValue()
+            public void SerializeAsXml_IsNil_DoesNotSetValue()
             {
                 // Arrange
                 provider.GetSettingsReader = () => new StringReader(Resources.SerializeAsXmlIsNilConfig);
