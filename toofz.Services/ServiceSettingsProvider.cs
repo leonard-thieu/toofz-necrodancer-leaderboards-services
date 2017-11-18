@@ -152,7 +152,7 @@ namespace toofz.Services
                     else if (property.SerializeAs == SettingsSerializeAs.Xml)
                     {
                         var valueEl = setting.Element(ValueName)?.Elements()?.FirstOrDefault();
-                        if (valueEl != null)
+                        if (valueEl != null && !valueEl.IsNil())
                         {
                             // The XmlReader returned from XObject.CreateReader() cannot read Base64 encoded values.
                             // To get around that, the value is serialized into memory and then deserialized using XmlSerializer.
@@ -160,6 +160,7 @@ namespace toofz.Services
                             {
                                 valueEl.Save(ms);
                                 ms.Position = 0;
+                                // TODO: InvalidOperationException is thrown on deserialization failure.
                                 value.PropertyValue = GetXmlSerializer(property.PropertyType).Deserialize(ms);
                             }
                         }

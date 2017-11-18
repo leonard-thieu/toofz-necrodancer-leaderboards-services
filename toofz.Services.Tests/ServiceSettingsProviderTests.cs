@@ -11,13 +11,14 @@ namespace toofz.Services.Tests
 {
     public class ServiceSettingsProviderTests
     {
-        public class ApplicationName
+        private readonly ServiceSettingsProvider provider = new ServiceSettingsProvider();
+
+        public class ApplicationName : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 string applicationName = null;
 
                 // Act -> Assert
@@ -30,10 +31,7 @@ namespace toofz.Services.Tests
             [Fact]
             public void ReturnsADefaultValue()
             {
-                // Arrange
-                var provider = new ServiceSettingsProvider();
-
-                // Act
+                // Arrange -> Act
                 var applicationName = provider.ApplicationName;
 
                 // Assert
@@ -44,7 +42,6 @@ namespace toofz.Services.Tests
             public void GetSetBehavior()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 string applicationName = "My Application";
 
                 // Act
@@ -55,13 +52,12 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetSettingsReader
+        public class GetSettingsReader : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 Func<TextReader> getSettingsReader = null;
 
                 // Act -> Assert
@@ -74,10 +70,7 @@ namespace toofz.Services.Tests
             [Fact]
             public void ReturnsADefaultValue()
             {
-                // Arrange
-                var provider = new ServiceSettingsProvider();
-
-                // Act
+                // Arrange -> Act
                 var getSettingsReader = provider.GetSettingsReader;
 
                 // Assert
@@ -88,7 +81,6 @@ namespace toofz.Services.Tests
             public void GetSetBehavior()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 Func<TextReader> getSettingsReader = () => new StringReader("");
 
                 // Act
@@ -99,13 +91,12 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetSettingsWriter
+        public class GetSettingsWriter : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 Func<TextWriter> getSettingsWriter = null;
 
                 // Act -> Assert
@@ -118,10 +109,7 @@ namespace toofz.Services.Tests
             [Fact]
             public void ReturnsADefaultValue()
             {
-                // Arrange
-                var provider = new ServiceSettingsProvider();
-
-                // Act
+                // Arrange -> Act
                 var getSettingsWriter = provider.GetSettingsWriter;
 
                 // Assert
@@ -132,7 +120,6 @@ namespace toofz.Services.Tests
             public void GetSetBehavior()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 Func<TextWriter> getSettingsWriter = () => new StringWriter();
 
                 // Act
@@ -143,26 +130,26 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Initialize
+        public class Initialize : ServiceSettingsProviderTests
         {
+            private string name = "myName";
+            private NameValueCollection config = new NameValueCollection();
+
             [Fact]
             public void NameIsNull_DoesNotThrowArgumentNullException()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
+                name = null;
 
                 // Act -> Assert
-                provider.Initialize(null, new NameValueCollection());
+                provider.Initialize(name, config);
             }
 
             [Fact]
             public void Initializes()
             {
-                // Arrange
-                var provider = new ServiceSettingsProvider();
-
-                // Act
-                provider.Initialize("myName", new NameValueCollection());
+                // Arrange -> Act
+                provider.Initialize(name, config);
 
                 // Assert
                 Assert.Equal(provider.ApplicationName, provider.Name);
@@ -170,16 +157,16 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetPropertyValues
+        public class GetPropertyValues : ServiceSettingsProviderTests
         {
+            private readonly SettingsContext context = new SettingsContext();
+            private readonly SettingsPropertyCollection properties = new SettingsPropertyCollection();
+
             [Fact]
             public void NoConfig_ReturnsDefaultValues()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 provider.GetSettingsReader = () => new StringReader("");
-                var context = new SettingsContext();
-                var properties = new SettingsPropertyCollection();
                 var property1 = SettingsUtil.CreateProperty("myProp1", "myDefaultValue1");
                 properties.Add(property1);
                 var property2 = SettingsUtil.CreateProperty("myProp2", "myDefaultValue2");
@@ -195,13 +182,27 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
+            public void SerializeAsXmlIsNil_DoesNotSetValue()
+            {
+                // Arrange
+                provider.GetSettingsReader = () => new StringReader(Resources.SerializeAsXmlIsNilConfig);
+                var property = SettingsUtil.CreateProperty<XmlSerializable>("myProp");
+                property.SerializeAs = SettingsSerializeAs.Xml;
+                properties.Add(property);
+
+                // Act
+                var values = provider.GetPropertyValues(context, properties);
+                var myProp = values["myProp"].PropertyValue;
+
+                // Assert
+                Assert.Null(myProp);
+            }
+
+            [Fact]
             public void HandlesSerializeAsXml()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 provider.GetSettingsReader = () => new StringReader(Resources.SerializeAsXmlConfig);
-                var context = new SettingsContext();
-                var properties = new SettingsPropertyCollection();
                 var property = SettingsUtil.CreateProperty<XmlSerializable>("myProp");
                 property.SerializeAs = SettingsSerializeAs.Xml;
                 properties.Add(property);
@@ -218,10 +219,7 @@ namespace toofz.Services.Tests
             public void ReturnsValuesFromConfig()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
                 provider.GetSettingsReader = () => new StringReader(Resources.BasicConfig);
-                var context = new SettingsContext();
-                var properties = new SettingsPropertyCollection();
                 var property1 = SettingsUtil.CreateProperty<string>("myProp1");
                 properties.Add(property1);
                 var property2 = SettingsUtil.CreateProperty<string>("myProp2");
@@ -237,17 +235,21 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class SetPropertyValues
+        public class SetPropertyValues : ServiceSettingsProviderTests
         {
+            public SetPropertyValues()
+            {
+                provider.GetSettingsWriter = () => sw;
+            }
+
+            private readonly SettingsContext context = new SettingsContext();
+            private readonly SettingsPropertyValueCollection values = new SettingsPropertyValueCollection();
+            private readonly StringWriter sw = new StringWriter();
+
             [Fact]
             public void SetsValuesInConfig()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
-                var sw = new StringWriter();
-                provider.GetSettingsWriter = () => sw;
-                var context = new SettingsContext();
-                var values = new SettingsPropertyValueCollection();
                 var property1 = new SettingsProperty("myProp1");
                 var value1 = new SettingsPropertyValue(property1) { SerializedValue = "mySerializedValue1" };
                 values.Add(value1);
@@ -266,11 +268,6 @@ namespace toofz.Services.Tests
             public void HandlesSerializeAsXml()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
-                var sw = new StringWriter();
-                provider.GetSettingsWriter = () => sw;
-                var context = new SettingsContext();
-                var values = new SettingsPropertyValueCollection();
                 var value = SettingsUtil.CreatePropertyValue<XmlSerializable>("myProp");
                 value.Property.SerializeAs = SettingsSerializeAs.Xml;
                 value.PropertyValue = new XmlSerializable
@@ -292,11 +289,6 @@ namespace toofz.Services.Tests
             public void SerializesTimeSpanInHumanReadableFormat()
             {
                 // Arrange
-                var provider = new ServiceSettingsProvider();
-                var sw = new StringWriter();
-                provider.GetSettingsWriter = () => sw;
-                var context = new SettingsContext();
-                var values = new SettingsPropertyValueCollection();
                 var value = SettingsUtil.CreatePropertyValue<TimeSpan>("myProp");
                 value.PropertyValue = TimeSpan.Zero;
                 values.Add(value);

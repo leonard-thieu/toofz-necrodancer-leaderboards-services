@@ -96,6 +96,7 @@
     </Compile>
     <None Include="Resources\BasicConfig.config" />
     <None Include="Resources\SerializeAsXmlConfig.config" />
+    <None Include="Resources\SerializeAsXmlIsNilConfig.config" />
     <None Include="Resources\TimeSpanConfig.config" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +112,7 @@
     <Compile Include="StubSettings.cs" />
     <Compile Include="TypeExtensionsTests.cs" />
     <Compile Include="WorkerRoleBaseTests.cs" />
+    <Compile Include="XElementExtensionsTests.cs" />
     <Compile Include="XmlSerializable.cs" />
   </ItemGroup>
   <ItemGroup>
