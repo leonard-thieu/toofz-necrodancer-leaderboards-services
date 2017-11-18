@@ -12,6 +12,8 @@ namespace toofz.Services
         where TOptions : Options, new()
         where TSettings : ISettings
     {
+        internal const string DefaultLeaderboardsConnectionString = "Data Source=localhost;Initial Catalog=NecroDancer;Integrated Security=SSPI;";
+
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
@@ -48,7 +50,7 @@ namespace toofz.Services
         /// <param name="option">The original option value passed in from the command line.</param>
         /// <param name="setting">The current value of the setting.</param>
         /// <returns>
-        /// True, if <paramref name="option"/> is null or <paramref name="option"/> is an empty string and
+        /// true, if <paramref name="option"/> is null or <paramref name="option"/> is an empty string and
         /// <paramref name="setting"/> is null; otherwise, false.
         /// </returns>
         protected static bool ShouldPromptForRequiredSetting(string option, object setting)
@@ -170,6 +172,7 @@ namespace toofz.Services
             optionSet.Add("delay=", GetDescription(settingsType, nameof(ISettings.DelayBeforeGC)), (TimeSpan delay) => options.DelayBeforeGC = delay);
             optionSet.Add("ikey=", GetDescription(settingsType, nameof(ISettings.InstrumentationKey)), ikey => options.InstrumentationKey = ikey);
             optionSet.Add("iterations=", GetDescription(settingsType, nameof(ISettings.KeyDerivationIterations)), (int iterations) => options.KeyDerivationIterations = iterations);
+            optionSet.Add("connection:", GetDescription(settingsType, nameof(ISettings.LeaderboardsConnectionString)), connection => options.LeaderboardsConnectionString = connection);
         }
 
         /// <summary>
@@ -211,6 +214,25 @@ namespace toofz.Services
             if (options.KeyDerivationIterations != null)
             {
                 settings.KeyDerivationIterations = options.KeyDerivationIterations.Value;
+            }
+
+            #endregion
+
+            #region LeaderboardsConnectionString
+
+            var leaderboardsConnectionString = options.LeaderboardsConnectionString;
+            if (leaderboardsConnectionString == null)
+            {
+                leaderboardsConnectionString = ReadOption("Leaderboards connection string");
+            }
+
+            if (leaderboardsConnectionString != "")
+            {
+                settings.LeaderboardsConnectionString = new EncryptedSecret(leaderboardsConnectionString, settings.KeyDerivationIterations);
+            }
+            else if (settings.LeaderboardsConnectionString == null)
+            {
+                settings.LeaderboardsConnectionString = new EncryptedSecret(DefaultLeaderboardsConnectionString, settings.KeyDerivationIterations);
             }
 
             #endregion

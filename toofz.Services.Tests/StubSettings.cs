@@ -13,6 +13,8 @@ namespace toofz.Services.Tests
         public string InstrumentationKey { get; set; }
         [SettingsDescription("The number of rounds to execute a key derivation function.")]
         public int KeyDerivationIterations { get; set; }
+        [SettingsDescription("The connection string used to connect to the leaderboards database.")]
+        public EncryptedSecret LeaderboardsConnectionString { get; set; }
         [SettingsDescription(null)]
         public int NullDescription { get; set; }
         public int MissingSettingsDescriptionAttribute { get; set; }

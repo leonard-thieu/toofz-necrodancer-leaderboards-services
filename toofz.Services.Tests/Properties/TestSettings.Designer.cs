@@ -69,5 +69,20 @@ namespace toofz.Services.Tests.Properties {
                 this["KeyDerivationIterations"] = value;
             }
         }
+        
+        /// <summary>
+        /// The connection string used to connect to the leaderboards database.
+        /// </summary>
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsDescriptionAttribute("The connection string used to connect to the leaderboards database.")]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::toofz.Services.EncryptedSecret LeaderboardsConnectionString {
+            get {
+                return ((global::toofz.Services.EncryptedSecret)(this["LeaderboardsConnectionString"]));
+            }
+            set {
+                this["LeaderboardsConnectionString"] = value;
+            }
+        }
     }
 }

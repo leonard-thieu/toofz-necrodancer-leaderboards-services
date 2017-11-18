@@ -230,11 +230,11 @@ namespace toofz.Services.Tests
                     // Arrange
                     // Create a settings file that has the instrumentation key set
                     SetCurrentDirectoryToBaseDirectory();
-                    settings.InstrumentationKey = "myInstrumentationKey";
+                    settings.LeaderboardsConnectionString = new EncryptedSecret("myConnectionString", 1);
                     settings.Save();
 
                     // Reset environment
-                    settings.InstrumentationKey = null;
+                    settings.LeaderboardsConnectionString = null;
                     SetCurrentDirectoryToSystemDirectory();
 
                     var app = new FakeApplication();
@@ -246,7 +246,7 @@ namespace toofz.Services.Tests
                     app.Run(args, settings, log, telemetryConfiguration);
 
                     // Assert
-                    Assert.Equal("myInstrumentationKey", telemetryConfiguration.InstrumentationKey);
+                    Assert.Equal("myConnectionString", settings.LeaderboardsConnectionString.Decrypt());
                 }
 
                 private class FakeApplication : Application<ISettings>

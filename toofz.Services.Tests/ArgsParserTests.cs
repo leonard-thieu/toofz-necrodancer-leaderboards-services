@@ -256,12 +256,22 @@ namespace toofz.Services.Tests
 
         public class Parse : ArgsParserTests
         {
+            public Parse()
+            {
+                settings = mockSettings.Object;
+                mockSettings.SetupAllProperties();
+                mockSettings.SetupProperty(s => s.KeyDerivationIterations, 1);
+                mockSettings.SetupProperty(s => s.LeaderboardsConnectionString, new EncryptedSecret("a", 1));
+            }
+
+            private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
+            private readonly ISettings settings;
+
             [Fact]
             public void ArgsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 string[] args = null;
-                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
@@ -274,7 +284,7 @@ namespace toofz.Services.Tests
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                string[] args = new string[0];
+                string[] args = { };
                 ISettings settings = null;
 
                 // Act -> Assert
@@ -288,8 +298,7 @@ namespace toofz.Services.Tests
             public void ExtraArg_ShowsError()
             {
                 // Arrange
-                string[] args = new[] { "myExtraArg" };
-                ISettings settings = new StubSettings();
+                string[] args = { "myExtraArg" };
 
                 // Act
                 parser.Parse(args, settings);
@@ -304,8 +313,7 @@ namespace toofz.Services.Tests
             public void ExtraArg_Returns1()
             {
                 // Arrange
-                string[] args = new[] { "myExtraArg" };
-                ISettings settings = new StubSettings();
+                string[] args = { "myExtraArg" };
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -318,8 +326,8 @@ namespace toofz.Services.Tests
             public void Help_ShowsHelp()
             {
                 // Arrange
-                string[] args = new[] { "--help" };
-                ISettings settings = new StubSettings();
+                string[] args = { "--help" };
+                var settings = new StubSettings();
 
                 // Act
                 parser.Parse(args, settings);
@@ -330,12 +338,13 @@ namespace toofz.Services.Tests
 Usage: toofz.Services.Tests.dll [options]
 
 options:
-  --help              Shows usage information.
-  --interval=VALUE    The minimum amount of time that should pass between each cycle.
-  --delay=VALUE       The amount of time to wait after a cycle to perform garbage collection.
-  --ikey=VALUE        An Application Insights instrumentation key.
-  --iterations=VALUE  The number of rounds to execute a key derivation function.
-  --optional[=VALUE]  This option is optional.
+  --help                Shows usage information.
+  --interval=VALUE      The minimum amount of time that should pass between each cycle.
+  --delay=VALUE         The amount of time to wait after a cycle to perform garbage collection.
+  --ikey=VALUE          An Application Insights instrumentation key.
+  --iterations=VALUE    The number of rounds to execute a key derivation function.
+  --connection[=VALUE]  The connection string used to connect to the leaderboards database.
+  --optional[=VALUE]    This option is optional.
 ", output, ignoreLineEndingDifferences: true);
             }
 
@@ -343,8 +352,7 @@ options:
             public void Help_Returns0()
             {
                 // Arrange
-                string[] args = new[] { "--help" };
-                ISettings settings = new StubSettings();
+                string[] args = { "--help" };
 
                 // Act
                 var exitCode = parser.Parse(args, settings);
@@ -353,13 +361,13 @@ options:
                 Assert.Equal(0, exitCode);
             }
 
+            #region UpdateInterval
+
             [Fact]
             public void IntervalIsNotSpecified_DoesNotSetUpdateInterval()
             {
                 // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.UpdateInterval);
+                string[] args = { };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -372,9 +380,7 @@ options:
             public void IntervalIsSpecified_SetsUpdateIntervalToInterval()
             {
                 // Arrange
-                string[] args = new[] { "--interval=00:10:00" };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.UpdateInterval);
+                string[] args = { "--interval=00:10:00" };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -383,13 +389,15 @@ options:
                 mockSettings.VerifySet(s => s.UpdateInterval = TimeSpan.FromMinutes(10));
             }
 
+            #endregion
+
+            #region DelayBeforeGC
+
             [Fact]
             public void DelayIsNotSpecified_DoesNotSetDelayBeforeGC()
             {
                 // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.DelayBeforeGC);
+                string[] args = { };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -402,9 +410,7 @@ options:
             public void DelayIsSpecified_SetsDelayBeforeGCToDelay()
             {
                 // Arrange
-                string[] args = new[] { "--delay=00:10:00" };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.DelayBeforeGC);
+                string[] args = { "--delay=00:10:00" };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -413,13 +419,15 @@ options:
                 mockSettings.VerifySet(s => s.DelayBeforeGC = TimeSpan.FromMinutes(10));
             }
 
+            #endregion
+
+            #region InstrumentationKey
+
             [Fact]
             public void IkeyIsNotSpecified_DoesNotSetInstrumentationKey()
             {
                 // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.InstrumentationKey);
+                string[] args = { };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -432,9 +440,7 @@ options:
             public void IkeyIsSpecified_SetsInstrumentationKeyToIkey()
             {
                 // Arrange
-                string[] args = new[] { "--ikey=myInstrumentationKey" };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.InstrumentationKey);
+                string[] args = { "--ikey=myInstrumentationKey" };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -443,13 +449,15 @@ options:
                 mockSettings.VerifySet(s => s.InstrumentationKey = "myInstrumentationKey");
             }
 
+            #endregion
+
+            #region KeyDerivationIterations
+
             [Fact]
             public void IterationsIsNotSpecified_DoesNotSetKeyDerivationIterations()
             {
                 // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.KeyDerivationIterations);
+                string[] args = { };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -462,9 +470,7 @@ options:
             public void IterationsIsSpecified_SetsKeyDerivationIterationsToIterations()
             {
                 // Arrange
-                string[] args = new[] { "--iterations=20000" };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupProperty(s => s.KeyDerivationIterations);
+                string[] args = { "--iterations=20000" };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -473,12 +479,78 @@ options:
                 mockSettings.VerifySet(s => s.KeyDerivationIterations = 20000);
             }
 
+            #endregion
+
+            #region LeaderboardsConnectionString
+
+            [Fact]
+            public void ConnectionIsSpecified_SetsLeaderboardsConnectionString()
+            {
+                // Arrange
+                string[] args = { "--connection=myConnectionString" };
+
+                // Act
+                parser.Parse(args, settings);
+
+                // Assert
+                var encrypted = new EncryptedSecret("myConnectionString", 1);
+                Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
+            }
+
+            [Fact]
+            public void ConnectionFlagIsSpecified_PromptsUserForConnectionAndSetsLeaderboardsConnectionString()
+            {
+                // Arrange
+                string[] args = { "--connection" };
+                mockInReader
+                    .SetupSequence(r => r.ReadLine())
+                    .Returns("myConnectionString");
+
+                // Act
+                parser.Parse(args, settings);
+
+                // Assert
+                var encrypted = new EncryptedSecret("myConnectionString", 1);
+                Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
+            }
+
+            [Fact]
+            public void ConnectionFlagIsNotSpecifiedAndLeaderboardsConnectionStringIsNotSet_SetsLeaderboardsConnectionStringToDefault()
+            {
+                // Arrange
+                string[] args = { };
+                settings.LeaderboardsConnectionString = null;
+
+                // Act
+                parser.Parse(args, settings);
+
+                // Assert
+                var encrypted = new EncryptedSecret(ArgsParser<Options, ISettings>.DefaultLeaderboardsConnectionString, 1);
+                Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
+            }
+
+            [Fact]
+            public void ConnectionFlagIsNotSpecifiedAndLeaderboardsConnectionStringIsSet_DoesNotSetLeaderboardsConnectionString()
+            {
+                // Arrange
+                string[] args = { };
+                mockSettings.SetupProperty(s => s.LeaderboardsConnectionString, new EncryptedSecret("a", 1));
+                var settings = mockSettings.Object;
+
+                // Act
+                parser.Parse(args, settings);
+
+                // Assert
+                mockSettings.VerifySet(s => s.LeaderboardsConnectionString = It.IsAny<EncryptedSecret>(), Times.Never);
+            }
+
+            #endregion
+
             [Fact]
             public void SavesSettings()
             {
                 // Arrange
-                string[] args = new string[0];
-                var mockSettings = new Mock<ISettings>();
+                string[] args = { };
 
                 // Act
                 parser.Parse(args, mockSettings.Object);
@@ -491,8 +563,7 @@ options:
             public void Returns0()
             {
                 // Arrange
-                string[] args = new string[0];
-                ISettings settings = new StubSettings();
+                string[] args = { };
 
                 // Act
                 var exitCode = parser.Parse(args, settings);

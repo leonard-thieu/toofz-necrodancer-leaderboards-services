@@ -24,5 +24,9 @@ namespace toofz.Services
         /// The number of rounds to execute a key derivation function.
         /// </summary>
         public int? KeyDerivationIterations { get; internal set; }
+        /// <summary>
+        /// The connection string used to connect to the leaderboards database.
+        /// </summary>
+        public string LeaderboardsConnectionString { get; internal set; } = "";
     }
 }

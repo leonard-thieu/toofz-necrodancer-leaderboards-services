@@ -14,5 +14,8 @@
     <Setting Name="KeyDerivationIterations" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="LeaderboardsConnectionString" Description="The connection string used to connect to the leaderboards database." Type="toofz.Services.EncryptedSecret" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
