@@ -10,9 +10,9 @@ namespace toofz.Services.Tests
 {
     public class ApplicationTests
     {
-        public class Run
+        public class RunMethod
         {
-            public Run()
+            public RunMethod()
             {
                 app = mockApp.Object;
                 log = mockLog.Object;

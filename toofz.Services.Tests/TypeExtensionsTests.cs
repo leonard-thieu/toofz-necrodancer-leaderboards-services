@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Xunit;
 
 namespace toofz.Services.Tests
 {
     public class TypeExtensionsTests
     {
-        public class GetSimpleFullName
+        public class GetSimpleFullNameMethod
         {
             [Fact]
             public void ReturnsSimpleFullName()

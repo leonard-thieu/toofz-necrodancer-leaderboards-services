@@ -53,7 +53,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Decrypt
+        public class DecryptMethod
         {
             [Fact]
             public void ReturnsDecryptedSecret()
@@ -71,7 +71,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetSchema
+        public class GetSchemaMethod
         {
             [Fact]
             public void ReturnsNull()
@@ -88,7 +88,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Serialization
+        public class SerializationTests
         {
             [Fact]
             public void SerializesAndDeserializes()

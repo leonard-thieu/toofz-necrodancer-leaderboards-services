@@ -20,7 +20,7 @@ namespace toofz.Services.Tests
         private TextWriter errorWriter = new StringWriter();
         private ArgsParserAdapter parser;
 
-        public class GetDescription
+        public class GetDescriptionMethod
         {
             [Fact]
             public void TypeIsNull_ThrowsArgumentNullException()
@@ -93,7 +93,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class ShouldPromptForRequiredSetting
+        public class ShouldPromptForRequiredSettingMethod
         {
             [Fact]
             public void OptionIsNull_ReturnsTrue()
@@ -215,7 +215,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class InReader : ArgsParserTests
+        public class InReaderProperty : ArgsParserTests
         {
             [Fact]
             public void ReturnsTextReader()
@@ -228,7 +228,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class OutWriter : ArgsParserTests
+        public class OutWriterProperty : ArgsParserTests
         {
             [Fact]
             public void ReturnsTextWriter()
@@ -241,7 +241,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class ErrorWriter : ArgsParserTests
+        public class ErrorWriterProperty : ArgsParserTests
         {
             [Fact]
             public void ReturnsTextWriter()
@@ -254,9 +254,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Parse : ArgsParserTests
+        public class ParseMethod : ArgsParserTests
         {
-            public Parse()
+            public ParseMethod()
             {
                 settings = mockSettings.Object;
                 mockSettings.SetupAllProperties();
@@ -573,7 +573,7 @@ options:
             }
         }
 
-        public class ReadOption : ArgsParserTests
+        public class ReadOptionMethod : ArgsParserTests
         {
             [Fact]
             public void ReadsOptionAndOptionIsNotNullOrEmpty_ReturnsOption()

@@ -9,7 +9,7 @@ namespace toofz.Services.Tests
 {
     public class IdleTests
     {
-        public class StartNew
+        public class StartNewMethod
         {
             [Fact]
             public void ReturnsInstance()
@@ -25,7 +25,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class WriteTimeRemaining
+        public class WriteTimeRemainingMethod
         {
             [Fact]
             public void TimeRemaining_WritesTimeRemaining()
@@ -64,7 +64,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetTimeRemaining
+        public class GetTimeRemainingMethod
         {
             [Fact]
             public void ReturnsTimeRemaining()
@@ -85,7 +85,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class DelayAsync
+        public class DelayAsyncMethod
         {
             [Fact]
             public async Task TimeRemaining_DelaysForTimeRemaining()

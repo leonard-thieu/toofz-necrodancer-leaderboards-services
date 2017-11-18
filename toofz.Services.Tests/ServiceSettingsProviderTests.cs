@@ -13,7 +13,7 @@ namespace toofz.Services.Tests
     {
         private readonly ServiceSettingsProvider provider = new ServiceSettingsProvider();
 
-        public class ApplicationName : ServiceSettingsProviderTests
+        public class ApplicationNameProperty : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
@@ -52,7 +52,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetSettingsReader : ServiceSettingsProviderTests
+        public class GetSettingsReaderProperty : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
@@ -91,7 +91,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetSettingsWriter : ServiceSettingsProviderTests
+        public class GetSettingsWriterProperty : ServiceSettingsProviderTests
         {
             [Fact]
             public void SetToNull_ThrowsArgumentNullException()
@@ -130,7 +130,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class Initialize : ServiceSettingsProviderTests
+        public class InitializeMethod : ServiceSettingsProviderTests
         {
             private string name = "myName";
             private NameValueCollection config = new NameValueCollection();
@@ -157,7 +157,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetPropertyValues : ServiceSettingsProviderTests
+        public class GetPropertyValuesMethod : ServiceSettingsProviderTests
         {
             private readonly SettingsContext context = new SettingsContext();
             private readonly SettingsPropertyCollection properties = new SettingsPropertyCollection();
@@ -235,9 +235,9 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class SetPropertyValues : ServiceSettingsProviderTests
+        public class SetPropertyValuesMethod : ServiceSettingsProviderTests
         {
-            public SetPropertyValues()
+            public SetPropertyValuesMethod()
             {
                 provider.GetSettingsWriter = () => sw;
             }
