@@ -28,7 +28,7 @@ namespace toofz.Services.Tests
             public void LogIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings();
                 log = null;
 
@@ -43,7 +43,7 @@ namespace toofz.Services.Tests
             public void InitializesLogging()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings();
 
                 // Act
@@ -71,7 +71,7 @@ namespace toofz.Services.Tests
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = null;
 
                 // Act -> Assert
@@ -85,7 +85,7 @@ namespace toofz.Services.Tests
             public void ReloadsSettings()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 var mockSettings = new Mock<ISettings>();
                 var settings = mockSettings.Object;
 
@@ -97,66 +97,24 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
-            public void InstrumentationKeyIsNull_LogsWarning()
+            public void InstrumentationKeyIsNotSet_LogsWarning()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings { InstrumentationKey = null };
 
                 // Act
                 app.Run(args, settings, log, telemetryConfiguration);
 
                 // Assert
-                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
-            }
-
-            [Fact]
-            public void InstrumentationKeyIsNull_DisablesTelemetry()
-            {
-                // Arrange
-                var args = new string[0];
-                ISettings settings = new StubSettings { InstrumentationKey = null };
-
-                // Act
-                app.Run(args, settings, log, telemetryConfiguration);
-
-                // Assert
-                Assert.True(telemetryConfiguration.DisableTelemetry);
-            }
-
-            [Fact]
-            public void InstrumentationKeyIsEmpty_LogsWarning()
-            {
-                // Arrange
-                var args = new string[0];
-                ISettings settings = new StubSettings { InstrumentationKey = "" };
-
-                // Act
-                app.Run(args, settings, log, telemetryConfiguration);
-
-                // Assert
-                mockLog.Verify(l => l.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled."));
-            }
-
-            [Fact]
-            public void InstrumentationKeyIsEmpty_DisablesTelemetry()
-            {
-                // Arrange
-                var args = new string[0];
-                ISettings settings = new StubSettings { InstrumentationKey = "" };
-
-                // Act
-                app.Run(args, settings, log, telemetryConfiguration);
-
-                // Assert
-                Assert.True(telemetryConfiguration.DisableTelemetry);
+                mockLog.Verify(l => l.Warn("An Application Insights instrumentation key is not set. Telemetry will not be reported to Application Insights."));
             }
 
             [Fact]
             public void InstrumentationKeyIsSet_SetsInstrumentationKeyForTelemetry()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
 
                 // Act
@@ -167,24 +125,10 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
-            public void InstrumentationKeyIsSet_EnablesTelemetry()
-            {
-                // Arrange
-                var args = new string[0];
-                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
-
-                // Act
-                app.Run(args, settings, log, telemetryConfiguration);
-
-                // Assert
-                Assert.False(telemetryConfiguration.DisableTelemetry);
-            }
-
-            [Fact]
             public void Returns0()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings();
 
                 // Act
@@ -200,7 +144,7 @@ namespace toofz.Services.Tests
             {
                 private static void ResetEnvironment()
                 {
-                    // Services start with their currenct directory set to the system directory.
+                    // Services start with their current directory set to the system directory.
                     SetCurrentDirectoryToSystemDirectory();
                 }
 
@@ -238,7 +182,7 @@ namespace toofz.Services.Tests
                     SetCurrentDirectoryToSystemDirectory();
 
                     var app = new FakeApplication();
-                    var args = new string[0];
+                    string[] args = { };
                     var log = Mock.Of<ILog>();
                     var telemetryConfiguration = TelemetryConfiguration.Active;
 

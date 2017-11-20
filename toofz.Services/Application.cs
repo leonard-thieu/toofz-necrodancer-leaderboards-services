@@ -64,16 +64,14 @@ namespace toofz.Services
             // Settings must be loaded before accessing them.
             settings.Reload();
 
-            if (string.IsNullOrEmpty(settings.InstrumentationKey))
+            if (string.IsNullOrEmpty(settings.InstrumentationKey) &&
+                telemetryConfiguration.InstrumentationKey == "")
             {
-                log.Warn("The setting 'InstrumentationKey' is not set. Telemetry is disabled.");
-                telemetryConfiguration.InstrumentationKey = "";
-                telemetryConfiguration.DisableTelemetry = true;
+                log.Warn("An Application Insights instrumentation key is not set. Telemetry will not be reported to Application Insights.");
             }
             else
             {
                 telemetryConfiguration.InstrumentationKey = settings.InstrumentationKey;
-                telemetryConfiguration.DisableTelemetry = false;
             }
 
             return RunOverride(args, settings);
