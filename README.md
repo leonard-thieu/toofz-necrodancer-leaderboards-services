@@ -17,7 +17,10 @@
 * Execution cycle scheduling
 * Top-level error handling
 
-**toofz Services Core** is a component of [toofz](https://github.com/leonard-thieu/toofz-necrodancer).
+---
+
+**toofz Services Core** is a component of **toofz**. 
+Information about other projects that support **toofz** can be found in the [meta-repository](https://github.com/leonard-thieu/toofz-necrodancer).
 
 ### Dependents
 
