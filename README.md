@@ -32,6 +32,10 @@ Information about other projects that support **toofz** can be found in the [met
 
 * .NET Framework 4.6.1
 
+## Building and testing
+
+Visual Studio 2017 (version 15.3 or later) can be used to build and run tests.
+
 ## License
 
 **toofz Services Core** is released under the [MIT License](LICENSE).
