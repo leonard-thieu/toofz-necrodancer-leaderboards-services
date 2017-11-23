@@ -38,21 +38,16 @@ namespace toofz.Services
 
         private static XmlSerializer GetXmlSerializer(Type type)
         {
-            // This needs to be thread-safe for xUnit but consumers are only ever expected to use a single thread.
-            // This ought to be fixed in tests instead but it's much easier to fix it here.
-            lock (XmlSerializers)
+            if (XmlSerializers.TryGetValue(type, out var serializer))
             {
-                if (XmlSerializers.TryGetValue(type, out var serializer))
-                {
-                    return serializer;
-                }
-                else
-                {
-                    serializer = XmlSerializer.FromTypes(new[] { type })[0];
-                    XmlSerializers.Add(type, serializer);
+                return serializer;
+            }
+            else
+            {
+                serializer = XmlSerializer.FromTypes(new[] { type })[0];
+                XmlSerializers.Add(type, serializer);
 
-                    return serializer;
-                }
+                return serializer;
             }
         }
 
