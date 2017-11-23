@@ -15,7 +15,6 @@
 * Settings persistence
 * Secrets encryption
 * Execution cycle scheduling
-* Top-level error handling
 
 ---
 
