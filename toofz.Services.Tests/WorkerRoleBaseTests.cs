@@ -164,54 +164,6 @@ namespace toofz.Services.Tests
             }
 
             [Fact]
-            public async Task RunAsyncOverrideThrowsTaskCanceledException_ThrowsTaskCanceledException()
-            {
-                // Arrange
-                var cts = new CancellationTokenSource();
-                var worker = new CancellingWorkerRoleBase(cts);
-                var idle = Mock.Of<IIdle>();
-                var log = Mock.Of<ILog>();
-                var cancellationToken = cts.Token;
-
-                // Act -> Assert
-                await Assert.ThrowsAsync<TaskCanceledException>(() =>
-                {
-                    return worker.RunAsyncCore(idle, log, cancellationToken);
-                });
-            }
-
-            [Fact]
-            public async Task RunAsyncOverrideThrowsTypeInitializationException_ThrowsTypeInitializationException()
-            {
-                // Arrange
-                var worker = new TypeInitializationExceptionWorkerRoleBase();
-                var idle = Mock.Of<IIdle>();
-                var log = Mock.Of<ILog>();
-
-                // Act -> Assert
-                await Assert.ThrowsAsync<TypeInitializationException>(() =>
-                {
-                    return worker.RunAsyncCore(idle, log, CancellationToken.None);
-                });
-            }
-
-            [Fact]
-            public async Task RunAsyncOverrideThrows_LogsError()
-            {
-                // Arrange
-                var worker = new BrokenWorkerRoleBase();
-                var idle = Mock.Of<IIdle>();
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-
-                // Act
-                await worker.RunAsyncCore(idle, log, CancellationToken.None);
-
-                // Assert
-                mockLog.Verify(l => l.Error("Failed to complete run due to an error.", It.IsAny<Exception>()));
-            }
-
-            [Fact]
             public async Task WritesTimeRemaining()
             {
                 // Arrange
@@ -253,16 +205,6 @@ namespace toofz.Services.Tests
 
                     return Task.FromResult(0);
                 }
-            }
-
-            private class TypeInitializationExceptionWorkerRoleBase : TestWorkerRoleBase
-            {
-                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new TypeInitializationException(nameof(TypeInitializationExceptionWorkerRoleBase), new Exception());
-            }
-
-            private class BrokenWorkerRoleBase : TestWorkerRoleBase
-            {
-                protected override Task RunAsyncOverride(CancellationToken cancellationToken) => throw new Exception();
             }
         }
 
