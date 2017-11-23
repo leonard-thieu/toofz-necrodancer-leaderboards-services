@@ -155,6 +155,7 @@ namespace toofz.Services
             OnParsed(options, settings);
 
             settings.Save();
+            OutWriter.WriteLine("Saved settings.");
 
             return 0;
         }
