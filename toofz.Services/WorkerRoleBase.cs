@@ -171,8 +171,11 @@ namespace toofz.Services
             Log.Info("Stopped service.");
             cancellationTokenSource.Dispose();
 
+            // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
+            // order to get the majority of telemetry through.
+            // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
             TelemetryClient.Flush();
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Thread.Sleep(TimeSpan.FromSeconds(2));
         }
 
         #endregion
