@@ -131,6 +131,18 @@ namespace toofz.Services.Tests
 
         public class RunAsyncCoreMethod
         {
+            public RunAsyncCoreMethod()
+            {
+                idle = mockIdle.Object;
+                log = mockLog.Object;
+            }
+
+            private readonly Mock<IIdle> mockIdle = new Mock<IIdle>();
+            private readonly IIdle idle;
+            private readonly Mock<ILog> mockLog = new Mock<ILog>();
+            private readonly ILog log;
+            private readonly CancellationToken cancellationToken = CancellationToken.None;
+
             [Fact]
             public async Task ReloadsSettings()
             {
@@ -138,11 +150,9 @@ namespace toofz.Services.Tests
                 var mockSettings = new Mock<ISettings>();
                 var settings = mockSettings.Object;
                 var worker = new EmptyWorkerRoleBase(settings);
-                var idle = Mock.Of<IIdle>();
-                var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, cancellationToken);
 
                 // Assert
                 mockSettings.Verify(s => s.Reload(), Times.Once);
@@ -153,11 +163,9 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 var worker = new MockWorkerRoleBase();
-                var idle = Mock.Of<IIdle>();
-                var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, cancellationToken);
 
                 // Assert
                 Assert.Equal(1, worker.RunAsyncOverrideCallCount);
@@ -168,12 +176,9 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 var worker = new EmptyWorkerRoleBase();
-                var mockIdle = new Mock<IIdle>();
-                var idle = mockIdle.Object;
-                var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, cancellationToken);
 
                 // Assert
                 mockIdle.Verify(i => i.WriteTimeRemaining(), Times.Once);
@@ -184,12 +189,9 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 var worker = new EmptyWorkerRoleBase();
-                var mockIdle = new Mock<IIdle>();
-                var idle = mockIdle.Object;
-                var log = Mock.Of<ILog>();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, CancellationToken.None);
+                await worker.RunAsyncCore(idle, log, cancellationToken);
 
                 // Assert
                 mockIdle.Verify(i => i.DelayAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -203,7 +205,7 @@ namespace toofz.Services.Tests
                 {
                     RunAsyncOverrideCallCount++;
 
-                    return Task.FromResult(0);
+                    return Task.CompletedTask;
                 }
             }
         }
@@ -245,7 +247,7 @@ namespace toofz.Services.Tests
             {
                 cts.Cancel();
 
-                return Task.Factory.StartNew(() => { }, cancellationToken);
+                return Task.FromCanceled(cancellationToken);
             }
         }
 
