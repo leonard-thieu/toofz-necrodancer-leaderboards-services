@@ -318,17 +318,10 @@ namespace toofz.Services.Tests
             }
         }
 
-        [Trait("Category", "Uses Settings")]
-        [Collection(SettingsCollection.Name)]
-        public class IntegrationTests
+        [Trait("Category", "Uses file system")]
+        public class IntegrationTests : SettingsTestsBase<ServiceSettingsProviderSettings>
         {
-            public IntegrationTests(SettingsFixture settingsFixture)
-            {
-                settings = ServiceSettingsProviderSettings.Default;
-                settings.Reload();
-            }
-
-            private ServiceSettingsProviderSettings settings;
+            public IntegrationTests() : base(ServiceSettingsProviderSettings.Default) { }
 
             [Fact]
             public void ReturnsDefaultValueIfValueIsNotPresent()

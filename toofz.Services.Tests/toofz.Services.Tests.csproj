@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\ServiceSettingsProviderSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>ServiceSettingsProviderSettings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\ServiceSettingsProviderSettings.cs">
@@ -72,7 +72,7 @@
       <DependentUpon>ServiceSettingsProviderSettings.settings</DependentUpon>
     </Compile>
     <None Include="Properties\TestSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\TestSettings.cs">
@@ -111,7 +111,7 @@
     <Compile Include="IdleTests.cs" />
     <Compile Include="ServiceApplicationTests.cs" />
     <Compile Include="ServiceSettingsProviderTests.cs" />
-    <Compile Include="SettingsFixture.cs" />
+    <Compile Include="SettingsTestsBase.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="StubSettings.cs" />
     <Compile Include="TypeExtensionsTests.cs" />

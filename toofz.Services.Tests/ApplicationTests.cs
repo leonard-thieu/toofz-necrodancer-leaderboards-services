@@ -138,48 +138,40 @@ namespace toofz.Services.Tests
                 Assert.Equal(0, ret);
             }
 
-            [Trait("Category", "Uses Settings")]
-            [Collection(SettingsCollection.Name)]
-            public class IntegrationTests
+            [Trait("Category", "Uses file system")]
+            public class IntegrationTests : SettingsTestsBase<TestSettings>
             {
-                private static void ResetEnvironment()
+                public IntegrationTests() : base(TestSettings.Default)
                 {
+                    originalCurrentDirectory = Directory.GetCurrentDirectory();
                     // Services start with their current directory set to the system directory.
-                    SetCurrentDirectoryToSystemDirectory();
-                }
-
-                private static void SetCurrentDirectoryToSystemDirectory()
-                {
                     Directory.SetCurrentDirectory(Environment.SystemDirectory);
                 }
 
-                private static void SetCurrentDirectoryToBaseDirectory()
+                private readonly string originalCurrentDirectory;
+
+                protected override void Dispose(bool disposing)
                 {
-                    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+                    if (disposing)
+                    {
+                        Directory.SetCurrentDirectory(originalCurrentDirectory);
+                    }
+
+                    base.Dispose(disposing);
                 }
-
-                public IntegrationTests(SettingsFixture settingsFixture)
-                {
-                    ResetEnvironment();
-
-                    settings = TestSettings.Default;
-                    settings.Reload();
-                }
-
-                private TestSettings settings;
 
                 [Fact]
                 public void LoadsSettingsBeforeAccessingThem()
                 {
                     // Arrange
                     // Create a settings file that has the instrumentation key set
-                    SetCurrentDirectoryToBaseDirectory();
+                    Directory.SetCurrentDirectory(AppContext.BaseDirectory);
                     settings.LeaderboardsConnectionString = new EncryptedSecret("myConnectionString", 1);
                     settings.Save();
 
                     // Reset environment
                     settings.LeaderboardsConnectionString = null;
-                    SetCurrentDirectoryToSystemDirectory();
+                    Directory.SetCurrentDirectory(Environment.SystemDirectory);
 
                     var app = new FakeApplication();
                     string[] args = { };
