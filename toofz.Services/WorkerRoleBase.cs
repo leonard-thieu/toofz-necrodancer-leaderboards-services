@@ -91,6 +91,7 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
+            TelemetryClient.TrackEvent("Start service");
             cancellationTokenSource = new CancellationTokenSource();
             run = RunAsync(Log, cancellationTokenSource.Token);
             run.ContinueWith(t =>
@@ -168,6 +169,7 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
+            TelemetryClient.TrackEvent("Stop service");
             Log.Info("Stopping service...");
             cancellationTokenSource.Cancel();
             // TODO: Consider making this configurable.
@@ -190,6 +192,7 @@ namespace toofz.Services
         /// </summary>
         protected override void OnShutdown()
         {
+            TelemetryClient.TrackEvent("Shutdown service");
             Stop();
         }
     }
