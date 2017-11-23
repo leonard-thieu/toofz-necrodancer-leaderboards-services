@@ -106,7 +106,7 @@ namespace toofz.Services
 
         internal async Task RunAsync(ILog log, CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (true)
             {
                 try
                 {
@@ -114,7 +114,8 @@ namespace toofz.Services
                 }
                 catch (TaskCanceledException)
                 {
-                    // Swallow TaskCanceledException. TaskCanceledException signals to exit gracefully.
+                    // TaskCanceledException signals to exit gracefully.
+                    break;
                 }
             }
         }
