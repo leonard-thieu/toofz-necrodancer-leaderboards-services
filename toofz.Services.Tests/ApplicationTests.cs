@@ -15,21 +15,22 @@ namespace toofz.Services.Tests
             public RunMethod()
             {
                 app = mockApp.Object;
+                settings = new StubSettings { KeyDerivationIterations = 1 };
                 log = mockLog.Object;
             }
 
             private readonly Mock<Application<ISettings>> mockApp = new Mock<Application<ISettings>>();
-            private Application<ISettings> app;
+            private readonly Application<ISettings> app;
+            private ISettings settings;
             private readonly Mock<ILog> mockLog = new Mock<ILog>();
             private ILog log;
-            private TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
+            private readonly TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
 
             [Fact]
             public void LogIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings();
                 log = null;
 
                 // Act -> Assert
@@ -44,7 +45,6 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings();
 
                 // Act
                 app.Run(args, settings, log, telemetryConfiguration);
@@ -58,7 +58,6 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = null;
-                ISettings settings = new StubSettings();
 
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
@@ -72,7 +71,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = null;
+                settings = null;
 
                 // Act -> Assert
                 Assert.Throws<ArgumentNullException>(() =>
@@ -87,7 +86,9 @@ namespace toofz.Services.Tests
                 // Arrange
                 string[] args = { };
                 var mockSettings = new Mock<ISettings>();
-                var settings = mockSettings.Object;
+                mockSettings.SetupAllProperties();
+                settings = mockSettings.Object;
+                settings.KeyDerivationIterations = 1;
 
                 // Act
                 app.Run(args, settings, log, telemetryConfiguration);
@@ -101,7 +102,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings { InstrumentationKey = null };
+                settings.InstrumentationKey = null;
 
                 // Act
                 app.Run(args, settings, log, telemetryConfiguration);
@@ -115,7 +116,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings { InstrumentationKey = "myInstrumentationKey" };
+                settings.InstrumentationKey = "myInstrumentationKey";
 
                 // Act
                 app.Run(args, settings, log, telemetryConfiguration);
@@ -129,7 +130,6 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings();
 
                 // Act
                 var ret = app.Run(args, settings, log, telemetryConfiguration);
