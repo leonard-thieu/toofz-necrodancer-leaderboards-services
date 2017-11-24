@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
-  	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PackageVersion>14.0.2</PackageVersion>
     <Authors>Leonard Thieu</Authors>
     <Title>toofz Services Core</Title>
@@ -92,6 +92,7 @@
       <DependentUpon>IServiceBaseStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="ISettings.cs" />
+    <Compile Include="ISettingsExtensions.cs" />
     <Compile Include="ITask.cs" />
     <Compile Include="TaskAdapter.cs">
       <DependentUpon>ITask.cs</DependentUpon>

@@ -62,6 +62,8 @@ namespace toofz.Services
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             // Settings must be loaded before accessing them.
             settings.Reload();
+            // Write default settings if settings file does not exist.
+            settings.Save(force: true);
 
             if (string.IsNullOrEmpty(settings.InstrumentationKey) &&
                 telemetryConfiguration.InstrumentationKey == "")
