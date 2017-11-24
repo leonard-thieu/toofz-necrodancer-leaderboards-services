@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace toofz.Services
 {
@@ -8,7 +10,9 @@ namespace toofz.Services
     {
         private static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
         {
-            return
+            // Visual Studio's debugger traps Control-C and Control-Break by default.
+            return Debugger.IsAttached ?
+                keyInfo.Key == ConsoleKey.Enter :
                 (keyInfo.Modifiers == ConsoleModifiers.Control && keyInfo.Key == ConsoleKey.C) ||
                 (keyInfo.Modifiers == ConsoleModifiers.Control && keyInfo.Key == ConsoleKey.Pause);
         }
@@ -37,6 +41,17 @@ namespace toofz.Services
 
             worker.Start();
 
+            // Watching on a separate thread so that exceptions can be observed.
+            var cancelKeyPressWatcher = new Thread(StopOnCancelKeyPress) { IsBackground = true };
+            cancelKeyPressWatcher.Start();
+
+            worker.Completion.GetAwaiter().GetResult();
+
+            return 0;
+        }
+
+        private void StopOnCancelKeyPress()
+        {
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -44,8 +59,6 @@ namespace toofz.Services
             } while (!IsCancelKeyPress(keyInfo));
 
             worker.Stop();
-
-            return 0;
         }
     }
 }

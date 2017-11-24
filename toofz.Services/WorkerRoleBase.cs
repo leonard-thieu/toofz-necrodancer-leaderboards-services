@@ -60,7 +60,6 @@ namespace toofz.Services
         #region Fields
 
         private CancellationTokenSource cancellationTokenSource;
-        private Task run;
 
         /// <summary>
         /// Gets the settings object.
@@ -70,6 +69,10 @@ namespace toofz.Services
         /// Get the <see cref="Microsoft.ApplicationInsights.TelemetryClient"/> to track telemetry.
         /// </summary>
         protected TelemetryClient TelemetryClient { get; }
+        /// <summary>
+        /// Signals that work has stopped due to a fault or the <see cref="ServiceBase.Stop"/> command was issued.
+        /// </summary>
+        public Task Completion { get; private set; }
 
         #endregion
 
@@ -93,11 +96,22 @@ namespace toofz.Services
         {
             TelemetryClient.TrackEvent("Start service");
             cancellationTokenSource = new CancellationTokenSource();
-            run = RunAsync(Log, cancellationTokenSource.Token);
-            run.ContinueWith(t =>
+            Completion = RunAsync(Log, cancellationTokenSource.Token);
+            Completion.ContinueWith(t =>
             {
                 Stop();
             }, TaskContinuationOptions.OnlyOnFaulted);
+            Completion.ContinueWith(t =>
+            {
+                Log.Info("Stopped service.");
+                cancellationTokenSource.Dispose();
+
+                // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
+                // order to get the majority of telemetry through.
+                // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
+                TelemetryClient.Flush();
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            });
         }
 
         #endregion
@@ -112,9 +126,10 @@ namespace toofz.Services
                 {
                     await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
                 }
+                // Stop was called.
                 catch (TaskCanceledException)
+                    when (cancellationToken.IsCancellationRequested)
                 {
-                    // TaskCanceledException signals to exit gracefully.
                     break;
                 }
             }
@@ -163,19 +178,7 @@ namespace toofz.Services
             TelemetryClient.TrackEvent("Stop service");
             Log.Info("Stopping service...");
             cancellationTokenSource.Cancel();
-            // TODO: Consider making this configurable.
-            if (!run.Wait(TimeSpan.FromSeconds(5)))
-            {
-                Log.Warn("Forced service to stop.");
-            }
-            Log.Info("Stopped service.");
-            cancellationTokenSource.Dispose();
-
-            // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
-            // order to get the majority of telemetry through.
-            // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
-            TelemetryClient.Flush();
-            Thread.Sleep(TimeSpan.FromSeconds(2));
+            Completion.GetAwaiter().GetResult();
         }
 
         #endregion
