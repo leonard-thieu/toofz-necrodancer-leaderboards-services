@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.ServiceProcess;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -17,7 +16,7 @@ namespace toofz.Services
             TWorkerRole worker,
             IArgsParser<TSettings> parser,
             ILog log)
-            where TWorkerRole : ServiceBase, IConsoleWorkerRole
+            where TWorkerRole : WorkerRoleBase<TSettings>
         {
             Application<TSettings> app;
 
