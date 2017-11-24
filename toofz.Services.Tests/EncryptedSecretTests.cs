@@ -87,8 +87,7 @@ namespace toofz.Services.Tests
                 Assert.Null(schema);
             }
         }
-
-        [Collection(nameof(ServiceSettingsProvider))]
+        
         public class SerializationTests
         {
             [Fact]

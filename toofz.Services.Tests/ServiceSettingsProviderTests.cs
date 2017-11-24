@@ -9,7 +9,6 @@ using Xunit;
 
 namespace toofz.Services.Tests
 {
-    [Collection(nameof(ServiceSettingsProvider))]
     public class ServiceSettingsProviderTests
     {
         private readonly ServiceSettingsProvider provider = new ServiceSettingsProvider();

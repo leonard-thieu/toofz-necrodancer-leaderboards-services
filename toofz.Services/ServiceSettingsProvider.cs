@@ -38,16 +38,20 @@ namespace toofz.Services
 
         private static XmlSerializer GetXmlSerializer(Type type)
         {
-            if (XmlSerializers.TryGetValue(type, out var serializer))
+            // Not worth fighting xUnit on this.
+            lock (XmlSerializers)
             {
-                return serializer;
-            }
-            else
-            {
-                serializer = XmlSerializer.FromTypes(new[] { type })[0];
-                XmlSerializers.Add(type, serializer);
+                if (XmlSerializers.TryGetValue(type, out var serializer))
+                {
+                    return serializer;
+                }
+                else
+                {
+                    serializer = XmlSerializer.FromTypes(new[] { type })[0];
+                    XmlSerializers.Add(type, serializer);
 
-                return serializer;
+                    return serializer;
+                }
             }
         }
 
