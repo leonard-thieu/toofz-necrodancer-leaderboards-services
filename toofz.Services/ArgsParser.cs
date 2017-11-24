@@ -12,7 +12,7 @@ namespace toofz.Services
         where TOptions : Options, new()
         where TSettings : ISettings
     {
-        internal const string DefaultLeaderboardsConnectionString = "Data Source=localhost;Initial Catalog=NecroDancer;Integrated Security=SSPI;";
+        internal const string DefaultLeaderboardsConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=NecroDancer;Integrated Security=SSPI;";
 
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
