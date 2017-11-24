@@ -88,6 +88,7 @@ namespace toofz.Services.Tests
             }
         }
 
+        [Collection(nameof(ServiceSettingsProvider))]
         public class SerializationTests
         {
             [Fact]
