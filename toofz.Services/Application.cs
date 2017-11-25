@@ -29,15 +29,10 @@ namespace toofz.Services
                 app = new ServiceApplication<TSettings>(worker, new ServiceBaseStaticAdapter());
             }
 
-            var exitCode = app.Run(args, settings, log, TelemetryConfiguration.Active);
-
-            // Completion will be null if just setting settings.
-            worker.Completion?.GetAwaiter().GetResult();
-
-            return exitCode;
+            return app.RunAsync(args, settings, log, TelemetryConfiguration.Active).GetAwaiter().GetResult();
         }
 
-        internal int Run(
+        internal Task<int> RunAsync(
             string[] args,
             TSettings settings,
             ILog log,
@@ -86,9 +81,9 @@ namespace toofz.Services
                 telemetryConfiguration.InstrumentationKey = settings.InstrumentationKey;
             }
 
-            return RunOverride(args, settings);
+            return RunAsyncOverride(args, settings);
         }
 
-        internal abstract int RunOverride(string[] args, TSettings settings);
+        internal abstract Task<int> RunAsyncOverride(string[] args, TSettings settings);
     }
 }

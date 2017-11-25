@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.ServiceProcess;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 using Moq;
 using Xunit;
 
@@ -10,14 +12,12 @@ namespace toofz.Services.Tests
     {
         public ServiceApplicationTests()
         {
-            worker = mockWorker.Object;
             serviceBase = mockServiceBase.Object;
         }
 
-        private Mock<ServiceBase> mockWorker = new Mock<ServiceBase>();
-        private ServiceBase worker;
-        private Mock<IServiceBaseStatic> mockServiceBase = new Mock<IServiceBaseStatic>();
-        private IServiceBaseStatic serviceBase;
+        private readonly WorkerRoleBase<ISettings> worker = new WorkerRoleBaseAdapter();
+        private readonly Mock<IServiceBaseStatic> mockServiceBase = new Mock<IServiceBaseStatic>();
+        private readonly IServiceBaseStatic serviceBase;
 
         public class Constructor : ServiceApplicationTests
         {
@@ -34,9 +34,9 @@ namespace toofz.Services.Tests
 
         [Trait("Category", "Uses file system")]
         [Collection("Uses file system")]
-        public class RunOverrideMethod : ServiceApplicationTests, IDisposable
+        public class RunAsyncOverrideMethod : ServiceApplicationTests, IDisposable
         {
-            public RunOverrideMethod()
+            public RunAsyncOverrideMethod()
             {
                 currentDirectory = Directory.GetCurrentDirectory();
                 app = new ServiceApplication<ISettings>(worker, serviceBase);
@@ -50,19 +50,33 @@ namespace toofz.Services.Tests
                 Directory.SetCurrentDirectory(currentDirectory);
             }
 
-            [Fact(Skip = "Determine why this test is flaky.")]
-            public void CallsRun()
+            [Fact(Skip = "How did this work before?")]
+            public async Task CallsRun()
             {
                 // Arrange
                 string[] args = { };
                 ISettings settings = new StubSettings();
 
                 // Act
-                app.RunOverride(args, settings);
+                await app.RunAsyncOverride(args, settings);
 
                 // Assert
                 mockServiceBase.Verify(s => s.Run(worker));
             }
         }
+
+        private class WorkerRoleBaseAdapter : WorkerRoleBase<ISettings>
+        {
+            public WorkerRoleBaseAdapter()
+                : base("myServiceName", new StubSettings(), new TelemetryClient()) { }
+
+            protected override Task RunAsyncOverride(CancellationToken cancellationToken)
+            {
+                Stop();
+
+                return Task.CompletedTask;
+            }
+        }
+
     }
 }

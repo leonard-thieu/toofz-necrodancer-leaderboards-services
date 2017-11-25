@@ -1,6 +1,6 @@
 ﻿using System;
-using System.ServiceProcess;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace toofz.Services
 {
@@ -8,21 +8,24 @@ namespace toofz.Services
         where TSettings : ISettings
     {
         public ServiceApplication(
-            ServiceBase worker,
+            WorkerRoleBase<TSettings> worker,
             IServiceBaseStatic serviceBase)
         {
             this.worker = worker ?? throw new ArgumentNullException(nameof(worker));
             this.serviceBase = serviceBase;
         }
 
-        private readonly ServiceBase worker;
+        private readonly WorkerRoleBase<TSettings> worker;
         private readonly IServiceBaseStatic serviceBase;
 
-        internal override int RunOverride(string[] args, TSettings settings)
+        internal override async Task<int> RunAsyncOverride(string[] args, TSettings settings)
         {
             // Watching on a separate thread so that exceptions can be observed.
             var serviceRunWatcher = new Thread(() => serviceBase.Run(worker)) { IsBackground = true };
             serviceRunWatcher.Start();
+
+            await worker.Initialization.ConfigureAwait(false);
+            await worker.Completion.ConfigureAwait(false);
 
             return 0;
         }

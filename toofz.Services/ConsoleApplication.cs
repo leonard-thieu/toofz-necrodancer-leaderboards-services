@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace toofz.Services
 {
@@ -31,7 +32,7 @@ namespace toofz.Services
         private readonly IArgsParser<TSettings> parser;
         private readonly IConsole console;
 
-        internal override int RunOverride(string[] args, TSettings settings)
+        internal override async Task<int> RunAsyncOverride(string[] args, TSettings settings)
         {
             // Args are only allowed while running as a console application as they may require user input.
             if (args.Any())
@@ -44,6 +45,9 @@ namespace toofz.Services
             // Watching on a separate thread so that exceptions can be observed.
             var cancelKeyPressWatcher = new Thread(StopOnCancelKeyPress) { IsBackground = true };
             cancelKeyPressWatcher.Start();
+
+            await worker.Initialization.ConfigureAwait(false);
+            await worker.Completion.ConfigureAwait(false);
 
             return 0;
         }

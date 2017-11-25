@@ -71,8 +71,36 @@ namespace toofz.Services
         /// Get the <see cref="Microsoft.ApplicationInsights.TelemetryClient"/> to track telemetry.
         /// </summary>
         protected TelemetryClient TelemetryClient { get; }
+
         /// <summary>
-        /// Signals that work has stopped due to a fault or the <see cref="ServiceBase.Stop"/> command was issued.
+        /// Signals that work has started.
+        /// </summary>
+        public Task Initialization => InitializationTcs.Task;
+
+        private readonly object initializationTcsLock = new object();
+        private TaskCompletionSource<bool> InitializationTcs
+        {
+            get
+            {
+                lock (initializationTcsLock)
+                {
+                    return initializationTcs ?? (initializationTcs = new TaskCompletionSource<bool>());
+                }
+            }
+            set
+            {
+                Debug.Assert(value == null, "Should only be set to null.");
+
+                lock (initializationTcsLock)
+                {
+                    initializationTcs = value;
+                }
+            }
+        }
+        private TaskCompletionSource<bool> initializationTcs;
+
+        /// <summary>
+        /// Signals that work has stopped due to a fault or <see cref="Stop"/> was called.
         /// </summary>
         public Task Completion { get; private set; }
 
@@ -108,6 +136,7 @@ namespace toofz.Services
                 {
                     Stop();
                 }, TaskContinuationOptions.OnlyOnFaulted);
+                InitializationTcs.SetResult(true);
 
                 status = ServiceControllerStatus.Running;
             }
@@ -198,6 +227,8 @@ namespace toofz.Services
 
                 try
                 {
+                    InitializationTcs = null;
+
                     using (cancellationTokenSource)
                     {
                         cancellationTokenSource.Cancel();
