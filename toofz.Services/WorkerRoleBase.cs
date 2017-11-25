@@ -95,6 +95,7 @@ namespace toofz.Services
         protected override void OnStart(string[] args)
         {
             TelemetryClient.TrackEvent("Start service");
+            Log.Info("Starting service...");
             cancellationTokenSource = new CancellationTokenSource();
             Completion = RunAsync(Log, cancellationTokenSource.Token);
             Completion.ContinueWith(t =>
@@ -137,6 +138,8 @@ namespace toofz.Services
 
         internal async Task RunAsyncCore(IIdle idle, ILog log, CancellationToken cancellationToken)
         {
+            Log.Info("Starting update cycle...");
+
             Settings.Reload();
 
             await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
