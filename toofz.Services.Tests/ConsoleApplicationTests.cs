@@ -137,7 +137,7 @@ namespace toofz.Services.Tests
                 mockConsole.Verify(c => c.ReadKey(true), Times.Once);
             }
 
-            [Fact]
+            [Fact(Skip = "Determine why this test is flaky.")]
             public async Task CancelKeyIsNotPressed_DoesNotStop()
             {
                 // Arrange
