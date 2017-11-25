@@ -32,6 +32,8 @@ namespace toofz.Services.Tests
             }
         }
 
+        [Trait("Category", "Uses file system")]
+        [Collection("Uses file system")]
         public class RunOverrideMethod : ServiceApplicationTests, IDisposable
         {
             public RunOverrideMethod()
