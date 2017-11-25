@@ -59,6 +59,8 @@ namespace toofz.Services
 
         #region Fields
 
+        private ServiceControllerStatus status = ServiceControllerStatus.Stopped;
+        private readonly object statusLock = new object();
         private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
@@ -94,25 +96,21 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
-            TelemetryClient.TrackEvent("Start service");
-            Log.Info("Starting service...");
-            cancellationTokenSource = new CancellationTokenSource();
-            Completion = RunAsync(Log, cancellationTokenSource.Token);
-            Completion.ContinueWith(t =>
+            lock (statusLock)
             {
-                Stop();
-            }, TaskContinuationOptions.OnlyOnFaulted);
-            Completion.ContinueWith(t =>
-            {
-                Log.Info("Stopped service.");
-                cancellationTokenSource.Dispose();
+                status = ServiceControllerStatus.StartPending;
 
-                // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
-                // order to get the majority of telemetry through.
-                // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
-                TelemetryClient.Flush();
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-            });
+                TelemetryClient.TrackEvent("Start service");
+                Log.Info("Starting service...");
+                cancellationTokenSource = new CancellationTokenSource();
+                Completion = RunAsync(Log, cancellationTokenSource.Token);
+                Completion.ContinueWith(t =>
+                {
+                    Stop();
+                }, TaskContinuationOptions.OnlyOnFaulted);
+
+                status = ServiceControllerStatus.Running;
+            }
         }
 
         #endregion
@@ -172,16 +170,52 @@ namespace toofz.Services
         #endregion
 
         #region OnStop
-
+        
         /// <summary>
         /// Executes when a Stop command is sent to the service by the Service Control Manager (SCM).
         /// </summary>
         protected override void OnStop()
         {
-            TelemetryClient.TrackEvent("Stop service");
-            Log.Info("Stopping service...");
-            cancellationTokenSource.Cancel();
-            Completion.GetAwaiter().GetResult();
+            lock (statusLock)
+            {
+                if (status == ServiceControllerStatus.Stopped)
+                {
+                    // Throw to generate a stack trace
+                    try
+                    {
+                        throw new InvalidOperationException("Cannot stop service while it is already stopped.");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Log.Warn("Received Stop command while already stopped.", ex);
+                        return;
+                    }
+                }
+
+                status = ServiceControllerStatus.StopPending;
+                TelemetryClient.TrackEvent("Stop service");
+                Log.Info("Stopping service...");
+
+                try
+                {
+                    using (cancellationTokenSource)
+                    {
+                        cancellationTokenSource.Cancel();
+                        Completion.GetAwaiter().GetResult();
+                    }
+                }
+                finally
+                {
+                    // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
+                    // order to get the majority of telemetry through.
+                    // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
+                    TelemetryClient.Flush();
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
+
+                    Log.Info("Stopped service.");
+                    status = ServiceControllerStatus.Stopped;
+                }
+            }
         }
 
         #endregion
