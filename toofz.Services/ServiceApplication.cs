@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceProcess;
+using System.Threading;
 
 namespace toofz.Services
 {
@@ -19,7 +20,9 @@ namespace toofz.Services
 
         internal override int RunOverride(string[] args, TSettings settings)
         {
-            serviceBase.Run(worker);
+            // Watching on a separate thread so that exceptions can be observed.
+            var serviceRunWatcher = new Thread(() => serviceBase.Run(worker)) { IsBackground = true };
+            serviceRunWatcher.Start();
 
             return 0;
         }

@@ -45,8 +45,6 @@ namespace toofz.Services
             var cancelKeyPressWatcher = new Thread(StopOnCancelKeyPress) { IsBackground = true };
             cancelKeyPressWatcher.Start();
 
-            worker.Completion.GetAwaiter().GetResult();
-
             return 0;
         }
 

@@ -29,7 +29,12 @@ namespace toofz.Services
                 app = new ServiceApplication<TSettings>(worker, new ServiceBaseStaticAdapter());
             }
 
-            return app.Run(args, settings, log, TelemetryConfiguration.Active);
+            var exitCode = app.Run(args, settings, log, TelemetryConfiguration.Active);
+
+            // Completion will be null if just setting settings.
+            worker.Completion?.GetAwaiter().GetResult();
+
+            return exitCode;
         }
 
         internal int Run(
