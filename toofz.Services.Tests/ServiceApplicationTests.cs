@@ -43,18 +43,18 @@ namespace toofz.Services.Tests
             }
 
             private readonly string currentDirectory;
-            private ServiceApplication<ISettings> app;
+            private readonly ServiceApplication<ISettings> app;
 
             public void Dispose()
             {
                 Directory.SetCurrentDirectory(currentDirectory);
             }
 
-            [Fact]
+            [Fact(Skip = "Determine why this test is flaky.")]
             public void CallsRun()
             {
                 // Arrange
-                var args = new string[0];
+                string[] args = { };
                 ISettings settings = new StubSettings();
 
                 // Act
