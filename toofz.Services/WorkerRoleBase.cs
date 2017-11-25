@@ -78,6 +78,8 @@ namespace toofz.Services
 
         #endregion
 
+        #region Start
+
         /// <summary>
         /// Starts the service. This method is intended to be called from console applications.
         /// </summary>
@@ -86,8 +88,6 @@ namespace toofz.Services
         {
             OnStart(args);
         }
-
-        #region OnStart
 
         /// <summary>
         /// Executes when a Start command is sent to the service by the Service Control Manager (SCM) 
@@ -169,8 +169,8 @@ namespace toofz.Services
 
         #endregion
 
-        #region OnStop
-        
+        #region Stop
+
         /// <summary>
         /// Executes when a Stop command is sent to the service by the Service Control Manager (SCM).
         /// </summary>
@@ -220,6 +220,8 @@ namespace toofz.Services
 
         #endregion
 
+        #region Shutdown
+
         /// <summary>
         /// When implemented in a derived class, executes when the system is shutting down. 
         /// Specifies what should occur immediately prior to the system shutting down.
@@ -229,5 +231,7 @@ namespace toofz.Services
             TelemetryClient.TrackEvent("Shutdown service");
             Stop();
         }
+
+        #endregion
     }
 }
