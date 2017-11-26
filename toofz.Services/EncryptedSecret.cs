@@ -38,16 +38,21 @@ namespace toofz.Services
         /// </summary>
         /// <param name="secret">The secret to encrypt.</param>
         /// <param name="iterations">The number of iterations used to derive the key.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="secret"/> is null.
+        /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="secret"/> cannot be null or empty.
+        /// <paramref name="secret"/> cannot be empty.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="iterations"/> must be a positive number.
         /// </exception>
         public EncryptedSecret(string secret, int iterations) : this()
         {
-            if (string.IsNullOrEmpty(secret))
-                throw new ArgumentException($"{nameof(secret)} cannot be null or empty.", nameof(secret));
+            if (secret == null)
+                throw new ArgumentNullException(nameof(secret));
+            if (secret == "")
+                throw new ArgumentException($"{nameof(secret)} cannot be empty.", nameof(secret));
             // The constructor for Rfc2898DeriveBytes performs the same validation but returns a generic, non-descriptive exception message.
             if (iterations < 1)
                 throw new ArgumentOutOfRangeException(nameof(iterations), iterations, $"{nameof(iterations)} must be a positive number.");

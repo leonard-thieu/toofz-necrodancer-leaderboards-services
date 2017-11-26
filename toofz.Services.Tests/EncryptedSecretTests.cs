@@ -11,14 +11,14 @@ namespace toofz.Services.Tests
         public class Constructor
         {
             [Fact]
-            public void SecretIsNull_ThrowsArgumentException()
+            public void SecretIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
                 string secret = null;
                 int iterations = 1000;
 
                 // Act -> Assert
-                Assert.Throws<ArgumentException>(() =>
+                Assert.Throws<ArgumentNullException>(() =>
                 {
                     new EncryptedSecret(secret, iterations);
                 });
@@ -87,7 +87,7 @@ namespace toofz.Services.Tests
                 Assert.Null(schema);
             }
         }
-        
+
         public class SerializationTests
         {
             [Fact]
