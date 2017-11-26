@@ -32,6 +32,8 @@ namespace toofz.Services
             return app.RunAsync(args, settings, log, TelemetryConfiguration.Active).GetAwaiter().GetResult();
         }
 
+        internal Application() { }
+
         internal Task<int> RunAsync(
             string[] args,
             TSettings settings,
