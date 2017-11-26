@@ -12,8 +12,6 @@ namespace toofz.Services
         where TOptions : Options, new()
         where TSettings : ISettings
     {
-        internal const string DefaultLeaderboardsConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=NecroDancer;Integrated Security=SSPI;";
-
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
@@ -48,16 +46,12 @@ namespace toofz.Services
         /// Gets a value that indicates if the user should be prompted for a required setting.
         /// </summary>
         /// <param name="option">The original option value passed in from the command line.</param>
-        /// <param name="setting">The current value of the setting.</param>
+        /// 
         /// <returns>
         /// true, if <paramref name="option"/> is null or <paramref name="option"/> is an empty string and
         /// <paramref name="setting"/> is null; otherwise, false.
         /// </returns>
-        protected static bool ShouldPromptForRequiredSetting(string option, object setting)
-        {
-            return ((option == null) ||
-                ((option == "") && (setting == null)));
-        }
+        protected static bool ShouldPrompt<TOption>(TOption option) => option == null;
 
         /// <summary>
         /// Initializes an instance of the <see cref="ArgsParser{TOptions, TSettings}"/> class.
@@ -222,7 +216,7 @@ namespace toofz.Services
             #region LeaderboardsConnectionString
 
             var leaderboardsConnectionString = options.LeaderboardsConnectionString;
-            if (leaderboardsConnectionString == null)
+            if (ShouldPrompt(leaderboardsConnectionString))
             {
                 leaderboardsConnectionString = ReadOption("Leaderboards connection string");
             }
@@ -230,10 +224,6 @@ namespace toofz.Services
             if (leaderboardsConnectionString != "")
             {
                 settings.LeaderboardsConnectionString = new EncryptedSecret(leaderboardsConnectionString, settings.KeyDerivationIterations);
-            }
-            else if (settings.LeaderboardsConnectionString == null)
-            {
-                settings.LeaderboardsConnectionString = new EncryptedSecret(DefaultLeaderboardsConnectionString, settings.KeyDerivationIterations);
             }
 
             #endregion

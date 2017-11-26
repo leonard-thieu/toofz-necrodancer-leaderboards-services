@@ -62,12 +62,6 @@ namespace toofz.Services
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             // Settings must be loaded before accessing them.
             settings.Reload();
-            if (settings.LeaderboardsConnectionString == null)
-            {
-                settings.LeaderboardsConnectionString = new EncryptedSecret(
-                    ArgsParser<Options, ISettings>.DefaultLeaderboardsConnectionString,
-                    settings.KeyDerivationIterations);
-            }
             // Write default settings if settings file does not exist.
             settings.Save(force: true);
 

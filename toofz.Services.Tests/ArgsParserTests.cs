@@ -100,52 +100,22 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string option = null;
-                object setting = new object();
 
                 // Act
-                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPrompt(option);
 
                 // Assert
                 Assert.True(shouldPrompt);
             }
 
             [Fact]
-            public void OptionIsEmptyAndSettingIsNull_ReturnsTrue()
-            {
-                // Arrange
-                string option = "";
-                object setting = null;
-
-                // Act
-                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
-
-                // Assert
-                Assert.True(shouldPrompt);
-            }
-
-            [Fact]
-            public void OptionIsEmptyAndSettingIsNotNull_ReturnsFalse()
-            {
-                // Arrange
-                string option = "";
-                object setting = new object();
-
-                // Act
-                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
-
-                // Assert
-                Assert.False(shouldPrompt);
-            }
-
-            [Fact]
-            public void OptionIsNotNullOrEmpty_ReturnsFalse()
+            public void OptionIsNotNull_ReturnsFalse()
             {
                 // Arrange
                 string option = "not empty";
-                object setting = new object();
 
                 // Act
-                var shouldPrompt = ArgsParserAdapter.PublicShouldPromptForRequiredSetting(option, setting);
+                var shouldPrompt = ArgsParserAdapter.PublicShouldPrompt(option);
 
                 // Assert
                 Assert.False(shouldPrompt);
@@ -515,21 +485,6 @@ options:
             }
 
             [Fact]
-            public void ConnectionFlagIsNotSpecifiedAndLeaderboardsConnectionStringIsNotSet_SetsLeaderboardsConnectionStringToDefault()
-            {
-                // Arrange
-                string[] args = { };
-                settings.LeaderboardsConnectionString = null;
-
-                // Act
-                parser.Parse(args, settings);
-
-                // Assert
-                var encrypted = new EncryptedSecret(ArgsParser<Options, ISettings>.DefaultLeaderboardsConnectionString, 1);
-                Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
-            }
-
-            [Fact]
             public void ConnectionFlagIsNotSpecifiedAndLeaderboardsConnectionStringIsSet_DoesNotSetLeaderboardsConnectionString()
             {
                 // Arrange
@@ -633,9 +588,9 @@ options:
                 return GetDescription(type, propName);
             }
 
-            public static bool PublicShouldPromptForRequiredSetting(string option, object setting)
+            public static bool PublicShouldPrompt<TOption>(TOption option)
             {
-                return ShouldPromptForRequiredSetting(option, setting);
+                return ShouldPrompt(option);
             }
 
             public ArgsParserAdapter(TextReader inReader, TextWriter outWriter, TextWriter errorWriter) : base(inReader, outWriter, errorWriter) { }
