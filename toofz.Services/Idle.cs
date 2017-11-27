@@ -57,9 +57,9 @@ namespace toofz.Services
         /// The cancellation token that will be checked prior to completing the returned task.
         /// </param>
         /// <returns>A task that represents the time delay.</returns>
-        public Task DelayAsync(CancellationToken cancellationToken) => DelayAsync(DateTime.UtcNow, new TaskAdapter(), cancellationToken);
+        public Task DelayAsync(CancellationToken cancellationToken) => DelayAsync(DateTime.UtcNow, new TaskStaticAdapter(), cancellationToken);
 
-        internal async Task DelayAsync(DateTime now, ITask task, CancellationToken cancellationToken)
+        internal async Task DelayAsync(DateTime now, ITaskStatic task, CancellationToken cancellationToken)
         {
             var remaining = GetTimeRemaining(now);
             if (remaining > TimeSpan.Zero)

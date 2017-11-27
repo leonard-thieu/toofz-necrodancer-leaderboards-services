@@ -19,8 +19,8 @@ namespace toofz.Services.Tests
         private IConsoleWorkerRole worker;
         private Mock<IArgsParser<ISettings>> mockParser = new Mock<IArgsParser<ISettings>>();
         private IArgsParser<ISettings> parser;
-        private Mock<IConsole> mockConsole = new Mock<IConsole>();
-        private IConsole console;
+        private Mock<IConsoleStatic> mockConsole = new Mock<IConsoleStatic>();
+        private IConsoleStatic console;
         private ConsoleApplication<ISettings> app;
 
         public class Constructor : ConsoleApplicationTests

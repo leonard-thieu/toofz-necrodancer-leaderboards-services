@@ -97,7 +97,7 @@ namespace toofz.Services.Tests
                 var log = mockLog.Object;
                 var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(60);
-                var mockTask = new Mock<ITask>();
+                var mockTask = new Mock<ITaskStatic>();
                 var task = mockTask.Object;
                 var cancellationToken = CancellationToken.None;
 
@@ -118,7 +118,7 @@ namespace toofz.Services.Tests
                 var log = mockLog.Object;
                 var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(90);
-                var mockTask = new Mock<ITask>();
+                var mockTask = new Mock<ITaskStatic>();
                 var task = mockTask.Object;
                 var cancellationToken = CancellationToken.None;
 

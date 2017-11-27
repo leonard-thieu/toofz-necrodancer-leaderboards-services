@@ -21,7 +21,7 @@ namespace toofz.Services
         public ConsoleApplication(
             IConsoleWorkerRole worker,
             IArgsParser<TSettings> parser,
-            IConsole console)
+            IConsoleStatic console)
         {
             this.worker = worker ?? throw new ArgumentNullException(nameof(worker));
             this.parser = parser ?? throw new ArgumentNullException(nameof(parser));
@@ -30,7 +30,7 @@ namespace toofz.Services
 
         private readonly IConsoleWorkerRole worker;
         private readonly IArgsParser<TSettings> parser;
-        private readonly IConsole console;
+        private readonly IConsoleStatic console;
 
         internal override async Task<int> RunAsyncOverride(string[] args, TSettings settings)
         {

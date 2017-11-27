@@ -7,7 +7,7 @@ namespace toofz.Services
     /// <summary>
     /// Represents static members on <see cref="Task"/>.
     /// </summary>
-    internal interface ITask
+    internal interface ITaskStatic
     {
         /// <summary>
         /// Creates a cancellable task that completes after a specified time interval.

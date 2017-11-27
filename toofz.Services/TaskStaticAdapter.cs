@@ -7,7 +7,7 @@ namespace toofz.Services
     /// <summary>
     /// Wraps static members on <see cref="Task"/>.
     /// </summary>
-    internal sealed class TaskAdapter : ITask
+    internal sealed class TaskStaticAdapter : ITaskStatic
     {
         /// <summary>
         /// Creates a cancellable task that completes after a specified time interval.

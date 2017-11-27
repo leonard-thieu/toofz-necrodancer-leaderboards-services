@@ -49,7 +49,7 @@ namespace toofz.Services
 
             if (Environment.UserInteractive)
             {
-                app = new ConsoleApplication<TSettings>(worker, parser, new ConsoleAdapter());
+                app = new ConsoleApplication<TSettings>(worker, parser, new ConsoleStaticAdapter());
             }
             else
             {

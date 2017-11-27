@@ -3,9 +3,9 @@
 namespace toofz.Services
 {
     /// <summary>
-    /// Represents the standard input, output, and error streams for console applications.
+    /// Represents the static members on <see cref="Console"/>.
     /// </summary>
-    internal sealed class ConsoleAdapter : IConsole
+    internal interface IConsoleStatic
     {
         /// <summary>
         /// Obtains the next character or function key pressed by the user. The pressed key
@@ -22,6 +22,6 @@ namespace toofz.Services
         /// whether one or more Shift, Alt, or Ctrl modifier keys was pressed simultaneously
         /// with the console key.
         /// </returns>
-        public ConsoleKeyInfo ReadKey(bool intercept) => Console.ReadKey(intercept);
+        ConsoleKeyInfo ReadKey(bool intercept);
     }
 }

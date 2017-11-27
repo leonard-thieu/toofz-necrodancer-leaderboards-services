@@ -78,9 +78,9 @@
     <Compile Include="ArgsParser.cs">
       <DependentUpon>IArgsParser.cs</DependentUpon>
     </Compile>
-    <Compile Include="IConsole.cs" />
-    <Compile Include="ConsoleAdapter.cs">
-      <DependentUpon>IConsole.cs</DependentUpon>
+    <Compile Include="IConsoleStatic.cs" />
+    <Compile Include="ConsoleStaticAdapter.cs">
+      <DependentUpon>IConsoleStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="IConsoleWorkerRole.cs" />
     <Compile Include="IIdle.cs" />
@@ -93,9 +93,9 @@
     </Compile>
     <Compile Include="ISettings.cs" />
     <Compile Include="ISettingsExtensions.cs" />
-    <Compile Include="ITask.cs" />
-    <Compile Include="TaskAdapter.cs">
-      <DependentUpon>ITask.cs</DependentUpon>
+    <Compile Include="ITaskStatic.cs" />
+    <Compile Include="TaskStaticAdapter.cs">
+      <DependentUpon>ITaskStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="Options.cs" />
     <Compile Include="ServiceApplication.cs" />
