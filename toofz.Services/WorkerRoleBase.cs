@@ -127,9 +127,9 @@ namespace toofz.Services
             lock (statusLock)
             {
                 status = ServiceControllerStatus.StartPending;
-
-                TelemetryClient.TrackEvent("Start service");
                 Log.Info("Starting service...");
+                TelemetryClient.TrackEvent("Start service");
+
                 cancellationTokenSource = new CancellationTokenSource();
                 Completion = RunAsync(Log, cancellationTokenSource.Token);
                 Completion.ContinueWith(t =>
@@ -139,6 +139,7 @@ namespace toofz.Services
                 InitializationTcs.SetResult(true);
 
                 status = ServiceControllerStatus.Running;
+                Log.Info("Started service.");
             }
         }
 
@@ -158,6 +159,8 @@ namespace toofz.Services
                 catch (TaskCanceledException)
                     when (cancellationToken.IsCancellationRequested)
                 {
+                    log.Info("Received Stop command.");
+                    TelemetryClient.TrackEvent("Stop command");
                     break;
                 }
             }
@@ -165,7 +168,7 @@ namespace toofz.Services
 
         internal async Task RunAsyncCore(IIdle idle, ILog log, CancellationToken cancellationToken)
         {
-            Log.Info("Starting update cycle...");
+            log.Info("Starting update cycle...");
 
             Settings.Reload();
 
@@ -209,7 +212,8 @@ namespace toofz.Services
             {
                 if (status == ServiceControllerStatus.Stopped)
                 {
-                    // Throw to generate a stack trace
+                    // Unpaired executions of OnStop() have been observed. 
+                    // Generate a stack trace to determine where they're coming from.
                     try
                     {
                         throw new InvalidOperationException("Cannot stop service while it is already stopped.");
@@ -222,8 +226,8 @@ namespace toofz.Services
                 }
 
                 status = ServiceControllerStatus.StopPending;
-                TelemetryClient.TrackEvent("Stop service");
                 Log.Info("Stopping service...");
+                TelemetryClient.TrackEvent("Stop service");
 
                 try
                 {
@@ -243,8 +247,9 @@ namespace toofz.Services
                     TelemetryClient.Flush();
                     Thread.Sleep(TimeSpan.FromSeconds(2));
 
-                    Log.Info("Stopped service.");
                     status = ServiceControllerStatus.Stopped;
+                    // TODO: Determine why this frequently fails to flush.
+                    Log.Info("Stopped service.");
                 }
             }
         }
@@ -259,7 +264,9 @@ namespace toofz.Services
         /// </summary>
         protected override void OnShutdown()
         {
+            Log.Info("Received Shutdown command.");
             TelemetryClient.TrackEvent("Shutdown service");
+
             Stop();
         }
 
