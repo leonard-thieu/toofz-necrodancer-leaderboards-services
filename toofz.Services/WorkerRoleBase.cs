@@ -239,6 +239,13 @@ namespace toofz.Services
                         Completion.GetAwaiter().GetResult();
                     }
                 }
+                // Swallow exceptions while stopping. Unhandled exceptions may cause other services (e.g. Service Control Manager, installers) 
+                // to fail unnecessarily.
+                catch (Exception ex)
+                {
+                    Log.Error("Exception thrown while stopping service.", ex);
+                    TelemetryClient.TrackException(ex);
+                }
                 finally
                 {
                     // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
