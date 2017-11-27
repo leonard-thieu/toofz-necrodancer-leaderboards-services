@@ -2,6 +2,9 @@
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Base set of options supported by services.
+    /// </summary>
     public class Options
     {
         /// <summary>

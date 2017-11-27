@@ -9,7 +9,34 @@ namespace toofz.Services
     public abstract class Application<TSettings>
         where TSettings : ISettings
     {
-        // Must receive log object from entry point so that logging is initialized properly.
+        /// <summary>
+        /// Initializes the application and begins executing update cycles. This should be called on application startup.
+        /// </summary>
+        /// <typeparam name="TWorkerRole">The type of the worker that extends from <see cref="WorkerRoleBase{TSettings}"/>.</typeparam>
+        /// <param name="args">Arguments passed in from the command line.</param>
+        /// <param name="settings">The settings object.</param>
+        /// <param name="worker">The worker object.</param>
+        /// <param name="parser">The parser object.</param>
+        /// <param name="log">The logging object to use for initializing logging.</param>
+        /// <returns>
+        /// 0 - The application ran successfully.
+        /// 1 - There was an error parsing <paramref name="args"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="args"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="settings"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="worker"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="parser"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="log"/> is null.
+        /// </exception>
         public static int Run<TWorkerRole>(
             string[] args,
             TSettings settings,
@@ -43,6 +70,7 @@ namespace toofz.Services
             if (log == null)
                 throw new ArgumentNullException(nameof(log));
 
+            // Must receive log object from entry point so that logging is initialized properly.
             log.Debug("Initialized logging.");
 
             if (args == null)

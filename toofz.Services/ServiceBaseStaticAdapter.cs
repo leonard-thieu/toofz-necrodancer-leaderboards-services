@@ -2,6 +2,9 @@
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Wraps static members on <see cref="ServiceBase"/>.
+    /// </summary>
     internal sealed class ServiceBaseStaticAdapter : IServiceBaseStatic
     {
         /// <summary>

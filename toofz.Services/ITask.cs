@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Represents static members on <see cref="Task"/>.
+    /// </summary>
     internal interface ITask
     {
         /// <summary>

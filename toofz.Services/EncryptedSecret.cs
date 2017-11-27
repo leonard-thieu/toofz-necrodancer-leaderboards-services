@@ -115,6 +115,17 @@ namespace toofz.Services
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// This method is reserved and should not be used. When implementing the <see cref="IXmlSerializable"/> 
+        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, 
+        /// if specifying a custom schema is required, apply the <see cref="XmlSchemaProviderAttribute"/>
+        /// to the class.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="XmlSchema"/> that describes the XML representation of the object 
+        /// that is produced by the <see cref="IXmlSerializable.WriteXml(XmlWriter)"/>
+        /// method and consumed by the <see cref="IXmlSerializable.ReadXml(XmlReader)"/> method.
+        /// </returns>
         XmlSchema IXmlSerializable.GetSchema() => null;
 
         /// <summary>
@@ -126,9 +137,11 @@ namespace toofz.Services
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
             reader.ReadStartElement(EncryptedSecretName);
+
             encrypted = Convert.FromBase64String(reader.ReadElementContentAsString(SecretName, ""));
             salt = Convert.FromBase64String(reader.ReadElementContentAsString(SaltName, ""));
             iterations = reader.ReadElementContentAsInt(IterationsName, "");
+
             reader.ReadEndElement();
         }
 

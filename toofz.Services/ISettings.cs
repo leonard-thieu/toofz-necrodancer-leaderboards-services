@@ -2,6 +2,9 @@
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Base settings supported by services.
+    /// </summary>
     public interface ISettings
     {
         /// <summary>

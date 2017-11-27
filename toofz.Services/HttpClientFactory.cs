@@ -23,6 +23,9 @@ using System.Net.Http;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// Contains utility methods for creating instances of <see cref="HttpClient"/>.
+    /// </summary>
     public static class HttpClientFactory
     {
         /// <summary>
@@ -31,11 +34,15 @@ namespace toofz.Services
         /// or <see cref="HttpMessageInvoker"/> instances with customized message handlers.
         /// </summary>
         /// <param name="innerHandler">The inner handler represents the destination of the HTTP message channel.</param>
-        /// <param name="handlers">An ordered list of <see cref="DelegatingHandler"/> instances to be invoked as part 
+        /// <param name="handlers">
+        /// An ordered list of <see cref="DelegatingHandler"/> instances to be invoked as part 
         /// of sending an <see cref="HttpRequestMessage"/> and receiving an <see cref="HttpResponseMessage"/>.
         /// The handlers are invoked in a top-down fashion. That is, the first entry is invoked first for 
-        /// an outbound request message but last for an inbound response message.</param>
-        /// <returns>The HTTP message channel.</returns>
+        /// an outbound request message but last for an inbound response message.
+        /// </param>
+        /// <returns>
+        /// The HTTP message channel.
+        /// </returns>
         public static HttpMessageHandler CreatePipeline(HttpMessageHandler innerHandler, IEnumerable<DelegatingHandler> handlers)
         {
             if (innerHandler == null)
@@ -50,7 +57,7 @@ namespace toofz.Services
                 if (delegatingHandler == null)
                     throw new ArgumentNullException(nameof(handlers));
                 if (delegatingHandler.InnerHandler != null)
-                    throw new ArgumentException("DelegatingHandler has non-null inner handler.", nameof(handlers));
+                    throw new ArgumentException($"{nameof(DelegatingHandler)} has non-null inner handler.", nameof(handlers));
 
                 delegatingHandler.InnerHandler = httpMessageHandler;
                 httpMessageHandler = delegatingHandler;
