@@ -37,7 +37,14 @@ namespace toofz.Services.Tests
 
         public class RunAsyncOverrideMethod : ConsoleApplicationTests
         {
+            public RunAsyncOverrideMethod()
+            {
+                completionTcs = new TaskCompletionSource<bool>();
+                mockWorker.Setup(w => w.Completion).Returns(completionTcs.Task);
+            }
+
             private readonly ISettings settings = new StubSettings();
+            private readonly TaskCompletionSource<bool> completionTcs;
 
             [Fact]
             public async Task ArgsIsNotEmpty_CallsParse()
@@ -73,6 +80,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
                 mockConsole
                     .Setup(c => c.ReadKey(true))
+                    .Callback(() => completionTcs.SetResult(true))
                     .Returns(new ConsoleKeyInfo('c', ConsoleKey.C, shift: false, alt: false, control: true));
 
                 // Act
@@ -89,6 +97,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
                 mockConsole
                     .Setup(c => c.ReadKey(true))
+                    .Callback(() => completionTcs.SetResult(true))
                     .Returns(new ConsoleKeyInfo('c', ConsoleKey.C, shift: false, alt: false, control: true));
 
                 // Act
@@ -105,6 +114,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
                 mockConsole
                     .Setup(c => c.ReadKey(true))
+                    .Callback(() => completionTcs.SetResult(true))
                     .Returns(new ConsoleKeyInfo((char)ConsoleKey.C, ConsoleKey.C, shift: false, alt: false, control: true));
 
                 // Act
@@ -121,6 +131,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
                 mockConsole
                     .Setup(c => c.ReadKey(true))
+                    .Callback(() => completionTcs.SetResult(true))
                     .Returns(new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true));
 
                 // Act
@@ -130,15 +141,28 @@ namespace toofz.Services.Tests
                 mockConsole.Verify(c => c.ReadKey(true), Times.Once);
             }
 
-            [Fact(Skip = "Determine why this test is flaky.")]
+            [Fact]
             public async Task CancelKeyIsNotPressed_DoesNotStop()
             {
                 // Arrange
                 string[] args = { };
+                var i = 0;
                 mockConsole
-                    .SetupSequence(c => c.ReadKey(true))
-                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.Enter, ConsoleKey.Enter, shift: false, alt: false, control: false))
-                    .Returns(new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true));
+                    .Setup(c => c.ReadKey(true))
+                    .Callback(() => completionTcs.SetResult(true))
+                    .Returns(() =>
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                return new ConsoleKeyInfo((char)ConsoleKey.Enter, ConsoleKey.Enter, shift: false, alt: false, control: false);
+                            case 1:
+                                completionTcs.SetResult(true);
+                                return new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true);
+                            default:
+                                throw new InvalidOperationException($"Setup called {i} times but only expected 2.");
+                        }
+                    });
 
                 // Act
                 await app.RunAsyncOverride(args, settings);

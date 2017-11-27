@@ -12,15 +12,31 @@ namespace toofz.Services.Tests
     {
         public ServiceApplicationTests()
         {
-            serviceBase = mockServiceBase.Object;
+            app = new ServiceApplication<ISettings>(worker, mockServiceBase.Object);
         }
 
         private readonly WorkerRoleBase<ISettings> worker = new WorkerRoleBaseAdapter();
         private readonly Mock<IServiceBaseStatic> mockServiceBase = new Mock<IServiceBaseStatic>();
-        private readonly IServiceBaseStatic serviceBase;
+        private readonly ServiceApplication<ISettings> app;
 
-        public class Constructor : ServiceApplicationTests
+        public class Constructor
         {
+            private WorkerRoleBase<ISettings> worker = new WorkerRoleBaseAdapter();
+            private IServiceBaseStatic serviceBase = Mock.Of<IServiceBaseStatic>();
+
+            [Fact]
+            public void WorkerIsNull_ThrowsArgumentNullException()
+            {
+                // Arrange
+                worker = null;
+
+                // Act -> Assert
+                Assert.Throws<ArgumentNullException>(() =>
+                {
+                    new ServiceApplication<ISettings>(worker, serviceBase);
+                });
+            }
+
             [Fact]
             public void ReturnsInstance()
             {
@@ -39,11 +55,10 @@ namespace toofz.Services.Tests
             public RunAsyncOverrideMethod()
             {
                 currentDirectory = Directory.GetCurrentDirectory();
-                app = new ServiceApplication<ISettings>(worker, serviceBase);
             }
 
             private readonly string currentDirectory;
-            private readonly ServiceApplication<ISettings> app;
+            private readonly ISettings settings = new StubSettings();
 
             public void Dispose()
             {
@@ -55,7 +70,6 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                ISettings settings = new StubSettings();
 
                 // Act
                 await app.RunAsyncOverride(args, settings);
@@ -67,8 +81,7 @@ namespace toofz.Services.Tests
 
         private class WorkerRoleBaseAdapter : WorkerRoleBase<ISettings>
         {
-            public WorkerRoleBaseAdapter()
-                : base("myServiceName", new StubSettings(), new TelemetryClient()) { }
+            public WorkerRoleBaseAdapter() : base("myServiceName", new StubSettings(), new TelemetryClient()) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken)
             {
@@ -77,6 +90,5 @@ namespace toofz.Services.Tests
                 return Task.CompletedTask;
             }
         }
-
     }
 }

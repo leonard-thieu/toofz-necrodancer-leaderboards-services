@@ -225,6 +225,8 @@ namespace toofz.Services
                     }
                 }
 
+                Debug.Assert(status == ServiceControllerStatus.Running);
+
                 status = ServiceControllerStatus.StopPending;
                 Log.Info("Stopping service...");
                 TelemetryClient.TrackEvent("Stop service");
