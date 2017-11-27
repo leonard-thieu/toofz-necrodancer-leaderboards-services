@@ -88,17 +88,24 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class SerializationTests
+        public class SerializationTests : IDisposable
         {
+            private readonly TextWriter sw = new StringWriter();
+
+            public void Dispose()
+            {
+                sw.Dispose();
+            }
+
             [Fact]
             public void SerializesAndDeserializes()
             {
                 // Arrange
                 var provider = new ServiceSettingsProvider();
-                var sw = new StringWriter();
                 provider.GetSettingsWriter = () => sw;
                 var context = new SettingsContext();
                 var values = new SettingsPropertyValueCollection();
+
                 var property = SettingsUtil.CreateProperty<EncryptedSecret>("myProp");
                 property.SerializeAs = SettingsSerializeAs.Xml;
                 var value = new SettingsPropertyValue(property);

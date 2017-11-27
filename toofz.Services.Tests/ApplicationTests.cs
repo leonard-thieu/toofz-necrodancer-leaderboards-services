@@ -11,17 +11,19 @@ namespace toofz.Services.Tests
 {
     public class ApplicationTests
     {
-        public class RunAsyncMethod
+        private readonly ApplicationAdapter app = new ApplicationAdapter();
+
+        public class RunAsyncMethod : ApplicationTests
         {
             public RunAsyncMethod()
             {
-                app = mockApp.Object;
-                settings = new StubSettings { KeyDerivationIterations = 1 };
+                mockSettings.SetupAllProperties();
+                mockSettings.SetupProperty(s => s.KeyDerivationIterations, 1);
+                settings = mockSettings.Object;
                 log = mockLog.Object;
             }
 
-            private readonly Mock<Application<ISettings>> mockApp = new Mock<Application<ISettings>>();
-            private readonly Application<ISettings> app;
+            private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
             private ISettings settings;
             private readonly Mock<ILog> mockLog = new Mock<ILog>();
             private ILog log;
@@ -86,10 +88,6 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                var mockSettings = new Mock<ISettings>();
-                mockSettings.SetupAllProperties();
-                settings = mockSettings.Object;
-                settings.KeyDerivationIterations = 1;
 
                 // Act
                 await app.RunAsync(args, settings, log, telemetryConfiguration);
@@ -103,7 +101,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                settings.InstrumentationKey = null;
+                mockSettings.SetupProperty(s => s.InstrumentationKey, null);
 
                 // Act
                 await app.RunAsync(args, settings, log, telemetryConfiguration);
@@ -117,7 +115,7 @@ namespace toofz.Services.Tests
             {
                 // Arrange
                 string[] args = { };
-                settings.InstrumentationKey = "myInstrumentationKey";
+                mockSettings.SetupProperty(s => s.InstrumentationKey, "myInstrumentationKey");
 
                 // Act
                 await app.RunAsync(args, settings, log, telemetryConfiguration);
@@ -174,7 +172,7 @@ namespace toofz.Services.Tests
                     settings.LeaderboardsConnectionString = null;
                     Directory.SetCurrentDirectory(Environment.SystemDirectory);
 
-                    var app = new FakeApplication();
+                    var app = new ApplicationAdapter();
                     string[] args = { };
                     var log = Mock.Of<ILog>();
                     var telemetryConfiguration = TelemetryConfiguration.Active;
@@ -185,12 +183,12 @@ namespace toofz.Services.Tests
                     // Assert
                     Assert.Equal("myConnectionString", settings.LeaderboardsConnectionString.Decrypt());
                 }
-
-                private class FakeApplication : Application<ISettings>
-                {
-                    internal override Task<int> RunAsyncOverride(string[] args, ISettings settings) => Task.FromResult(0);
-                }
             }
+        }
+
+        private class ApplicationAdapter : Application<ISettings>
+        {
+            internal override Task<int> RunAsyncOverride(string[] args, ISettings settings) => Task.FromResult(0);
         }
     }
 }
