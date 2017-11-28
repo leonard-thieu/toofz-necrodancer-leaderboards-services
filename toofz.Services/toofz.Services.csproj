@@ -100,7 +100,6 @@
     <Compile Include="Options.cs" />
     <Compile Include="ServiceApplication.cs" />
     <Compile Include="ServiceSettingsProvider.cs" />
-    <Compile Include="TypeExtensions.cs" />
     <Compile Include="WorkerRoleBase.cs">
       <SubType>Component</SubType>
     </Compile>

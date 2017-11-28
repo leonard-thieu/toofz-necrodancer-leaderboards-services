@@ -13,7 +13,7 @@ namespace toofz.Services
     {
         #region Static Members
 
-        private static readonly ILog Log = LogManager.GetLogger(typeof(WorkerRoleBase<TSettings>).GetSimpleFullName());
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [Conditional("FEATURE_GC_ENDOFCYCLE")]
         private static void GCCollect()
@@ -59,8 +59,6 @@ namespace toofz.Services
 
         #region Fields
 
-        private ServiceControllerStatus status = ServiceControllerStatus.Stopped;
-        private readonly object statusLock = new object();
         private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
@@ -77,7 +75,6 @@ namespace toofz.Services
         /// </summary>
         public Task Initialization => InitializationTcs.Task;
 
-        private readonly object initializationTcsLock = new object();
         private TaskCompletionSource<bool> InitializationTcs
         {
             get
@@ -98,6 +95,7 @@ namespace toofz.Services
             }
         }
         private TaskCompletionSource<bool> initializationTcs;
+        private readonly object initializationTcsLock = new object();
 
         /// <summary>
         /// Signals that work has stopped due to a fault or <see cref="Stop"/> was called.
@@ -124,23 +122,12 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
-            lock (statusLock)
-            {
-                status = ServiceControllerStatus.StartPending;
-                Log.Info("Starting service...");
-                TelemetryClient.TrackEvent("Start service");
+            Log.Info("Received Start command.");
+            TelemetryClient.TrackEvent("Start command");
 
-                cancellationTokenSource = new CancellationTokenSource();
-                Completion = RunAsync(Log, cancellationTokenSource.Token);
-                Completion.ContinueWith(t =>
-                {
-                    Stop();
-                }, TaskContinuationOptions.OnlyOnFaulted);
-                InitializationTcs.SetResult(true);
-
-                status = ServiceControllerStatus.Running;
-                Log.Info("Started service.");
-            }
+            cancellationTokenSource = new CancellationTokenSource();
+            Completion = RunAsync(Log, cancellationTokenSource.Token);
+            InitializationTcs.SetResult(true);
         }
 
         #endregion
@@ -155,12 +142,18 @@ namespace toofz.Services
                 {
                     await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
                 }
-                // Stop was called.
-                catch (TaskCanceledException)
-                    when (cancellationToken.IsCancellationRequested)
+                catch (Exception ex)
                 {
-                    log.Info("Received Stop command.");
-                    TelemetryClient.TrackEvent("Stop command");
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        Log.Info("Stopping service...");
+
+                        InitializationTcs = null;
+                        Log.Error("Stopping service due to unhandled exception.", ex);
+                        TelemetryClient.TrackException(ex);
+
+                        Log.Info("Stopped service.");
+                    }
                     break;
                 }
             }
@@ -208,59 +201,26 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
-            lock (statusLock)
+            Log.Info("Received Stop command.");
+            TelemetryClient.TrackEvent("Stop command");
+
+            OnStopCore();
+        }
+
+        // Called by OnStop and OnShutdown
+        private void OnStopCore()
+        {
+            Log.Info("Stopping service...");
+
+            using (cancellationTokenSource)
             {
-                if (status == ServiceControllerStatus.Stopped)
-                {
-                    // Unpaired executions of OnStop() have been observed. 
-                    // Generate a stack trace to determine where they're coming from.
-                    try
-                    {
-                        throw new InvalidOperationException("Cannot stop service while it is already stopped.");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Log.Warn("Received Stop command while already stopped.", ex);
-                        return;
-                    }
-                }
-
-                Debug.Assert(status == ServiceControllerStatus.Running);
-
-                status = ServiceControllerStatus.StopPending;
-                Log.Info("Stopping service...");
-                TelemetryClient.TrackEvent("Stop service");
-
-                try
-                {
-                    InitializationTcs = null;
-
-                    using (cancellationTokenSource)
-                    {
-                        cancellationTokenSource.Cancel();
-                        Completion.GetAwaiter().GetResult();
-                    }
-                }
-                // Swallow exceptions while stopping. Unhandled exceptions may cause other services (e.g. Service Control Manager, installers) 
-                // to fail unnecessarily.
-                catch (Exception ex)
-                {
-                    Log.Error("Exception thrown while stopping service.", ex);
-                    TelemetryClient.TrackException(ex);
-                }
-                finally
-                {
-                    // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
-                    // order to get the majority of telemetry through.
-                    // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
-                    TelemetryClient.Flush();
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
-
-                    status = ServiceControllerStatus.Stopped;
-                    // TODO: Determine why this frequently fails to flush.
-                    Log.Info("Stopped service.");
-                }
+                InitializationTcs = null;
+                cancellationTokenSource.Cancel();
+                // Wait for cancellations to complete.
+                Completion.GetAwaiter().GetResult();
             }
+
+            Log.Info("Stopped service.");
         }
 
         #endregion
@@ -274,11 +234,34 @@ namespace toofz.Services
         protected override void OnShutdown()
         {
             Log.Info("Received Shutdown command.");
-            TelemetryClient.TrackEvent("Shutdown service");
+            TelemetryClient.TrackEvent("Shutdown command");
 
-            Stop();
+            OnStopCore();
         }
 
         #endregion
+
+        private void FlushTelemetry()
+        {
+            Log.Info("Flushing telemetry...");
+
+            // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
+            // order to get the majority of telemetry through.
+            // https://github.com/Microsoft/ApplicationInsights-dotnet/issues/281
+            TelemetryClient.Flush();
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            Log.Info("Flushed telemetry (probably).");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                FlushTelemetry();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

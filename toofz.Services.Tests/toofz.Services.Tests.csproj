@@ -114,7 +114,6 @@
     <Compile Include="SettingsTestsBase.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="StubSettings.cs" />
-    <Compile Include="TypeExtensionsTests.cs" />
     <Compile Include="WorkerRoleBaseTests.cs" />
     <Compile Include="XElementExtensionsTests.cs" />
     <Compile Include="XmlSerializable.cs" />
