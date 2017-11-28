@@ -113,10 +113,9 @@ namespace toofz.Services
         /// <summary>
         /// Starts the service. This method is intended to be called from console applications.
         /// </summary>
-        /// <param name="args">Data passed by the command line.</param>
-        public void Start(params string[] args)
+        public void Start()
         {
-            OnStart(args);
+            OnStart(new string[0]);
         }
 
         /// <summary>
