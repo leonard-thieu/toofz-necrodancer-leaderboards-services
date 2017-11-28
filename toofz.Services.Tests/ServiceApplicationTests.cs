@@ -65,10 +65,11 @@ namespace toofz.Services.Tests
                 Directory.SetCurrentDirectory(currentDirectory);
             }
 
-            [Fact(Skip = "How did this work before?")]
+            [Fact]
             public async Task CallsRun()
             {
                 // Arrange
+                mockServiceBase.Setup(s => s.Run(worker)).Callback(() => worker.Start());
                 string[] args = { };
 
                 // Act
@@ -83,12 +84,7 @@ namespace toofz.Services.Tests
         {
             public WorkerRoleBaseAdapter() : base("myServiceName", new StubSettings(), new TelemetryClient()) { }
 
-            protected override Task RunAsyncOverride(CancellationToken cancellationToken)
-            {
-                Stop();
-
-                return Task.CompletedTask;
-            }
+            protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromCanceled(cancellationToken);
         }
     }
 }
