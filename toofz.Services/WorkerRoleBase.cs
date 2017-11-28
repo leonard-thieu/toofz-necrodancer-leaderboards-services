@@ -130,7 +130,36 @@ namespace toofz.Services
             TelemetryClient.TrackEvent("Start command");
 
             cancellationTokenSource = new CancellationTokenSource();
-            Completion = RunAsync(cancellationTokenSource.Token);
+
+            var completionCompletionSource = new TaskCompletionSource<bool>();
+            // Completion should not end in a faulted state.
+            // Proxy the Task that performs the work but don't marshal exceptions.
+            Completion = completionCompletionSource.Task;
+
+            var completion = RunAsync(cancellationTokenSource.Token);
+            completion.ContinueWith(t =>
+            {
+                FlushTelemetry();
+                completionCompletionSource.SetResult(true);
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            completion.ContinueWith(async t =>
+            {
+                try
+                {
+                    await t.ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Stopping service due to unhandled exception.", ex);
+                    TelemetryClient.TrackException(ex);
+
+                    FlushTelemetry();
+                    cancellationTokenSource.Cancel();
+                    completionCompletionSource.SetResult(true);
+                    Stop();
+                }
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
             InitializationTcs.SetResult(true);
         }
 
@@ -146,20 +175,8 @@ namespace toofz.Services
                 {
                     await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), cancellationToken).ConfigureAwait(false);
                 }
-                catch (Exception ex)
-                {
-                    if (!cancellationToken.IsCancellationRequested)
-                    {
-                        log.Info("Stopping service...");
-
-                        InitializationTcs = null;
-                        log.Error("Stopping service due to unhandled exception.", ex);
-                        TelemetryClient.TrackException(ex);
-
-                        log.Info("Stopped service.");
-                    }
-                    break;
-                }
+                // Received Stop command
+                catch (Exception) when (cancellationToken.IsCancellationRequested) { break; }
             }
         }
 
@@ -205,20 +222,16 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
-            log.Info("Received Stop command.");
-            TelemetryClient.TrackEvent("Stop command");
+            if (!cancellationTokenSource.IsCancellationRequested)
+            {
+                log.Info("Received Stop command.");
+                log.Info("Stopping service...");
+                TelemetryClient.TrackEvent("Stop command");
 
-            OnStopCore();
-        }
-
-        // Called by OnStop and OnShutdown
-        private void OnStopCore()
-        {
-            log.Info("Stopping service...");
+                cancellationTokenSource.Cancel();
+            }
 
             InitializationTcs = null;
-            cancellationTokenSource.Cancel();
-            // Wait for cancellations to complete.
             Completion.GetAwaiter().GetResult();
 
             log.Info("Stopped service.");
@@ -237,7 +250,8 @@ namespace toofz.Services
             log.Info("Received Shutdown command.");
             TelemetryClient.TrackEvent("Shutdown command");
 
-            OnStopCore();
+            cancellationTokenSource.Cancel();
+            OnStop();
         }
 
         #endregion
@@ -253,23 +267,6 @@ namespace toofz.Services
             Thread.Sleep(TimeSpan.FromSeconds(2));
 
             log.Info("Flushed telemetry (probably).");
-        }
-
-        /// <summary>
-        /// Disposes of resources used by <see cref="WorkerRoleBase{TSettings}"/>.
-        /// </summary>
-        /// <param name="disposing">
-        /// true to release both managed and unmanaged resources; 
-        /// false to release only unmanaged resources.
-        /// </param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                FlushTelemetry();
-            }
-
-            base.Dispose(disposing);
         }
     }
 }
