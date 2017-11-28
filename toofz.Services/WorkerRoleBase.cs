@@ -216,13 +216,10 @@ namespace toofz.Services
         {
             log.Info("Stopping service...");
 
-            using (cancellationTokenSource)
-            {
-                InitializationTcs = null;
-                cancellationTokenSource.Cancel();
-                // Wait for cancellations to complete.
-                Completion.GetAwaiter().GetResult();
-            }
+            InitializationTcs = null;
+            cancellationTokenSource.Cancel();
+            // Wait for cancellations to complete.
+            Completion.GetAwaiter().GetResult();
 
             log.Info("Stopped service.");
         }
