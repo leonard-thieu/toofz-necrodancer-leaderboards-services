@@ -78,11 +78,11 @@ namespace toofz.Services
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
 
-            AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
                 log.Fatal("Terminating application due to unhandled exception.", e.ExceptionObject as Exception);
             };
-            TaskScheduler.UnobservedTaskException += (_, e) =>
+            TaskScheduler.UnobservedTaskException += (s, e) =>
             {
                 log.Fatal("Terminating application due to unobserved task exception.", e.Exception);
             };

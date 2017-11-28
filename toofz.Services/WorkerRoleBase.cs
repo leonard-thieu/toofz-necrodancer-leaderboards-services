@@ -169,6 +169,8 @@ namespace toofz.Services
 
             TelemetryClient.Flush();
 
+            // Perform an eager garbage collection before entering an idle period. Otherwise, the GC performs garbage 
+            // collection at the beginning of the next cycle and uses up resources when they're actually needed.
             GCCollect();
 
             idle.WriteTimeRemaining();
@@ -254,6 +256,13 @@ namespace toofz.Services
             Log.Info("Flushed telemetry (probably).");
         }
 
+        /// <summary>
+        /// Disposes of resources used by <see cref="WorkerRoleBase{TSettings}"/>.
+        /// </summary>
+        /// <param name="disposing">
+        /// true to release both managed and unmanaged resources; 
+        /// false to release only unmanaged resources.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
