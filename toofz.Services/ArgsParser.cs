@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using log4net;
 using Mono.Options;
 
 namespace toofz.Services
@@ -12,6 +13,8 @@ namespace toofz.Services
         where TOptions : Options, new()
         where TSettings : ISettings
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Gets the description of a property decorated with <see cref="SettingsDescriptionAttribute"/>.
         /// </summary>
@@ -149,7 +152,7 @@ namespace toofz.Services
             OnParsed(options, settings);
 
             settings.Save();
-            OutWriter.WriteLine("Saved settings.");
+            Log.Info("Saved settings.");
 
             return 0;
         }
