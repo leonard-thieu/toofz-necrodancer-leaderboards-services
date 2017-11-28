@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using log4net;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -96,7 +97,8 @@ namespace toofz.Services
             settings.Save(force: true);
 
             if (string.IsNullOrEmpty(settings.InstrumentationKey) &&
-                telemetryConfiguration.InstrumentationKey == "")
+                telemetryConfiguration.InstrumentationKey == "" &&
+                !args.Any())
             {
                 log.Warn("An Application Insights instrumentation key is not set. Telemetry will not be reported to Application Insights.");
             }
