@@ -38,7 +38,6 @@ namespace toofz.Services
 
         private static XmlSerializer GetXmlSerializer(Type type)
         {
-            // Not worth fighting xUnit on this.
             lock (XmlSerializers)
             {
                 if (XmlSerializers.TryGetValue(type, out var serializer))
