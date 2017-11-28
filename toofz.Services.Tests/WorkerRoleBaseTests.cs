@@ -125,7 +125,7 @@ namespace toofz.Services.Tests
                 var cancellationToken = cts.Token;
 
                 // Act -> Assert
-                await worker.RunAsync(log, cancellationToken);
+                await worker.RunAsync(cancellationToken);
             }
         }
 
@@ -134,13 +134,10 @@ namespace toofz.Services.Tests
             public RunAsyncCoreMethod()
             {
                 idle = mockIdle.Object;
-                log = mockLog.Object;
             }
 
             private readonly Mock<IIdle> mockIdle = new Mock<IIdle>();
             private readonly IIdle idle;
-            private readonly Mock<ILog> mockLog = new Mock<ILog>();
-            private readonly ILog log;
             private readonly CancellationToken cancellationToken = CancellationToken.None;
 
             [Fact]
@@ -152,7 +149,7 @@ namespace toofz.Services.Tests
                 var worker = new EmptyWorkerRoleBase(settings);
 
                 // Act
-                await worker.RunAsyncCore(idle, log, cancellationToken);
+                await worker.RunAsyncCore(idle, cancellationToken);
 
                 // Assert
                 mockSettings.Verify(s => s.Reload(), Times.Once);
@@ -165,7 +162,7 @@ namespace toofz.Services.Tests
                 var worker = new MockWorkerRoleBase();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, cancellationToken);
+                await worker.RunAsyncCore(idle, cancellationToken);
 
                 // Assert
                 Assert.Equal(1, worker.RunAsyncOverrideCallCount);
@@ -178,7 +175,7 @@ namespace toofz.Services.Tests
                 var worker = new EmptyWorkerRoleBase();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, cancellationToken);
+                await worker.RunAsyncCore(idle, cancellationToken);
 
                 // Assert
                 mockIdle.Verify(i => i.WriteTimeRemaining(), Times.Once);
@@ -191,7 +188,7 @@ namespace toofz.Services.Tests
                 var worker = new EmptyWorkerRoleBase();
 
                 // Act
-                await worker.RunAsyncCore(idle, log, cancellationToken);
+                await worker.RunAsyncCore(idle, cancellationToken);
 
                 // Assert
                 mockIdle.Verify(i => i.DelayAsync(It.IsAny<CancellationToken>()), Times.Once);

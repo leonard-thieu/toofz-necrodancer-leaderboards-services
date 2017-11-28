@@ -45,7 +45,9 @@ namespace toofz.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="telemetryClient"/> is null.
         /// </exception>
-        protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient)
+        protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient) : this(serviceName, settings, telemetryClient, null) { }
+
+        internal WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient, ILog log)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -53,12 +55,14 @@ namespace toofz.Services
             ServiceName = serviceName;
             Settings = settings;
             TelemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
+            this.log = log ?? Log;
 
             CanShutdown = true;
         }
 
         #region Fields
 
+        private readonly ILog log;
         private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
@@ -122,11 +126,11 @@ namespace toofz.Services
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
-            Log.Info("Received Start command.");
+            log.Info("Received Start command.");
             TelemetryClient.TrackEvent("Start command");
 
             cancellationTokenSource = new CancellationTokenSource();
-            Completion = RunAsync(Log, cancellationTokenSource.Token);
+            Completion = RunAsync(cancellationTokenSource.Token);
             InitializationTcs.SetResult(true);
         }
 
@@ -134,35 +138,33 @@ namespace toofz.Services
 
         #region Run
 
-        internal async Task RunAsync(ILog log, CancellationToken cancellationToken)
+        internal async Task RunAsync(CancellationToken cancellationToken)
         {
             while (true)
             {
                 try
                 {
-                    await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), log, cancellationToken).ConfigureAwait(false);
+                    await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     if (!cancellationToken.IsCancellationRequested)
                     {
-                        Log.Info("Stopping service...");
+                        log.Info("Stopping service...");
 
                         InitializationTcs = null;
-                        Log.Error("Stopping service due to unhandled exception.", ex);
+                        log.Error("Stopping service due to unhandled exception.", ex);
                         TelemetryClient.TrackException(ex);
 
-                        Log.Info("Stopped service.");
+                        log.Info("Stopped service.");
                     }
                     break;
                 }
             }
         }
 
-        internal async Task RunAsyncCore(IIdle idle, ILog log, CancellationToken cancellationToken)
+        internal async Task RunAsyncCore(IIdle idle, CancellationToken cancellationToken)
         {
-            log.Info("Starting update cycle...");
-
             Settings.Reload();
 
             await RunAsyncOverride(cancellationToken).ConfigureAwait(false);
@@ -203,7 +205,7 @@ namespace toofz.Services
         /// </summary>
         protected override void OnStop()
         {
-            Log.Info("Received Stop command.");
+            log.Info("Received Stop command.");
             TelemetryClient.TrackEvent("Stop command");
 
             OnStopCore();
@@ -212,7 +214,7 @@ namespace toofz.Services
         // Called by OnStop and OnShutdown
         private void OnStopCore()
         {
-            Log.Info("Stopping service...");
+            log.Info("Stopping service...");
 
             using (cancellationTokenSource)
             {
@@ -222,7 +224,7 @@ namespace toofz.Services
                 Completion.GetAwaiter().GetResult();
             }
 
-            Log.Info("Stopped service.");
+            log.Info("Stopped service.");
         }
 
         #endregion
@@ -235,7 +237,7 @@ namespace toofz.Services
         /// </summary>
         protected override void OnShutdown()
         {
-            Log.Info("Received Shutdown command.");
+            log.Info("Received Shutdown command.");
             TelemetryClient.TrackEvent("Shutdown command");
 
             OnStopCore();
@@ -245,7 +247,7 @@ namespace toofz.Services
 
         private void FlushTelemetry()
         {
-            Log.Info("Flushing telemetry...");
+            log.Info("Flushing telemetry...");
 
             // Flush runs asynchronously when using ServerTelemetryChannel. Waiting 2 seconds seems to be sufficient in 
             // order to get the majority of telemetry through.
@@ -253,7 +255,7 @@ namespace toofz.Services
             TelemetryClient.Flush();
             Thread.Sleep(TimeSpan.FromSeconds(2));
 
-            Log.Info("Flushed telemetry (probably).");
+            log.Info("Flushed telemetry (probably).");
         }
 
         /// <summary>
