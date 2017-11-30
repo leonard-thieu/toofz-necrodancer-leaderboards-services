@@ -3,7 +3,6 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
 using Microsoft.ApplicationInsights;
 using Moq;
 using Xunit;
@@ -113,22 +112,6 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class RunAsyncMethod
-        {
-            [Fact]
-            public async Task TaskCanceledExceptionIsThrown_DoesNotThrow()
-            {
-                // Arrange
-                var cts = new CancellationTokenSource();
-                var worker = new CancellingWorkerRoleBase(cts);
-                var log = Mock.Of<ILog>();
-                var cancellationToken = cts.Token;
-
-                // Act -> Assert
-                await worker.RunAsync(cancellationToken);
-            }
-        }
-
         public class RunAsyncCoreMethod
         {
             public RunAsyncCoreMethod()
@@ -229,23 +212,6 @@ namespace toofz.Services.Tests
             public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings, new TelemetryClient()) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.Factory.StartNew(() => { }, cancellationToken);
-        }
-
-        private class CancellingWorkerRoleBase : TestWorkerRoleBase
-        {
-            public CancellingWorkerRoleBase(CancellationTokenSource cts)
-            {
-                this.cts = cts;
-            }
-
-            private readonly CancellationTokenSource cts;
-
-            protected override Task RunAsyncOverride(CancellationToken cancellationToken)
-            {
-                cts.Cancel();
-
-                return Task.FromCanceled(cancellationToken);
-            }
         }
 
         private abstract class TestWorkerRoleBase : WorkerRoleBase<ISettings>

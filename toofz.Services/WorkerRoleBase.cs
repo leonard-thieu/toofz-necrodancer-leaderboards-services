@@ -140,7 +140,7 @@ namespace toofz.Services
             {
                 FlushTelemetry();
                 completionCompletionSource.SetResult(true);
-            }, TaskContinuationOptions.OnlyOnRanToCompletion);
+            }, TaskContinuationOptions.OnlyOnCanceled);
             completion.ContinueWith(async t =>
             {
                 try
@@ -172,12 +172,7 @@ namespace toofz.Services
         {
             while (true)
             {
-                try
-                {
-                    await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), cancellationToken).ConfigureAwait(false);
-                }
-                // Received Stop command
-                catch (Exception) when (cancellationToken.IsCancellationRequested) { break; }
+                await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), cancellationToken).ConfigureAwait(false);
             }
         }
 
