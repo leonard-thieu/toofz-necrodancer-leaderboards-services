@@ -155,7 +155,9 @@ namespace toofz.Services
                     FlushTelemetry();
                     cancellationTokenSource.Cancel();
                     completionCompletionSource.SetResult(true);
-                    Stop();
+                    // Failure recovery options only trigger when terminating when not in the Stopped state.
+                    // OnStop is called directly to avoid moving to the Stopped state.
+                    OnStop();
                 }
             }, TaskContinuationOptions.OnlyOnFaulted);
 
