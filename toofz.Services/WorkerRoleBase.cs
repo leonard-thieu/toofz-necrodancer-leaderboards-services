@@ -143,7 +143,7 @@ namespace toofz.Services
             {
                 FlushTelemetry();
                 completionCompletionSource.SetResult(true);
-            }, TaskContinuationOptions.OnlyOnCanceled);
+            }, TaskContinuationOptions.NotOnFaulted);
             completion.ContinueWith(async t =>
             {
                 try
@@ -157,7 +157,17 @@ namespace toofz.Services
 
                     FlushTelemetry();
                     cancellationTokenSource.Cancel();
-                    completionCompletionSource.SetResult(false);
+
+                    // Marshal exceptions only when running tests.
+                    if (runOnce)
+                    {
+                        completionCompletionSource.SetException(ex);
+                    }
+                    else
+                    {
+                        completionCompletionSource.SetResult(false);
+                    }
+
                     // Failure recovery options only trigger when terminating when not in the Stopped state.
                     // OnStop is called directly to avoid moving to the Stopped state.
                     OnStop();
