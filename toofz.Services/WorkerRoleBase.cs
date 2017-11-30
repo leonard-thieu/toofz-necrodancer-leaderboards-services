@@ -154,7 +154,7 @@ namespace toofz.Services
 
                     FlushTelemetry();
                     cancellationTokenSource.Cancel();
-                    completionCompletionSource.SetResult(true);
+                    completionCompletionSource.SetResult(false);
                     // Failure recovery options only trigger when terminating when not in the Stopped state.
                     // OnStop is called directly to avoid moving to the Stopped state.
                     OnStop();
@@ -228,6 +228,13 @@ namespace toofz.Services
             }
 
             InitializationTcs = null;
+            // Wait for cleanup to complete.
+            // TODO: This currently waits indefinitely and can potentially require more than the 20 seconds allowed to stop.
+            //       Options:
+            //       - Request additional time
+            //         - Note: API seems to be counter-intuitive. Verify its behavior.
+            //       - Abandon cleanup through a timeout
+            //       - Allow the SCM to forcefully end the process
             Completion.GetAwaiter().GetResult();
 
             log.Info("Stopped service.");
