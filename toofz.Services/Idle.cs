@@ -29,6 +29,8 @@ namespace toofz.Services
 
         internal void WriteTimeRemaining(DateTime from)
         {
+            if (!log.IsInfoEnabled) { return; }
+
             var remaining = GetTimeRemaining(from);
             if (remaining > TimeSpan.Zero)
             {

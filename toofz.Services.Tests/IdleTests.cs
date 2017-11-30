@@ -9,6 +9,16 @@ namespace toofz.Services.Tests
 {
     public class IdleTests
     {
+        public IdleTests()
+        {
+            idle = new Idle(updateInterval, startTime, mockLog.Object);
+        }
+
+        private readonly TimeSpan updateInterval = TimeSpan.FromSeconds(75);
+        private readonly DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
+        private readonly Mock<ILog> mockLog = new Mock<ILog>();
+        private readonly Idle idle;
+
         public class StartNewMethod
         {
             [Fact]
@@ -25,17 +35,17 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class WriteTimeRemainingMethod
+        public class WriteTimeRemainingMethod : IdleTests
         {
+            public WriteTimeRemainingMethod()
+            {
+                mockLog.Setup(l => l.IsInfoEnabled).Returns(true);
+            }
+
             [Fact]
             public void TimeRemaining_WritesTimeRemaining()
             {
                 // Arrange
-                TimeSpan updateInterval = TimeSpan.FromSeconds(75);
-                DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-                var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(60);
 
                 // Act
@@ -49,11 +59,6 @@ namespace toofz.Services.Tests
             public void NoTimeRemaining_WritesStartingImmediately()
             {
                 // Arrange
-                TimeSpan updateInterval = TimeSpan.FromSeconds(75);
-                DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-                var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(90);
 
                 // Act
@@ -64,17 +69,12 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class GetTimeRemainingMethod
+        public class GetTimeRemainingMethod : IdleTests
         {
             [Fact]
             public void ReturnsTimeRemaining()
             {
                 // Arrange
-                TimeSpan updateInterval = TimeSpan.FromSeconds(75);
-                DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-                var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(60);
 
                 // Act
@@ -85,17 +85,12 @@ namespace toofz.Services.Tests
             }
         }
 
-        public class DelayAsyncMethod
+        public class DelayAsyncMethod : IdleTests
         {
             [Fact]
             public async Task TimeRemaining_DelaysForTimeRemaining()
             {
                 // Arrange
-                TimeSpan updateInterval = TimeSpan.FromSeconds(75);
-                DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-                var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(60);
                 var mockTask = new Mock<ITaskStatic>();
                 var task = mockTask.Object;
@@ -112,11 +107,6 @@ namespace toofz.Services.Tests
             public async Task NoTimeRemaining_DoesNotDelay()
             {
                 // Arrange
-                TimeSpan updateInterval = TimeSpan.FromSeconds(75);
-                DateTime startTime = new DateTime(2017, 8, 27, 12, 51, 1);
-                var mockLog = new Mock<ILog>();
-                var log = mockLog.Object;
-                var idle = new Idle(updateInterval, startTime, log);
                 var from = startTime + TimeSpan.FromSeconds(90);
                 var mockTask = new Mock<ITaskStatic>();
                 var task = mockTask.Object;
