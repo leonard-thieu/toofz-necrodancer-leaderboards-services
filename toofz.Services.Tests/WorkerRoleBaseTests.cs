@@ -209,14 +209,14 @@ namespace toofz.Services.Tests
             public EmptyWorkerRoleBase() : this("myServiceName", Mock.Of<ISettings>()) { }
             public EmptyWorkerRoleBase(string serviceName) : this(serviceName, Mock.Of<ISettings>()) { }
             public EmptyWorkerRoleBase(ISettings settings) : this("myServiceName", settings) { }
-            public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings, new TelemetryClient()) { }
+            public EmptyWorkerRoleBase(string serviceName, ISettings settings) : base(serviceName, settings, new TelemetryClient(), runOnce: false) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.Factory.StartNew(() => { }, cancellationToken);
         }
 
         private abstract class TestWorkerRoleBase : WorkerRoleBase<ISettings>
         {
-            protected TestWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>(), new TelemetryClient()) { }
+            protected TestWorkerRoleBase() : base("myServiceName", Mock.Of<ISettings>(), new TelemetryClient(), runOnce: false) { }
         }
     }
 }

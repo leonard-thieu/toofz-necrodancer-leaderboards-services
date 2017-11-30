@@ -45,9 +45,10 @@ namespace toofz.Services
         /// <exception cref="ArgumentNullException">
         /// <paramref name="telemetryClient"/> is null.
         /// </exception>
-        protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient) : this(serviceName, settings, telemetryClient, null) { }
+        protected WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient, bool runOnce)
+            : this(serviceName, settings, telemetryClient, runOnce, log: null) { }
 
-        internal WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient, ILog log)
+        internal WorkerRoleBase(string serviceName, TSettings settings, TelemetryClient telemetryClient, bool runOnce, ILog log)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -55,6 +56,7 @@ namespace toofz.Services
             ServiceName = serviceName;
             Settings = settings;
             TelemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
+            this.runOnce = runOnce;
             this.log = log ?? Log;
 
             CanShutdown = true;
@@ -62,6 +64,7 @@ namespace toofz.Services
 
         #region Fields
 
+        private readonly bool runOnce;
         private readonly ILog log;
         private CancellationTokenSource cancellationTokenSource;
 
@@ -170,10 +173,10 @@ namespace toofz.Services
 
         internal async Task RunAsync(CancellationToken cancellationToken)
         {
-            while (true)
+            do
             {
                 await RunAsyncCore(Idle.StartNew(Settings.UpdateInterval), cancellationToken).ConfigureAwait(false);
-            }
+            } while (!runOnce);
         }
 
         internal async Task RunAsyncCore(IIdle idle, CancellationToken cancellationToken)

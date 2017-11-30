@@ -82,7 +82,7 @@ namespace toofz.Services.Tests
 
         private class WorkerRoleBaseAdapter : WorkerRoleBase<ISettings>
         {
-            public WorkerRoleBaseAdapter() : base("myServiceName", new StubSettings(), new TelemetryClient()) { }
+            public WorkerRoleBaseAdapter() : base("myServiceName", new StubSettings(), new TelemetryClient(), runOnce: false) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromCanceled(cancellationToken);
         }
