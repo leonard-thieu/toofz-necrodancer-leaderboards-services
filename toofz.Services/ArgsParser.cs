@@ -48,11 +48,10 @@ namespace toofz.Services
         /// <summary>
         /// Gets a value that indicates if the user should be prompted for a required setting.
         /// </summary>
+        /// <typeparam name="TOption">The type of <paramref name="option"/>>.</typeparam>
         /// <param name="option">The original option value passed in from the command line.</param>
-        /// 
         /// <returns>
-        /// true, if <paramref name="option"/> is null or <paramref name="option"/> is an empty string and
-        /// <paramref name="setting"/> is null; otherwise, false.
+        /// true, if <paramref name="option"/> is null; otherwise, false.
         /// </returns>
         protected static bool ShouldPrompt<TOption>(TOption option) => option == null;
 

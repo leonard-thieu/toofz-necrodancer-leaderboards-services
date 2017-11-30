@@ -105,7 +105,7 @@ namespace toofz.Services
         private readonly object initializationTcsLock = new object();
 
         /// <summary>
-        /// Signals that work has stopped due to a fault or <see cref="Stop"/> was called.
+        /// Signals that work has stopped due to a fault or <see cref="ServiceBase.Stop"/> was called.
         /// </summary>
         public Task Completion { get; private set; }
 
