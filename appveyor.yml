@@ -1,4 +1,4 @@
-version: 15.0.5.{build}
+version: 15.0.6.{build}
 image: Visual Studio 2017
 
 branches:
@@ -19,6 +19,8 @@ assembly_info:
   file: AssemblyInfo.cs
   assembly_version: $(appveyor_build_version)
 
+init:
+  - git config --global core.autocrlf input
 install:
   - nuget update -Self
   - git clone https://github.com/leonard-thieu/toofz-build.git Scripts
