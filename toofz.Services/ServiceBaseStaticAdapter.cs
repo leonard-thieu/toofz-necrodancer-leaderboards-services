@@ -1,10 +1,12 @@
-﻿using System.ServiceProcess;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.ServiceProcess;
 
 namespace toofz.Services
 {
     /// <summary>
     /// Wraps static members on <see cref="ServiceBase"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     internal sealed class ServiceBaseStaticAdapter : IServiceBaseStatic
     {
         /// <summary>

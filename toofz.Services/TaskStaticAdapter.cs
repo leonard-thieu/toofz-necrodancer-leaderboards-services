@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace toofz.Services
     /// <summary>
     /// Wraps static members on <see cref="Task"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     internal sealed class TaskStaticAdapter : ITaskStatic
     {
         /// <summary>

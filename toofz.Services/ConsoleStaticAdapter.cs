@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace toofz.Services
 {
     /// <summary>
     /// Wraps the static members on <see cref="Console"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     internal sealed class ConsoleStaticAdapter : IConsoleStatic
     {
         /// <summary>
