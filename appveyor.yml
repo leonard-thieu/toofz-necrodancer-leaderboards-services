@@ -35,4 +35,5 @@ after_test:
   - ps: .\Scripts\Submit-CodeCoverageResults.ps1
 
 deploy_script:
+  - ps: .\Scripts\Link-Source.ps1
   - ps: .\Scripts\Deploy-NuGetPackage.ps1
