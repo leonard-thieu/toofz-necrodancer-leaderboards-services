@@ -10,7 +10,7 @@ namespace toofz.Services.Tests
     {
         public class Constructor
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SecretIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -24,7 +24,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentException))]
             public void SecretIsEmpty_ThrowsArgumentException()
             {
                 // Arrange
@@ -38,7 +38,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsEncryptedSecret()
             {
                 // Arrange
@@ -55,7 +55,7 @@ namespace toofz.Services.Tests
 
         public class DecryptMethod
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsDecryptedSecret()
             {
                 // Arrange
@@ -73,7 +73,7 @@ namespace toofz.Services.Tests
 
         public class GetSchemaMethod
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsNull()
             {
                 // Arrange
@@ -97,7 +97,7 @@ namespace toofz.Services.Tests
                 sw.Dispose();
             }
 
-            [Fact]
+            [DisplayFact]
             public void SerializesAndDeserializes()
             {
                 // Arrange

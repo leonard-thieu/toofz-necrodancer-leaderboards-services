@@ -8,7 +8,7 @@ namespace toofz.Services.Tests
     {
         public class IsNilMethod
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void ElIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -21,8 +21,8 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
-            public void ElDoesNotHaveNillAttribute_ReturnsFalse()
+            [DisplayFact]
+            public void ElDoesNotHaveNilAttribute_ReturnsFalse()
             {
                 // Arrange
                 var el = new XElement("myElement");
@@ -34,7 +34,7 @@ namespace toofz.Services.Tests
                 Assert.False(isNil);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ElHasNilAttributeSetToFalse_ReturnsFalse()
             {
                 // Arrange
@@ -49,7 +49,7 @@ namespace toofz.Services.Tests
                 Assert.False(isNil);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ElHasNilAttributeSetToTrue_ReturnsTrue()
             {
                 // Arrange

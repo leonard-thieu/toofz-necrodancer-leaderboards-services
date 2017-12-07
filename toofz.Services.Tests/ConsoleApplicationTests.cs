@@ -19,7 +19,7 @@ namespace toofz.Services.Tests
 
         public class Constructor
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -46,7 +46,7 @@ namespace toofz.Services.Tests
             private readonly ISettings settings = new StubSettings();
             private readonly TaskCompletionSource<bool> completionTcs;
 
-            [Fact]
+            [DisplayFact(nameof(IArgsParser<ISettings>.Parse))]
             public async Task ArgsIsNotEmpty_CallsParse()
             {
                 // Arrange
@@ -59,7 +59,7 @@ namespace toofz.Services.Tests
                 mockParser.Verify(p => p.Parse(args, settings), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact(nameof(IArgsParser<ISettings>.Parse))]
             public async Task ArgsIsNotEmpty_ReturnsExitCodeFromParse()
             {
                 // Arrange
@@ -73,7 +73,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(20, ret);
             }
 
-            [Fact]
+            [DisplayFact(nameof(IArgsParser<ISettings>.Parse))]
             public async Task ArgsIsEmpty_DoesNotCallParse()
             {
                 // Arrange
@@ -90,7 +90,7 @@ namespace toofz.Services.Tests
                 mockParser.Verify(p => p.Parse(args, settings), Times.Never);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task ArgsIsEmpty_Starts()
             {
                 // Arrange
@@ -107,7 +107,7 @@ namespace toofz.Services.Tests
                 mockWorker.Verify(w => w.Start(), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact("CtrlC")]
             public async Task CtrlCIsPressed_Stops()
             {
                 // Arrange
@@ -124,7 +124,7 @@ namespace toofz.Services.Tests
                 mockConsole.Verify(c => c.ReadKey(true), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact("CtrlBreak")]
             public async Task CtrlBreakIsPressed_Stops()
             {
                 // Arrange
@@ -141,7 +141,7 @@ namespace toofz.Services.Tests
                 mockConsole.Verify(c => c.ReadKey(true), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task CancelKeyIsNotPressed_DoesNotStop()
             {
                 // Arrange

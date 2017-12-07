@@ -15,7 +15,7 @@ namespace toofz.Services.Tests
 
         public class ApplicationNameProperty : ServiceSettingsProviderTests
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -28,7 +28,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsADefaultValue()
             {
                 // Arrange -> Act
@@ -38,7 +38,7 @@ namespace toofz.Services.Tests
                 Assert.Equal("toofz.Services", applicationName);
             }
 
-            [Fact]
+            [DisplayFact]
             public void GetSetBehavior()
             {
                 // Arrange
@@ -54,7 +54,7 @@ namespace toofz.Services.Tests
 
         public class GetSettingsReaderProperty : ServiceSettingsProviderTests
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -67,7 +67,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsADefaultValue()
             {
                 // Arrange -> Act
@@ -77,7 +77,7 @@ namespace toofz.Services.Tests
                 Assert.NotNull(getSettingsReader);
             }
 
-            [Fact]
+            [DisplayFact]
             public void GetSetBehavior()
             {
                 // Arrange
@@ -93,7 +93,7 @@ namespace toofz.Services.Tests
 
         public class GetSettingsWriterProperty : ServiceSettingsProviderTests
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SetToNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -106,7 +106,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsADefaultValue()
             {
                 // Arrange -> Act
@@ -116,7 +116,7 @@ namespace toofz.Services.Tests
                 Assert.NotNull(getSettingsWriter);
             }
 
-            [Fact]
+            [DisplayFact]
             public void GetSetBehavior()
             {
                 // Arrange
@@ -135,7 +135,7 @@ namespace toofz.Services.Tests
             private string name = "myName";
             private NameValueCollection config = new NameValueCollection();
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void NameIsNull_DoesNotThrowArgumentNullException()
             {
                 // Arrange
@@ -145,7 +145,7 @@ namespace toofz.Services.Tests
                 provider.Initialize(name, config);
             }
 
-            [Fact]
+            [DisplayFact]
             public void Initializes()
             {
                 // Arrange -> Act
@@ -162,7 +162,7 @@ namespace toofz.Services.Tests
             private readonly SettingsContext context = new SettingsContext();
             private readonly SettingsPropertyCollection properties = new SettingsPropertyCollection();
 
-            [Fact]
+            [DisplayFact]
             public void NoConfig_ReturnsDefaultValues()
             {
                 // Arrange
@@ -181,7 +181,7 @@ namespace toofz.Services.Tests
                 Assert.Equal("myDefaultValue2", values["myProp2"].PropertyValue);
             }
 
-            [Fact]
+            [DisplayFact]
             public void SerializeAsXml_IsNil_DoesNotSetValue()
             {
                 // Arrange
@@ -198,7 +198,7 @@ namespace toofz.Services.Tests
                 Assert.Null(myProp);
             }
 
-            [Fact]
+            [DisplayFact]
             public void SerializeAsXml_HasError_DoesNotSetValue()
             {
                 // Arrange
@@ -215,7 +215,7 @@ namespace toofz.Services.Tests
                 Assert.Null(myProp);
             }
 
-            [Fact]
+            [DisplayFact]
             public void HandlesSerializeAsXml()
             {
                 // Arrange
@@ -232,7 +232,7 @@ namespace toofz.Services.Tests
                 Assert.IsAssignableFrom<XmlSerializable>(myProp);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsValuesFromConfig()
             {
                 // Arrange
@@ -263,7 +263,7 @@ namespace toofz.Services.Tests
             private readonly SettingsPropertyValueCollection values = new SettingsPropertyValueCollection();
             private readonly StringWriter sw = new StringWriter();
 
-            [Fact]
+            [DisplayFact]
             public void SetsValuesInConfig()
             {
                 // Arrange
@@ -281,7 +281,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(Resources.BasicConfig, sw.ToString());
             }
 
-            [Fact]
+            [DisplayFact]
             public void HandlesSerializeAsXml()
             {
                 // Arrange
@@ -302,7 +302,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(Resources.SerializeAsXmlConfig, sw.ToString(), ignoreLineEndingDifferences: true);
             }
 
-            [Fact]
+            [DisplayFact]
             public void SerializesTimeSpanInHumanReadableFormat()
             {
                 // Arrange
@@ -323,7 +323,7 @@ namespace toofz.Services.Tests
         {
             public IntegrationTests() : base(ServiceSettingsProviderSettings.Default) { }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsDefaultValueIfValueIsNotPresent()
             {
                 // Arrange -> Act
@@ -333,7 +333,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(247080U, appId);
             }
 
-            [Fact]
+            [DisplayFact]
             public void SavesChangedSetting()
             {
                 // Arrange
@@ -348,7 +348,7 @@ namespace toofz.Services.Tests
                 Assert.True(settings.ForceSave);
             }
 
-            [Fact]
+            [DisplayFact]
             public void PersistsDefaultValue()
             {
                 // Arrange
@@ -366,7 +366,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(247080.ToString(), appIdEl.Value);
             }
 
-            [Fact]
+            [DisplayFact]
             public void PersistsDefaultTimeSpanInHumanReadableFormat()
             {
                 // Arrange
@@ -384,7 +384,7 @@ namespace toofz.Services.Tests
                 Assert.Equal("00:02:00", durationEl.Value);
             }
 
-            [Fact]
+            [DisplayFact]
             public void PersistsSpecifiedTimeSpanInHumanReadableFormat()
             {
                 // Arrange
@@ -402,7 +402,7 @@ namespace toofz.Services.Tests
                 Assert.Equal("00:03:54", durationEl.Value);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReadsTimeSpanInHumanReadableFormat()
             {
                 // Arrange

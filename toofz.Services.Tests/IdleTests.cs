@@ -21,7 +21,7 @@ namespace toofz.Services.Tests
 
         public class StartNewMethod
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -42,7 +42,7 @@ namespace toofz.Services.Tests
                 mockLog.Setup(l => l.IsInfoEnabled).Returns(true);
             }
 
-            [Fact]
+            [DisplayFact]
             public void TimeRemaining_WritesTimeRemaining()
             {
                 // Arrange
@@ -55,7 +55,7 @@ namespace toofz.Services.Tests
                 mockLog.Verify(l => l.Info("Next run takes place in 15 seconds..."));
             }
 
-            [Fact]
+            [DisplayFact]
             public void NoTimeRemaining_WritesStartingImmediately()
             {
                 // Arrange
@@ -71,7 +71,7 @@ namespace toofz.Services.Tests
 
         public class GetTimeRemainingMethod : IdleTests
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsTimeRemaining()
             {
                 // Arrange
@@ -87,7 +87,7 @@ namespace toofz.Services.Tests
 
         public class DelayAsyncMethod : IdleTests
         {
-            [Fact]
+            [DisplayFact]
             public async Task TimeRemaining_DelaysForTimeRemaining()
             {
                 // Arrange
@@ -103,7 +103,7 @@ namespace toofz.Services.Tests
                 mockTask.Verify(t => t.Delay(It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task NoTimeRemaining_DoesNotDelay()
             {
                 // Arrange

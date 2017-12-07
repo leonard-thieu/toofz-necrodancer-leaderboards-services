@@ -29,7 +29,7 @@ namespace toofz.Services.Tests
             private ILog log;
             private readonly TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public async Task LogIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -43,7 +43,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task InitializesLogging()
             {
                 // Arrange
@@ -56,7 +56,7 @@ namespace toofz.Services.Tests
                 mockLog.Verify(l => l.Debug("Initialized logging."));
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public async Task ArgsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -69,7 +69,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public async Task SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -83,7 +83,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task ReloadsSettings()
             {
                 // Arrange
@@ -96,7 +96,7 @@ namespace toofz.Services.Tests
                 mockSettings.Verify(s => s.Reload(), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task InstrumentationKeyIsNotSet_LogsWarning()
             {
                 // Arrange
@@ -110,7 +110,7 @@ namespace toofz.Services.Tests
                 mockLog.Verify(l => l.Warn("An Application Insights instrumentation key is not set. Telemetry will not be reported to Application Insights."));
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task InstrumentationKeyIsSet_SetsInstrumentationKeyForTelemetry()
             {
                 // Arrange
@@ -124,7 +124,7 @@ namespace toofz.Services.Tests
                 Assert.Equal("myInstrumentationKey", telemetryConfiguration.InstrumentationKey);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task Returns0()
             {
                 // Arrange
@@ -159,7 +159,7 @@ namespace toofz.Services.Tests
                     base.Dispose(disposing);
                 }
 
-                [Fact]
+                [DisplayFact]
                 public async Task LoadsSettingsBeforeAccessingThem()
                 {
                     // Arrange

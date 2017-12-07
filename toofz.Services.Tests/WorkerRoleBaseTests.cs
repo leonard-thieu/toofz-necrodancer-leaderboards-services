@@ -13,7 +13,7 @@ namespace toofz.Services.Tests
     {
         public class Constructor
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentException))]
             public void ServiceNameIsNull_ThrowsArgumentException()
             {
                 // Arrange
@@ -26,7 +26,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentException))]
             public void ServiceNameIsLongerThanMaxNameLength_ThrowsArgumentException()
             {
                 // Arrange
@@ -39,7 +39,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentException))]
             public void ServiceNameContainsForwardSlash_ThrowsArgumentException()
             {
                 // Arrange
@@ -52,7 +52,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentException))]
             public void ServiceNameContainsBackSlash_ThrowsArgumentException()
             {
                 // Arrange
@@ -65,7 +65,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -78,7 +78,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange -> Act
@@ -91,7 +91,7 @@ namespace toofz.Services.Tests
 
         public class SettingsProperty
         {
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -123,7 +123,7 @@ namespace toofz.Services.Tests
             private readonly IIdle idle;
             private readonly CancellationToken cancellationToken = CancellationToken.None;
 
-            [Fact]
+            [DisplayFact]
             public async Task ReloadsSettings()
             {
                 // Arrange
@@ -138,7 +138,7 @@ namespace toofz.Services.Tests
                 mockSettings.Verify(s => s.Reload(), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact("RunAsyncOverride")]
             public async Task CallsRunAsyncOverride()
             {
                 // Arrange
@@ -151,7 +151,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(1, worker.RunAsyncOverrideCallCount);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task WritesTimeRemaining()
             {
                 // Arrange
@@ -164,7 +164,7 @@ namespace toofz.Services.Tests
                 mockIdle.Verify(i => i.WriteTimeRemaining(), Times.Once);
             }
 
-            [Fact]
+            [DisplayFact]
             public async Task DelaysForTimeRemaining()
             {
                 // Arrange
@@ -192,7 +192,7 @@ namespace toofz.Services.Tests
 
         public class OnStopMethod
         {
-            [Fact]
+            [DisplayFact]
             public void StopsService()
             {
                 // Arrange

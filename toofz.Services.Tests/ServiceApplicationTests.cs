@@ -24,7 +24,7 @@ namespace toofz.Services.Tests
             private WorkerRoleBase<ISettings> worker = new WorkerRoleBaseAdapter();
             private IServiceBaseStatic serviceBase = Mock.Of<IServiceBaseStatic>();
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void WorkerIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -37,7 +37,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange -> Act
@@ -65,7 +65,7 @@ namespace toofz.Services.Tests
                 Directory.SetCurrentDirectory(currentDirectory);
             }
 
-            [Fact]
+            [DisplayFact(nameof(IServiceBaseStatic.Run))]
             public async Task CallsRun()
             {
                 // Arrange

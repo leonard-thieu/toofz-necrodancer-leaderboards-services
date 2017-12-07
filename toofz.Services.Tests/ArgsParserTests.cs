@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using Mono.Options;
 using Moq;
@@ -22,7 +23,7 @@ namespace toofz.Services.Tests
 
         public class GetDescriptionMethod
         {
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void TypeIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -36,7 +37,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void NameIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -50,7 +51,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void PropertyDoesNotExist_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -64,7 +65,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void NullDescription_ReturnsNull()
             {
                 // Arrange
@@ -78,7 +79,7 @@ namespace toofz.Services.Tests
                 Assert.Null(description);
             }
 
-            [Fact]
+            [DisplayFact(nameof(SettingsDescriptionAttribute))]
             public void MissingSettingsDescriptionAttribute_ReturnsNull()
             {
                 // Arrange
@@ -95,7 +96,7 @@ namespace toofz.Services.Tests
 
         public class ShouldPromptForRequiredSettingMethod
         {
-            [Fact]
+            [DisplayFact]
             public void OptionIsNull_ReturnsTrue()
             {
                 // Arrange
@@ -108,7 +109,7 @@ namespace toofz.Services.Tests
                 Assert.True(shouldPrompt);
             }
 
-            [Fact]
+            [DisplayFact]
             public void OptionIsNotNull_ReturnsFalse()
             {
                 // Arrange
@@ -124,7 +125,7 @@ namespace toofz.Services.Tests
 
         public class Constructor
         {
-            [Fact]
+            [DisplayFact("InReader", nameof(ArgumentNullException))]
             public void InReaderIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -139,7 +140,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact("OutWriter", nameof(ArgumentNullException))]
             public void OutWriterIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -154,7 +155,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact("ErrorWriter", nameof(ArgumentNullException))]
             public void ErrorWriterIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -169,7 +170,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReturnsInstance()
             {
                 // Arrange
@@ -187,7 +188,7 @@ namespace toofz.Services.Tests
 
         public class InReaderProperty : ArgsParserTests
         {
-            [Fact]
+            [DisplayFact(nameof(TextReader))]
             public void ReturnsTextReader()
             {
                 // Arrange -> Act
@@ -200,7 +201,7 @@ namespace toofz.Services.Tests
 
         public class OutWriterProperty : ArgsParserTests
         {
-            [Fact]
+            [DisplayFact(nameof(TextWriter))]
             public void ReturnsTextWriter()
             {
                 // Arrange -> Act
@@ -213,7 +214,7 @@ namespace toofz.Services.Tests
 
         public class ErrorWriterProperty : ArgsParserTests
         {
-            [Fact]
+            [DisplayFact(nameof(TextWriter))]
             public void ReturnsTextWriter()
             {
                 // Arrange -> Act
@@ -237,7 +238,7 @@ namespace toofz.Services.Tests
             private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
             private readonly ISettings settings;
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void ArgsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -250,7 +251,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact(nameof(ArgumentNullException))]
             public void SettingsIsNull_ThrowsArgumentNullException()
             {
                 // Arrange
@@ -264,7 +265,7 @@ namespace toofz.Services.Tests
                 });
             }
 
-            [Fact]
+            [DisplayFact]
             public void ExtraArg_ShowsError()
             {
                 // Arrange
@@ -279,7 +280,7 @@ namespace toofz.Services.Tests
 ", error, ignoreLineEndingDifferences: true);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ExtraArg_Returns1()
             {
                 // Arrange
@@ -292,7 +293,7 @@ namespace toofz.Services.Tests
                 Assert.Equal(1, exitCode);
             }
 
-            [Fact]
+            [DisplayFact]
             public void Help_ShowsHelp()
             {
                 // Arrange
@@ -318,7 +319,7 @@ options:
 ", output, ignoreLineEndingDifferences: true);
             }
 
-            [Fact]
+            [DisplayFact]
             public void Help_Returns0()
             {
                 // Arrange
@@ -333,7 +334,7 @@ options:
 
             #region UpdateInterval
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.UpdateInterval))]
             public void IntervalIsNotSpecified_DoesNotSetUpdateInterval()
             {
                 // Arrange
@@ -346,7 +347,7 @@ options:
                 mockSettings.VerifySet(s => s.UpdateInterval = It.IsAny<TimeSpan>(), Times.Never);
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.UpdateInterval))]
             public void IntervalIsSpecified_SetsUpdateIntervalToInterval()
             {
                 // Arrange
@@ -363,7 +364,7 @@ options:
 
             #region DelayBeforeGC
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.DelayBeforeGC))]
             public void DelayIsNotSpecified_DoesNotSetDelayBeforeGC()
             {
                 // Arrange
@@ -376,7 +377,7 @@ options:
                 mockSettings.VerifySet(settings => settings.DelayBeforeGC = It.IsAny<TimeSpan>(), Times.Never);
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.DelayBeforeGC))]
             public void DelayIsSpecified_SetsDelayBeforeGCToDelay()
             {
                 // Arrange
@@ -393,7 +394,7 @@ options:
 
             #region InstrumentationKey
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.InstrumentationKey))]
             public void IkeyIsNotSpecified_DoesNotSetInstrumentationKey()
             {
                 // Arrange
@@ -406,7 +407,7 @@ options:
                 mockSettings.VerifySet(s => s.InstrumentationKey = It.IsAny<string>(), Times.Never);
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.InstrumentationKey))]
             public void IkeyIsSpecified_SetsInstrumentationKeyToIkey()
             {
                 // Arrange
@@ -423,7 +424,7 @@ options:
 
             #region KeyDerivationIterations
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.KeyDerivationIterations))]
             public void IterationsIsNotSpecified_DoesNotSetKeyDerivationIterations()
             {
                 // Arrange
@@ -436,7 +437,7 @@ options:
                 mockSettings.VerifySet(s => s.KeyDerivationIterations = It.IsAny<int>(), Times.Never);
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.KeyDerivationIterations))]
             public void IterationsIsSpecified_SetsKeyDerivationIterationsToIterations()
             {
                 // Arrange
@@ -453,7 +454,7 @@ options:
 
             #region LeaderboardsConnectionString
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.LeaderboardsConnectionString))]
             public void ConnectionIsSpecified_SetsLeaderboardsConnectionString()
             {
                 // Arrange
@@ -467,7 +468,7 @@ options:
                 Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.LeaderboardsConnectionString))]
             public void ConnectionFlagIsSpecified_PromptsUserForConnectionAndSetsLeaderboardsConnectionString()
             {
                 // Arrange
@@ -484,7 +485,7 @@ options:
                 Assert.Equal(encrypted.Decrypt(), settings.LeaderboardsConnectionString.Decrypt());
             }
 
-            [Fact]
+            [DisplayFact(nameof(ISettings.LeaderboardsConnectionString))]
             public void ConnectionFlagIsNotSpecifiedAndLeaderboardsConnectionStringIsSet_DoesNotSetLeaderboardsConnectionString()
             {
                 // Arrange
@@ -501,7 +502,7 @@ options:
 
             #endregion
 
-            [Fact]
+            [DisplayFact]
             public void SavesSettings()
             {
                 // Arrange
@@ -514,7 +515,7 @@ options:
                 mockSettings.Verify(s => s.Save());
             }
 
-            [Fact]
+            [DisplayFact]
             public void Returns0()
             {
                 // Arrange
@@ -530,7 +531,7 @@ options:
 
         public class ReadOptionMethod : ArgsParserTests
         {
-            [Fact]
+            [DisplayFact]
             public void ReadsOptionAndOptionIsNotNullOrEmpty_ReturnsOption()
             {
                 // Arrange
@@ -546,7 +547,7 @@ options:
                 Assert.Equal("value", option);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReadsOptionAndOptionIsNull_PromptsAgain()
             {
                 // Arrange
@@ -563,7 +564,7 @@ options:
                 Assert.Equal("value", option);
             }
 
-            [Fact]
+            [DisplayFact]
             public void ReadsOptionAndOptionIsEmpty_PromptsAgain()
             {
                 // Arrange
