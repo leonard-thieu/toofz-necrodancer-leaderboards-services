@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
@@ -57,7 +56,10 @@ namespace toofz.Services
                 app = new ServiceApplication<TSettings>(worker, new ServiceBaseStaticAdapter());
             }
 
-            return app.RunAsync(args, settings, log, TelemetryConfiguration.Active).GetAwaiter().GetResult();
+            var directory = new DirectoryStaticAdapter();
+            var telemetryConfiguration = TelemetryConfiguration.Active;
+
+            return app.RunAsync(args, settings, directory, log, telemetryConfiguration).GetAwaiter().GetResult();
         }
 
         internal Application() { }
@@ -65,6 +67,7 @@ namespace toofz.Services
         internal Task<int> RunAsync(
             string[] args,
             TSettings settings,
+            IDirectoryStatic directory,
             ILog log,
             TelemetryConfiguration telemetryConfiguration)
         {
@@ -90,7 +93,7 @@ namespace toofz.Services
 
             // Services have their starting current directory set to the system directory. The current directory must 
             // be set to the base directory so the settings file may be found.
-            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+            directory.SetCurrentDirectory(AppContext.BaseDirectory);
             // Settings must be loaded before accessing them.
             settings.Reload();
             // Write default settings if settings file does not exist.

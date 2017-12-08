@@ -20,11 +20,14 @@ namespace toofz.Services.Tests
                 mockSettings.SetupAllProperties();
                 mockSettings.SetupProperty(s => s.KeyDerivationIterations, 1);
                 settings = mockSettings.Object;
+                directory = mockDirectory.Object;
                 log = mockLog.Object;
             }
 
             private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
             private ISettings settings;
+            private readonly Mock<IDirectoryStatic> mockDirectory = new Mock<IDirectoryStatic>();
+            private readonly IDirectoryStatic directory;
             private readonly Mock<ILog> mockLog = new Mock<ILog>();
             private ILog log;
             private readonly TelemetryConfiguration telemetryConfiguration = new TelemetryConfiguration();
@@ -39,7 +42,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 {
-                    return app.RunAsync(args, settings, log, telemetryConfiguration);
+                    return app.RunAsync(args, settings, directory, log, telemetryConfiguration);
                 });
             }
 
@@ -50,7 +53,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
 
                 // Act
-                await app.RunAsync(args, settings, log, telemetryConfiguration);
+                await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                 // Assert
                 mockLog.Verify(l => l.Debug("Initialized logging."));
@@ -65,7 +68,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 {
-                    return app.RunAsync(args, settings, log, telemetryConfiguration);
+                    return app.RunAsync(args, settings, directory, log, telemetryConfiguration);
                 });
             }
 
@@ -79,7 +82,7 @@ namespace toofz.Services.Tests
                 // Act -> Assert
                 await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 {
-                    return app.RunAsync(args, settings, log, telemetryConfiguration);
+                    return app.RunAsync(args, settings, directory, log, telemetryConfiguration);
                 });
             }
 
@@ -90,7 +93,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
 
                 // Act
-                await app.RunAsync(args, settings, log, telemetryConfiguration);
+                await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                 // Assert
                 mockSettings.Verify(s => s.Reload(), Times.Once);
@@ -104,7 +107,7 @@ namespace toofz.Services.Tests
                 mockSettings.SetupProperty(s => s.InstrumentationKey, null);
 
                 // Act
-                await app.RunAsync(args, settings, log, telemetryConfiguration);
+                await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                 // Assert
                 mockLog.Verify(l => l.Warn("An Application Insights instrumentation key is not set. Telemetry will not be reported to Application Insights."));
@@ -118,7 +121,7 @@ namespace toofz.Services.Tests
                 mockSettings.SetupProperty(s => s.InstrumentationKey, "myInstrumentationKey");
 
                 // Act
-                await app.RunAsync(args, settings, log, telemetryConfiguration);
+                await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                 // Assert
                 Assert.Equal("myInstrumentationKey", telemetryConfiguration.InstrumentationKey);
@@ -131,7 +134,7 @@ namespace toofz.Services.Tests
                 string[] args = { };
 
                 // Act
-                var ret = await app.RunAsync(args, settings, log, telemetryConfiguration);
+                var ret = await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                 // Assert
                 Assert.Equal(0, ret);
@@ -156,11 +159,12 @@ namespace toofz.Services.Tests
 
                     var app = new ApplicationAdapter();
                     string[] args = { };
+                    var directory = new DirectoryStaticAdapter();
                     var log = Mock.Of<ILog>();
                     var telemetryConfiguration = TelemetryConfiguration.Active;
 
                     // Act
-                    await app.RunAsync(args, settings, log, telemetryConfiguration);
+                    await app.RunAsync(args, settings, directory, log, telemetryConfiguration);
 
                     // Assert
                     Assert.Equal("myConnectionString", settings.LeaderboardsConnectionString.Decrypt());
