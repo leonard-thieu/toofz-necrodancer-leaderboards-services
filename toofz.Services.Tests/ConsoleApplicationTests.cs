@@ -149,19 +149,28 @@ namespace toofz.Services.Tests
                 var i = 0;
                 mockConsole
                     .Setup(c => c.ReadKey(true))
-                    .Callback(() => completionTcs.SetResult(true))
                     .Returns(() =>
                     {
+                        ConsoleKeyInfo keyInfo;
+
                         switch (i)
                         {
                             case 0:
-                                return new ConsoleKeyInfo((char)ConsoleKey.Enter, ConsoleKey.Enter, shift: false, alt: false, control: false);
+                                keyInfo = new ConsoleKeyInfo((char)ConsoleKey.Spacebar, ConsoleKey.Spacebar, shift: false, alt: false, control: false);
+                                Assert.False(ConsoleApplication<ISettings>.IsCancelKeyPress(keyInfo));
+                                break;
                             case 1:
                                 completionTcs.SetResult(true);
-                                return new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true);
+                                keyInfo = new ConsoleKeyInfo((char)ConsoleKey.Pause, ConsoleKey.Pause, shift: false, alt: false, control: true);
+                                Assert.True(ConsoleApplication<ISettings>.IsCancelKeyPress(keyInfo));
+                                break;
                             default:
                                 throw new InvalidOperationException($"Setup called {i} times but only expected 2.");
                         }
+
+                        i++;
+
+                        return keyInfo;
                     });
 
                 // Act
