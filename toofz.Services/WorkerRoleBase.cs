@@ -15,7 +15,6 @@ namespace toofz.Services
 
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        [Conditional("FEATURE_GC_ENDOFCYCLE")]
         private static void GCCollect()
         {
             GC.Collect();
