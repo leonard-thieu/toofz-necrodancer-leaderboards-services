@@ -20,6 +20,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <DocumentationFile>bin\Release\netstandard2.0\toofz.Services.xml</DocumentationFile>
   </PropertyGroup>
 
