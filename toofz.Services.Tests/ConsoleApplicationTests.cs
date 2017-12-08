@@ -41,10 +41,12 @@ namespace toofz.Services.Tests
             {
                 completionTcs = new TaskCompletionSource<bool>();
                 mockWorker.Setup(w => w.Completion).Returns(completionTcs.Task);
+                settings = mockSettings.Object;
             }
 
-            private readonly ISettings settings = new StubSettings();
             private readonly TaskCompletionSource<bool> completionTcs;
+            private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
+            private readonly ISettings settings;
 
             [DisplayFact(nameof(IArgsParser<ISettings>.Parse))]
             public async Task ArgsIsNotEmpty_CallsParse()

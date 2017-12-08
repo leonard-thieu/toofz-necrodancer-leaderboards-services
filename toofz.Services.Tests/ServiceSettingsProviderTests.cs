@@ -318,8 +318,7 @@ namespace toofz.Services.Tests
             }
         }
 
-        [Trait("Category", "Uses file system")]
-        public class IntegrationTests : SettingsTestsBase<ServiceSettingsProviderSettings>
+        public class IntegrationTests : IntegrationTestsBase<ServiceSettingsProviderSettings>
         {
             public IntegrationTests() : base(ServiceSettingsProviderSettings.Default) { }
 

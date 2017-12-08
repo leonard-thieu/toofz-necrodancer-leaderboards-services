@@ -137,27 +137,9 @@ namespace toofz.Services.Tests
                 Assert.Equal(0, ret);
             }
 
-            [Trait("Category", "Uses file system")]
-            public class IntegrationTests : SettingsTestsBase<TestSettings>
+            public class IntegrationTests : IntegrationTestsBase<TestSettings>
             {
-                public IntegrationTests() : base(TestSettings.Default)
-                {
-                    originalCurrentDirectory = Directory.GetCurrentDirectory();
-                    // Services start with their current directory set to the system directory.
-                    Directory.SetCurrentDirectory(Environment.SystemDirectory);
-                }
-
-                private readonly string originalCurrentDirectory;
-
-                protected override void Dispose(bool disposing)
-                {
-                    if (disposing)
-                    {
-                        Directory.SetCurrentDirectory(originalCurrentDirectory);
-                    }
-
-                    base.Dispose(disposing);
-                }
+                public IntegrationTests() : base(TestSettings.Default) { }
 
                 [DisplayFact]
                 public async Task LoadsSettingsBeforeAccessingThem()

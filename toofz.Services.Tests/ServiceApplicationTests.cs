@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
@@ -47,23 +46,15 @@ namespace toofz.Services.Tests
                 Assert.IsAssignableFrom<ServiceApplication<ISettings>>(app);
             }
         }
-
-        [Trait("Category", "Uses file system")]
-        [Collection("Uses file system")]
-        public class RunAsyncOverrideMethod : ServiceApplicationTests, IDisposable
+        public class RunAsyncOverrideMethod : ServiceApplicationTests
         {
             public RunAsyncOverrideMethod()
             {
-                currentDirectory = Directory.GetCurrentDirectory();
+                settings = mockSettings.Object;
             }
 
-            private readonly string currentDirectory;
-            private readonly ISettings settings = new StubSettings();
-
-            public void Dispose()
-            {
-                Directory.SetCurrentDirectory(currentDirectory);
-            }
+            private readonly Mock<ISettings> mockSettings = new Mock<ISettings>();
+            private readonly ISettings settings;
 
             [DisplayFact(nameof(IServiceBaseStatic.Run))]
             public async Task CallsRun()
@@ -82,7 +73,7 @@ namespace toofz.Services.Tests
 
         private class WorkerRoleBaseAdapter : WorkerRoleBase<ISettings>
         {
-            public WorkerRoleBaseAdapter() : base("myServiceName", new StubSettings(), new TelemetryClient(), runOnce: false) { }
+            public WorkerRoleBaseAdapter() : base("myServiceName", Mock.Of<ISettings>(), new TelemetryClient(), runOnce: false) { }
 
             protected override Task RunAsyncOverride(CancellationToken cancellationToken) => Task.FromCanceled(cancellationToken);
         }

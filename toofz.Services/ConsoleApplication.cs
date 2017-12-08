@@ -9,7 +9,7 @@ namespace toofz.Services
     internal sealed class ConsoleApplication<TSettings> : Application<TSettings>
         where TSettings : ISettings
     {
-        private static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
+        internal static bool IsCancelKeyPress(ConsoleKeyInfo keyInfo)
         {
             // Visual Studio's debugger traps Control-C and Control-Break by default.
             return Debugger.IsAttached ?
