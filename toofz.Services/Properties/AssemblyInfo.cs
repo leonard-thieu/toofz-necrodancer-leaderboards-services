@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("16.0.0.0")]
+[assembly: AssemblyVersion("15.0.8.0")]
 
 [assembly: AssemblyCopyright("Copyright © Leonard Thieu 2017")]
 [assembly: AssemblyProduct("toofz")]
