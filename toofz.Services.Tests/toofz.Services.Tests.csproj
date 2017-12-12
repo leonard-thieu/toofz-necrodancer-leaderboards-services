@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\toofz.Services\toofz.Services.csproj">
-      <Project>{e02828fe-6ea1-4213-91fe-54c5e539678d}</Project>
+      <Project>{a80ace15-8a80-4912-aed0-385cc94b3974}</Project>
       <Name>toofz.Services</Name>
     </ProjectReference>
   </ItemGroup>
