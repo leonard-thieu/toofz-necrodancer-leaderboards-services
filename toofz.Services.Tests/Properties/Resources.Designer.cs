@@ -122,7 +122,7 @@ namespace toofz.Services.Tests.Properties {
         ///&lt;settings&gt;
         ///  &lt;setting name=&quot;myProp&quot;&gt;
         ///    &lt;value&gt;
-        ///      &lt;XmlSerializable xmlns:d1p1=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; /&gt;
+        ///      &lt;XmlSerializable d1p1:nil=&quot;true&quot; xmlns:d1p1=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; /&gt;
         ///    &lt;/value&gt;
         ///  &lt;/setting&gt;
         ///&lt;/settings&gt;.

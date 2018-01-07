@@ -1,124 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F8A27E9-DF7A-4302-840A-D7A064A1EECD}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>toofz.Services.Tests</RootNamespace>
-    <AssemblyName>toofz.Services.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Moq">
-      <Version>4.7.145</Version>
-    </PackageReference>
-    <PackageReference Include="toofz.Xunit">
-      <Version>1.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="xunit.assert">
-      <Version>2.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="xunit.core">
-      <Version>2.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.visualstudio">
-      <Version>2.3.1</Version>
-    </PackageReference>
+    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="toofz.Build" Version="2.3.1" />
+    <PackageReference Include="toofz.Xunit" Version="1.0.4" />
+    <PackageReference Include="xunit.assert" Version="2.3.1" />
+    <PackageReference Include="xunit.core" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\toofz.Services\toofz.Services.csproj">
-      <Project>{a80ace15-8a80-4912-aed0-385cc94b3974}</Project>
-      <Name>toofz.Services</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\toofz.Services\toofz.Services.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\ServiceSettingsProviderSettings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>ServiceSettingsProviderSettings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\ServiceSettingsProviderSettings.cs">
-      <DependentUpon>ServiceSettingsProviderSettings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\ServiceSettingsProviderSettings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>ServiceSettingsProviderSettings.settings</DependentUpon>
-    </Compile>
-    <None Include="Properties\TestSettings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\TestSettings.cs">
-      <DependentUpon>TestSettings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\TestSettings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>TestSettings.settings</DependentUpon>
-    </Compile>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Resources\BasicConfig.config" />
-    <None Include="Resources\SerializeAsXmlConfig.config" />
-    <None Include="Resources\SerializeAsXmlErrorConfig.config" />
-    <None Include="Resources\SerializeAsXmlIsNilConfig.config" />
-    <None Include="Resources\TimeSpanConfig.config" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ApplicationTests.cs" />
-    <Compile Include="ArgsParserTests.cs" />
-    <Compile Include="ConsoleApplicationTests.cs" />
-    <Compile Include="EncryptedSecretTests.cs" />
-    <Compile Include="IdleTests.cs" />
-    <Compile Include="IntegrationTestsBase.cs" />
-    <Compile Include="ServiceApplicationTests.cs" />
-    <Compile Include="ServiceSettingsProviderTests.cs" />
-    <Compile Include="SettingsUtil.cs" />
-    <Compile Include="WorkerRoleBaseTests.cs" />
-    <Compile Include="XElementExtensionsTests.cs" />
-    <Compile Include="XmlSerializable.cs" />
+    <None Update="Properties\ServiceSettingsProviderSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+    <None Update="Properties\TestSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
