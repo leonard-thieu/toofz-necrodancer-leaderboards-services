@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\toofz.Services\toofz.Services.csproj" />
+    <ProjectReference Include="..\..\src\toofz.Services\toofz.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
