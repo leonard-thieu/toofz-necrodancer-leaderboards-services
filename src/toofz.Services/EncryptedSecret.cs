@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [XmlRoot(EncryptedSecretName)]
     public sealed class EncryptedSecret : IXmlSerializable
     {

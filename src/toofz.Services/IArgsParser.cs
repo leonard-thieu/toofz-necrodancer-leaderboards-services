@@ -1,5 +1,9 @@
 ﻿namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TSettings"></typeparam>
     public interface IArgsParser<TSettings>
         where TSettings : ISettings
     {

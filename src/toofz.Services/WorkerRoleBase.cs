@@ -8,6 +8,10 @@ using Microsoft.ApplicationInsights;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TSettings"></typeparam>
     public abstract class WorkerRoleBase<TSettings> : ServiceBase, IConsoleWorkerRole
         where TSettings : ISettings
     {

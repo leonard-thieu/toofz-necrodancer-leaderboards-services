@@ -6,6 +6,10 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TSettings"></typeparam>
     public abstract class Application<TSettings>
         where TSettings : ISettings
     {

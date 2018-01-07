@@ -11,6 +11,9 @@ using log4net;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class ServiceSettingsProvider : SettingsProvider
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(ServiceSettingsProvider));

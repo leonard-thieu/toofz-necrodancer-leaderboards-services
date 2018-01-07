@@ -9,6 +9,11 @@ using Mono.Options;
 
 namespace toofz.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TOptions"></typeparam>
+    /// <typeparam name="TSettings"></typeparam>
     public abstract class ArgsParser<TOptions, TSettings> : IArgsParser<TSettings>
         where TOptions : Options, new()
         where TSettings : ISettings
