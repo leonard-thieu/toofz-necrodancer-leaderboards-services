@@ -21,8 +21,6 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;FEATURE_GC_ENDOFCYCLE</DefineConstants>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <DocumentationFile>bin\Release\net461\toofz.Services.xml</DocumentationFile>
   </PropertyGroup>
 
