@@ -29,11 +29,10 @@ test_script:
   - ps: |
       $projectPath = Resolve-Path .\test\toofz.Services.Tests\toofz.Services.Tests.csproj
       msbuild $projectPath /nologo /verbosity:minimal `
-          /target:Rebuild `
+          /target:Build `
           /target:Test `
           /property:Configuration=Coverage `
-          /property:DebugType=full `
-          /property:DebugSymbols=true
+          /property:DebugType=full
 
 deploy_script:
   - ps: |
