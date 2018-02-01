@@ -8,7 +8,14 @@
 
 **toofz Services Core** contains common code used by **toofz Services**.
 
-### Features
+---
+
+**toofz Services Core** is a component of **toofz**. 
+Information about other projects that support **toofz** can be found in the [meta-repository](https://github.com/leonard-thieu/toofz-necrodancer).
+
+## Description
+
+toofz Services Core provides the following features for toofz Services.
 
 * Start as console application or service
 * Command-line argument parsing
@@ -16,10 +23,26 @@
 * Secrets encryption
 * Execution cycle scheduling
 
----
+## Installing via NuGet
 
-**toofz Services Core** is a component of **toofz**. 
-Information about other projects that support **toofz** can be found in the [meta-repository](https://github.com/leonard-thieu/toofz-necrodancer).
+Add a NuGet.Config to your solution directory with the following content:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="toofz" value="https://www.myget.org/F/toofz/api/v3/index.json" />
+  </packageSources>
+</configuration>
+```
+
+```powershell
+Install-Package toofz.Services
+```
+
+### Dependencies
+
+* [toofz Build](https://github.com/leonard-thieu/toofz-build)
 
 ### Dependents
 
@@ -32,9 +55,24 @@ Information about other projects that support **toofz** can be found in the [met
 
 * .NET Framework 4.6.1
 
-## Building and testing
+## Contributing
 
-Visual Studio 2017 (version 15.3 or later) can be used to build and run tests.
+Contributions are welcome for toofz Services Core.
+
+* Want to report a bug or request a feature? [File a new issue](https://github.com/leonard-thieu/toofz-steam/issues).
+* Join in design conversations.
+* Fix an issue or add a new feature.
+  * Aside from trivial issues, please raise a discussion before submitting a pull request.
+
+### Development
+
+#### Requirements
+
+* Visual Studio 2017
+
+#### Getting started
+
+Open the solution file and build. Use Test Explorer to run tests.
 
 ## License
 
