@@ -37,7 +37,7 @@ Add a NuGet.Config to your solution directory with the following content:
 ```
 
 ```powershell
-Install-Package toofz.Services
+Install-Package 'toofz.Services'
 ```
 
 ### Dependents
