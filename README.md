@@ -40,16 +40,16 @@ Add a NuGet.Config to your solution directory with the following content:
 Install-Package toofz.Services
 ```
 
-### Dependencies
-
-* [toofz Build](https://github.com/leonard-thieu/toofz-build)
-
 ### Dependents
 
 * [toofz Leaderboards Service](https://github.com/leonard-thieu/leaderboards-service)
 * [toofz Daily Leaderboards Service](https://github.com/leonard-thieu/daily-leaderboards-service)
 * [toofz Players Service](https://github.com/leonard-thieu/players-service)
 * [toofz Replays Service](https://github.com/leonard-thieu/replays-service)
+
+### Dependencies
+
+* [toofz Build](https://github.com/leonard-thieu/toofz-build)
 
 ## Requirements
 
