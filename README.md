@@ -59,7 +59,7 @@ Install-Package 'toofz.Services'
 
 Contributions are welcome for toofz Services Core.
 
-* Want to report a bug or request a feature? [File a new issue](https://github.com/leonard-thieu/toofz-steam/issues).
+* Want to report a bug or request a feature? [File a new issue](https://github.com/leonard-thieu/toofz-services-core/issues).
 * Join in design conversations.
 * Fix an issue or add a new feature.
   * Aside from trivial issues, please raise a discussion before submitting a pull request.
